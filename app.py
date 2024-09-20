@@ -18,7 +18,6 @@ Settings.embed_model = NVIDIAEmbedding(model="NV-Embed-QA", truncate="END")
 
 from llama_index.vector_stores.milvus import MilvusVectorStore
 
-
 from llama_index.core.node_parser import SentenceSplitter
 Settings.text_splitter = SentenceSplitter(chunk_size=400)
 
@@ -61,7 +60,7 @@ def load_documents(file_objs):
     except Exception as e:
         return f"Error loading documents: {str(e)}"
 
-  # Function to handle chat interactions
+# Function to handle chat interactions
 def chat(message,history):
     global query_engine
     if query_engine is None:
@@ -102,7 +101,7 @@ with gr.Blocks() as demo:
   msg = gr.Textbox(label="Enter your question",interactive=True)
   clear = gr.Button("Clear")
 
-# Set up event handler (Event handlers should be defined within the 'with gr.Blocks() as demo:' block)
+    # Set up event handler (Event handlers should be defined within the 'with gr.Blocks() as demo:' block)
   load_btn.click(load_documents, inputs=[file_input], outputs=[load_output])
   msg.submit(stream_response, inputs=[msg, chatbot], outputs=[chatbot]) # Use submit button instead of msg
   msg.submit(lambda: "", outputs= [msg]) # Use submit button and message instead of msg
