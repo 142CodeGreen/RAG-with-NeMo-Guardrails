@@ -19,12 +19,18 @@ cd Basic_RAG
 pip install -r requirements.txt
 ```
 
-3. Import necessary librarie and set up the environment
+3. Export NVIDIA API key
+```
+export NVIDIA_API_KEY="your-api-key-here"
+```
+
+4. Import necessary librarie and set up the environment
 ```
 import getpass
 import os
 import gradio as gr
-os.environ['NVIDIA_API_KEY'] = "your api key"
+
+os.environ['NVIDIA_API_KEY'] = "your-api-key-here"
 
 if not os.environ.get("NVIDIA_API_KEY", "").startswith("nvapi-"):
     raise ValueError("Please set the NVIDIA_API_KEY environment variable.")
@@ -42,13 +48,13 @@ from llama_index.core.node_parser import SentenceSplitter
 Settings.text_splitter = SentenceSplitter(chunk_size=500)
 ```
 
-4. Initialize global variables for the index and query engine
+5. Initialize global variables for the index and query engine
 ```
 index = None
 query_engine = None
 ```
 
-5.Function to get file names from file objects
+6. Function to get file names from file objects
 ```
 def get_files_from_input(file_objs):
     if not file_objs:
@@ -56,7 +62,7 @@ def get_files_from_input(file_objs):
     return [file_obj.name for file_obj in file_objs]
 ```
 
-6. Function to load documents and create the index
+7. Function to load documents and create the index
 ```
 def load_documents(file_objs):
     global index, query_engine
@@ -87,7 +93,7 @@ def load_documents(file_objs):
         return f"Error loading documents: {str(e)}"
 ```
 
-7. Function to handle chat interactions
+8. Function to handle chat interactions
 ```
 def chat(message,history):
     global query_engine
@@ -116,7 +122,7 @@ def stream_response(message,history):
         yield history + [(message, f"Error processing query: {str(e)}")]
 ```
 
-8. Create the Gradio interface
+9. Create the Gradio interface
 ```
 with gr.Blocks() as demo:
   gr.Markdown("# RAG Q&A Chatbot Testing")
@@ -137,16 +143,13 @@ with gr.Blocks() as demo:
   msg.submit(lambda: "", outputs= [msg]) # Use submit button and message instead of msg
   clear.click(lambda: None, None, chatbot, queue=False)
 ```
-
-## Usage
-
-Launch the Gradio interface
+10. Launch the Gradio interface
 ```
 if __name__ == "__main__":
     demo.queue().launch(share=True)
 ```
 
-## Alternatively, you can simply run the app.py which has compliled all scripts. 
+## Alternatively for step 4-10, you can run the app.py file which has compliled the scripts for step 4-10 
 
 ```
 python run app.py
