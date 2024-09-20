@@ -10,8 +10,8 @@ This is a lab practice following YouTube channel of NVIDIA Developer: https://ww
 
 1. Clone the repository:
 ```
-git clone https://github.com/NVIDIA/GenerativeAIExamples.git
-cd GenerativeAIExamples/community/multimodal_rag
+git clone https://github.com/142CodeGreen/Basic-RAG.git
+cd Basic_RAG
 ```
 
 2. Install the required packages:
