@@ -4,7 +4,7 @@ This is a lab practice following YouTube channel of NVIDIA Developer: https://ww
 2. LlamaIndex as RAG management framework for efficient indexing and retrieval of information;
 3. Using NVIDIA embeddings;
 4. Milvus vector database for efficient storage and retrieval of embedding vectors.
-5. You can upload your own enterprise data in PDF format to complete the RAG loophole.  Q&A chatbot UI uses Gradio simple format
+5. You can upload your own enterprise data in PDF format using the Gradio UI to complete the RAG loophole.  Q&A chatbot UI uses Gradio simple format
 
 ## Setup
 
