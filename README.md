@@ -79,7 +79,7 @@ def load_documents(file_objs):
         if not documents:
             return f"No documents found in the selected files."
 
-        # Create a Milvus vector store and storage context
+        # Create a Milvus vector store and storage context using CPU
         vector_store = MilvusVectorStore(uri="./milvus_demo.db", dim=1024, overwrite=True,output_fields=[])
         storage_context = StorageContext.from_defaults(vector_store=vector_store)
 
@@ -165,12 +165,7 @@ Upload your PDF file and start to query the chatbot.
 - `requirements.txt`: List of Python dependencies
 
 
-## GPU Acceleration for Vector Search
-To utilize GPU acceleration in the vector database, ensure that:
-1. Your system has a compatible NVIDIA GPU.
-2. You're using the GPU-enabled version of Milvus (as shown in the setup instructions).
-3. There are enough concurrent requests to justify GPU usage. GPU acceleration typically shows significant benefits under high load conditions.
-
+## This RAG can be run using a CPU. To use a GPU:
 It's important to note that GPU acceleration will only be used when the incoming requests are extremely high. For more detailed information on GPU indexing and search in Milvus, refer to the [official Milvus GPU Index documentation](https://milvus.io/docs/gpu_index.md).
 
 To connect the GPU-accelerated Milvus with LlamaIndex, update the MilvusVectorStore configuration in app.py:
@@ -183,3 +178,9 @@ vector_store = MilvusVectorStore(
     gpu_id=0  # Specify the GPU ID to use
 )
 ```
+
+To utilize GPU acceleration in the vector database, ensure that:
+1. Your system has a compatible NVIDIA GPU.
+2. You're using the GPU-enabled version of Milvus (as shown in the setup instructions).
+3. There are enough concurrent requests to justify GPU usage. GPU acceleration typically shows significant benefits under high load conditions.
+
