@@ -50,16 +50,13 @@ index = None
 query_engine = None
 ```
 
-6. Function to get file names from file objects
+6. Function to get file names from file objects, function to load documents and create the index
 ```
 def get_files_from_input(file_objs):
     if not file_objs:
         return []
     return [file_obj.name for file_obj in file_objs]
-```
 
-7. Function to load documents and create the index
-```
 def load_documents(file_objs):
     global index, query_engine
     try:
