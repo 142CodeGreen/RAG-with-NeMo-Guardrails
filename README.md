@@ -22,6 +22,7 @@ pip install -r requirements.txt
 3. Export NVIDIA API key
 ```
 export NVIDIA_API_KEY="your-api-key-here"
+echo $NVIDIA_API_KEY
 ```
 
 4. Import necessary librarie and set up the environment
@@ -29,11 +30,6 @@ export NVIDIA_API_KEY="your-api-key-here"
 import getpass
 import os
 import gradio as gr
-
-os.environ['NVIDIA_API_KEY'] = "your-api-key-here"
-
-if not os.environ.get("NVIDIA_API_KEY", "").startswith("nvapi-"):
-    raise ValueError("Please set the NVIDIA_API_KEY environment variable.")
 
 from llama_index.core import Settings, SimpleDirectoryReader, VectorStoreIndex, StorageContext
 from llama_index.llms.nvidia import NVIDIA
