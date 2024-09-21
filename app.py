@@ -48,7 +48,8 @@ def load_documents(file_objs):
             port=19530,
             dim=1024,
             collection_name="your_collection_name",
-            gpu_id=0  # Specify the GPU ID to use
+            gpu_id=0,  # Specify the GPU ID to use
+            output_fields=["field1","field2"]
             )
         vector_store = MilvusVectorStore(uri="./milvus_demo.db", dim=1024, overwrite=True,output_fields=[])
         storage_context = StorageContext.from_defaults(vector_store=vector_store)
@@ -106,7 +107,6 @@ with gr.Blocks() as demo:
     # Set up event handler (Event handlers should be defined within the 'with gr.Blocks() as demo:' block)
   load_btn.click(load_documents, inputs=[file_input], outputs=[load_output])
   msg.submit(stream_response, inputs=[msg, chatbot], outputs=[chatbot]) # Use submit button instead of msg
-  msg.submit(lambda: "", outputs= [msg]) # Use submit button and message instead of msg
   clear.click(lambda: None, None, chatbot, queue=False)
 
 # Launch the Gradio interface
