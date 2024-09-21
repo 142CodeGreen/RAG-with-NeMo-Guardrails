@@ -11,7 +11,7 @@ This is a lab practice following YouTube channel of NVIDIA Developer: https://ww
 1. Clone the repository:
 ```
 git clone https://github.com/142CodeGreen/Basic-RAG.git
-cd Basic_RAG
+cd Basic-RAG
 ```
 
 2. Install the required packages:
