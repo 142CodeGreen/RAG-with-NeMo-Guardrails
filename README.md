@@ -145,7 +145,7 @@ if __name__ == "__main__":
 ## Alternatively for step 4-10, you can run the app.py file which has compliled the scripts for step 4-10 
 
 ```
-python run app.py
+python3 app.py
 ```
 
 Once the process is complted,open the provided URL in your web browser.
