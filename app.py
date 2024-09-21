@@ -47,7 +47,7 @@ def load_documents(file_objs):
             host="127.0.0.1",
             port=19530,
             dim=1024,
-            collection_name="your_collection_name",
+            collection_name="upload",
             gpu_id=0,  # Specify the GPU ID to use
             output_fields=["field1","field2"]
             )
