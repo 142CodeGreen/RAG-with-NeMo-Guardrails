@@ -133,7 +133,6 @@ with gr.Blocks() as demo:
 # Set up event handler
   load_btn.click(load_documents, inputs=[file_input], outputs=[load_output])
   msg.submit(stream_response, inputs=[msg, chatbot], outputs=[chatbot]) # Use submit button instead of msg
-  msg.submit(lambda: "", outputs= [msg]) # Use submit button and message instead of msg
   clear.click(lambda: None, None, chatbot, queue=False)
 ```
 10. Launch the Gradio interface
