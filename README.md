@@ -8,7 +8,7 @@ This is a lab practice following YouTube channel of NVIDIA Developer: https://ww
 
 ## Setup
 
-1. Refer this [tutorial](https://milvus.io/docs/install_standalone-docker-compose-gpu.md) to install requirement environments which includes:
+1. Refer this [tutorial](https://milvus.io/docs/install_standalone-docker-compose-gpu.md) to install requirement GPU environments which includes:
    - Docker
    - NVIDIA Docker container tool kit & NVIDIA Driver
 
