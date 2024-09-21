@@ -3,12 +3,7 @@ import getpass
 import os
 import gradio as gr
 
-# Set the environment variable using os.environ
-os.environ['NVIDIA_API_KEY'] = "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"
-
-if not os.environ.get("NVIDIA_API_KEY", "").startswith("nvapi-"):
-    raise ValueError("Please set the NVIDIA_API_KEY environment variable.")
-
+# Set the environment
 from llama_index.core import Settings, SimpleDirectoryReader, VectorStoreIndex, StorageContext
 from llama_index.llms.nvidia import NVIDIA
 Settings.llm = NVIDIA(model="meta/llama-3.1-8b-instruct")
@@ -48,6 +43,13 @@ def load_documents(file_objs):
             return f"No documents found in the selected files."
 
         # Create a Milvus vector store and storage context
+        vector_store = MilvusVectorStore(
+            host="127.0.0.1",
+            port=19530,
+            dim=1024,
+            collection_name="your_collection_name",
+            gpu_id=0  # Specify the GPU ID to use
+            )
         vector_store = MilvusVectorStore(uri="./milvus_demo.db", dim=1024, overwrite=True,output_fields=[])
         storage_context = StorageContext.from_defaults(vector_store=vector_store)
 
