@@ -14,7 +14,7 @@ Settings.embed_model = NVIDIAEmbedding(model="NV-Embed-QA", truncate="END")
 from llama_index.vector_stores.milvus import MilvusVectorStore
 
 from llama_index.core.node_parser import SentenceSplitter
-Settings.text_splitter = SentenceSplitter(chunk_size=400)
+Settings.text_splitter = SentenceSplitter(chunk_size=500)
 
 # Initialize global variables for the index and query engine
 index = None
@@ -43,7 +43,14 @@ def load_documents(file_objs):
             return f"No documents found in the selected files."
 
         # Create a Milvus vector store and storage context
-        vector_store = MilvusVectorStore(uri="./milvus_demo.db", dim=1024, overwrite=True,output_fields=[])
+        vector_store = MilvusVectorStore(
+            host="127.0.0.1",
+            port=19530,
+            dim=1024,
+            collection_name="upload",
+            gpu_id=0,  # Specify the GPU ID to use
+            output_fields=["field1","field2"]
+            )
         storage_context = StorageContext.from_defaults(vector_store=vector_store)
 
         # Create the index from the documents
