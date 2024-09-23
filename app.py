@@ -50,7 +50,7 @@ def load_documents(file_objs):
             collection_name="upload",
             gpu_id=0,  # Specify the GPU ID to use
             output_fields=["field1","field2"]
-            )
+        )
         storage_context = StorageContext.from_defaults(vector_store=vector_store)
 
         # Create the index from the documents
