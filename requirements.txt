@@ -1,3 +1,4 @@
+--upgrade pip
 llama-index-core==0.10.50
 llama-index-readers-file==0.1.25
 llama-index-llms-nvidia==0.1.3
@@ -6,3 +7,6 @@ llama-index-postprocessor-nvidia-rerank==0.1.2
 llama-index-vector-stores-Milvus==0.1.8
 ipywidgets==8.1.3
 gradio==3.38.0
+--upgrade nemoguardrails
+OpenAI
+langchain-nvidia-ai-endpoints
