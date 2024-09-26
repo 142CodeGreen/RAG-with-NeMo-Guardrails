@@ -1,74 +1,56 @@
-# Basic RAG using NVIDIA NIM, LlamaIndex, Milvus and Gradio UI
-This is a lab practice following YouTube channel of NVIDIA Developer: https://www.youtube.com/watch?v=09uDCmLzYHA&t=574s. This lab practices the following components:
-1. NVIDIA NIM as foundational model- using API key to connect;
-2. LlamaIndex as RAG management framework for efficient indexing and retrieval of information;
-3. Using NVIDIA embeddings;
-4. Milvus vector database for efficient storage and retrieval of embedding vectors. GPU-accelerated Milvus is used in this practice.
-5. Gradio as chat UI which allows you to upload PDF files to complete the RAG loophole.
+# RAG practice using NVIDIA NIM, NVIDIA NeMo Guardrails, LlamaIndex, Milvus and Gradio UI
+This notebook practises building a RAG app with references to the NVIDIA Developer YouTube video: https://www.youtube.com/watch?v=09uDCmLzYHA&t=574s and a NeMo Guardrail practice at https://github.com/wenqiglantz/nemo-guardrails-llamaindex-rag. The RAG allows users to upload PDF documents and carry out Q&A with the chatbot in the context of the loaded documents. The following components have been included in the RAG:
+
+1. Selected NVIDIA NIM as a foundational LLM model- using API key to connect;
+2. NVIDIA NeMo Guardrails, including input, output rails to structure proper bot response and reduce hallucination; 
+3. LlamaIndex as RAG management framework for efficient indexing and retrieval of information;
+4. Using of NVIDIA embeddings;
+5. Milvus vector database for efficient storage and retrieval of embedding vectors.
+6. Gradio as chat UI which allows you to upload PDF documents to set the context of Q&A.
 
 ## Setup
 
-1. Refer this [tutorial](https://milvus.io/docs/install_standalone-docker-compose-gpu.md) to install requirement GPU environments which includes:
-   - Docker
-   - NVIDIA Docker container tool kit & NVIDIA Driver
-
-2. Clone the repository:
+1. Clone the repository:
 ```
 git clone https://github.com/142CodeGreen/Basic-RAG.git
 cd Basic-RAG
 ```
 
-3. Install the required packages:
+2. Install the required packages:
 ```
 pip install -r requirements.txt
 ```
 
-4. Export NVIDIA API key
+3. Export NVIDIA API key
 ```
 export NVIDIA_API_KEY="your-api-key-here"
 echo $NVIDIA_API_KEY
-```
 
-5. Start the GPU-accelerated Milvus container:
-```
-sudo docker compose up -d
-```
-## Usage
-
-1. Ensure the Milvus container is running:
+export OPENAI_API_KEY="your-openai-key-here"
+echo $OPENAI_API_KEY
 
 ```
-docker ps
-```
 
-2. Run the app.py:
+4. Run the app.py:
 ```
 python3 app.py
 ```
 
-3. Open the provided URL in your web browser.
+## Optional: use GPU-accelerated Milvus container:
 
-4. Upload PDF file librarie and set up the environment.
+1. Refer this [tutorial](https://milvus.io/docs/install_standalone-docker-compose-gpu.md) to install required environments for GPU-accelerated Milvus container, including:
+   - Docker
+   - NVIDIA Docker container tool kit & NVIDIA Driver
 
-5. Process the files by clicking the "Upload PDF" button.
+To utilize GPU acceleration in the vector database, ensure that:
+- Your system has a compatible NVIDIA GPU.
+- You're using the GPU-enabled version of Milvus (as shown in the setup instructions).
+- There are enough concurrent requests to justify GPU usage. GPU acceleration typically shows significant benefits under high load conditions.
 
-6. Once processing is complete, use the chat interface to query your documents.
-
-7. If you use CPU Milvus vectorstore, replace with the following code:
-```
-vector_store = MilvusVectorStore(uri="./milvus_demo.db", dim=1024, overwrite=True,output_fields=[])
-```
-
-## File Structure
-
-- `app.py`: Main Streamlit application ( if you follow the step-by-step script, do not run the app.py)
-- `requirements.txt`: List of Python dependencies
-
-
-## This RAG can be run using a CPU. To use a GPU:
-It's important to note that GPU acceleration will only be used when the incoming requests are extremely high. For more detailed information on GPU indexing and search in Milvus, refer to the [official Milvus GPU Index documentation](https://milvus.io/docs/gpu_index.md).
+2. It's important to note that GPU acceleration will only be used when the incoming requests are extremely high. For more detailed information on GPU indexing and search in Milvus, refer to the [official Milvus GPU Index documentation](https://milvus.io/docs/gpu_index.md).
 
 To connect the GPU-accelerated Milvus with LlamaIndex, update the MilvusVectorStore configuration in app.py:
+
 ```
 vector_store = MilvusVectorStore(
     host="127.0.0.1",
@@ -76,8 +58,46 @@ vector_store = MilvusVectorStore(
     dim=1024,
     collection_name="your_collection_name",
     gpu_id=0  # Specify the GPU ID to use
+    output_fields=["field1","field2"]
 )
 ```
+
+     
+3. Upon environment set up in the above, start the GPU-accelerated Milvus container:
+```
+sudo docker compose up -d
+```
+
+4. Ensure the Milvus container is running:
+
+```
+docker ps
+```
+
+5. Run the app.py:
+```
+python3 app.py
+```
+
+- Open the provided URL in your web browser.
+
+- Upload PDF file librarie and set up the environment context.
+
+- Process the files by clicking the "Upload PDF" button.
+
+- Once processing is complete, use the chat interface to query your documents.
+
+ectorStore(uri="./milvus_demo.db", dim=1024, overwrite=True,output_fields=[])
+
+
+## File Structure
+
+- Congifig folder to store NeMo Guardrails yaml, colang setup.
+- `app.py`: Main Streamlit application ( if you follow the step-by-step script, do not run the app.py)
+- `requirements.txt`: List of Python dependencies
+
+
+
 
 To utilize GPU acceleration in the vector database, ensure that:
 1. Your system has a compatible NVIDIA GPU.
