@@ -21,7 +21,6 @@ import os
 os.rename('RAG-with-NeMo-Guardrail', 'test')
 
 # Import Nemo modules
-!git clone https://github.com/142CodeGreen/RAG-with-NeMo-Guardrails.git
 
 from nemoguardrails import LLMRails, RailsConfig
 
