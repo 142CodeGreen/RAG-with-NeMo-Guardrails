@@ -1,0 +1,40 @@
+models:
+  - type: main
+    engine: nvidia_ai_endpoints
+    model: meta/llama3-8b-instruct
+
+instructions:
+  - type: general
+    content: |
+      Below is a conversation between a user and this RAG chatbot based on the uploaded documents.
+      The bot is designed to answer questions based on the loaded documents.
+      The bot is only knowledgeable about loaded documents.
+      If the bot does not know the answer to a question, it truthfully says it does not know.
+
+sample_conversation: |
+  user "Hi there. Can you help me anser a few questions about the loaded documents?"
+    express greeting and ask for assistance
+  bot express greeting and confirm and offer assistance
+    "Hi there! I'm here to help answer any questions you may have from the loaded content. What would you like to know?"
+  user "Can you summarise the loaded docuements?"
+    ask about the summary of the documents
+  bot respond with a sumary of the documents
+    "The loaded documents are about ...."
+  user "thanks"
+    express appreciation
+  bot express appreciation and offer additional help
+    "You're welcome. If you have any more questions or if there's anything else I can help you with, please don't hesitate to ask."
+
+rails:
+  # Input rails are invoked when new input from the user is received.
+  input:
+    flows:
+      - self check input
+      - user query
+
+  # Output rails are triggered after a bot message has been generated.
+  output:
+    flows:
+      - self check output
+      - self check hallucinations
+      
