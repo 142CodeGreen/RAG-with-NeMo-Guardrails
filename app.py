@@ -21,13 +21,16 @@ import os
 os.rename('RAG-with-NeMo-Guardrail', 'test')
 
 # Import Nemo modules
-!git clone 
+!git clone https://github.com/142CodeGreen/RAG-with-NeMo-Guardrails.git
 
 from nemoguardrails import LLMRails, RailsConfig
 
 # Define a RailsConfig object
-config = RailsConfig.from_path("./Nemo-Guardrail/Config")
+config = RailsConfig.from_path("./RAG-with-NeMo-Guardrails/Config")
 rails = LLMRails(config)
+
+from google.colab import output
+output.enable_custom_widget_manager()
 
 # Initialize global variables for the index and query engine
 index = None
@@ -56,14 +59,7 @@ def load_documents(file_objs):
             return f"No documents found in the selected files."
 
         # Create a Milvus vector store and storage context
-        vector_store = MilvusVectorStore(
-            host="127.0.0.1",
-            port=19530,
-            dim=1024,
-            collection_name="upload",
-            gpu_id=0,  # Specify the GPU ID to use
-            output_fields=["field1","field2"]
-        )
+        vector_store = MilvusVectorStore(uri="./milvus_demo.db", dim=1024, overwrite=True,output_fields=[])
         storage_context = StorageContext.from_defaults(vector_store=vector_store)
 
         # Create the index from the documents
@@ -81,8 +77,10 @@ def chat(message,history):
     if query_engine is None:
         return history + [("Please upload a file first.",None)]
     try:
-        response = query_engine.query(message)
-        return history + [(message,response)]
+        #modification for nemo guardrails ( next three rows)
+        user_message = {"role":"user","content":message}
+        response = rails.generate(messages=[user_message])
+        return history + [(message,response['content'])]
     except Exception as e:
         return history + [(message,f"Error processing query: {str(e)}")]
 
@@ -104,7 +102,7 @@ def stream_response(message,history):
 
 # Create the Gradio interface
 with gr.Blocks() as demo:
-  gr.Markdown("# RAG Q&A Chatbot Testing")
+  gr.Markdown("# RAG Chatbot for PDF Files")
 
   with gr.Row():
       file_input = gr.File(label="Select files to upload", file_count="multiple")
@@ -116,7 +114,7 @@ with gr.Blocks() as demo:
   msg = gr.Textbox(label="Enter your question",interactive=True)
   clear = gr.Button("Clear")
 
-    # Set up event handler (Event handlers should be defined within the 'with gr.Blocks() as demo:' block)
+# Set up event handler (Event handlers should be defined within the 'with gr.Blocks() as demo:' block)
   load_btn.click(load_documents, inputs=[file_input], outputs=[load_output])
   msg.submit(stream_response, inputs=[msg, chatbot], outputs=[chatbot]) # Use submit button instead of msg
   clear.click(lambda: None, None, chatbot, queue=False)
