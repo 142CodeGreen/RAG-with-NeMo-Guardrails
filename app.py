@@ -22,7 +22,7 @@ Settings.text_splitter = SentenceSplitter(chunk_size=500)
 from nemoguardrails import LLMRails, RailsConfig
 
 # Define a RailsConfig object
-config = RailsConfig.from_path("./RAG-with-NeMo-Guardrails/Config")
+config = RailsConfig.from_path("./Config")
 rails = LLMRails(config)
 
 #optional: Colab support of third party Jupyter widget
