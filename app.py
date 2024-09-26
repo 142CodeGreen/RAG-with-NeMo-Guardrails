@@ -2,6 +2,7 @@
 import getpass
 import os
 import gradio as gr
+import openai
 
 # Set the environment
 from llama_index.core import Settings, SimpleDirectoryReader, VectorStoreIndex, StorageContext
@@ -15,6 +16,18 @@ from llama_index.vector_stores.milvus import MilvusVectorStore
 
 from llama_index.core.node_parser import SentenceSplitter
 Settings.text_splitter = SentenceSplitter(chunk_size=500)
+
+import os
+os.rename('RAG-with-NeMo-Guardrail', 'test')
+
+# Import Nemo modules
+!git clone 
+
+from nemoguardrails import LLMRails, RailsConfig
+
+# Define a RailsConfig object
+config = RailsConfig.from_path("./Nemo-Guardrail/Config")
+rails = LLMRails(config)
 
 # Initialize global variables for the index and query engine
 index = None
