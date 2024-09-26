@@ -25,6 +25,7 @@ from nemoguardrails import LLMRails, RailsConfig
 config = RailsConfig.from_path("./RAG-with-NeMo-Guardrails/Config")
 rails = LLMRails(config)
 
+#optional: Colab support of third party Jupyter widget
 from google.colab import output
 output.enable_custom_widget_manager()
 
