@@ -15,7 +15,7 @@ Settings.embed_model = NVIDIAEmbedding(model="NV-Embed-QA", truncate="END")
 from llama_index.vector_stores.milvus import MilvusVectorStore
 
 from llama_index.core.node_parser import SentenceSplitter
-Settings.text_splitter = SentenceSplitter(chunk_size=500)
+Settings.text_splitter = SentenceSplitter(chunk_size=400)
 
 # Import Nemo modules
 
@@ -24,10 +24,6 @@ from nemoguardrails import LLMRails, RailsConfig
 # Define a RailsConfig object
 config = RailsConfig.from_path("./Config")
 rails = LLMRails(config)
-
-#optional: Colab support of third party Jupyter widget
-from google.colab import output
-output.enable_custom_widget_manager()
 
 # Initialize global variables for the index and query engine
 index = None
