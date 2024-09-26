@@ -17,9 +17,6 @@ from llama_index.vector_stores.milvus import MilvusVectorStore
 from llama_index.core.node_parser import SentenceSplitter
 Settings.text_splitter = SentenceSplitter(chunk_size=500)
 
-import os
-os.rename('RAG-with-NeMo-Guardrail', 'test')
-
 # Import Nemo modules
 
 from nemoguardrails import LLMRails, RailsConfig
