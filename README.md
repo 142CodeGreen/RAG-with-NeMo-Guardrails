@@ -18,7 +18,7 @@ cd RAG-with-NeMo-Guardrails
 
 2. Install the required packages:
 ```
-pip install -r requirements.txt
+pip install --upgrade -r requirements.txt
 ```
 
 3. Export API keys. NVIDIA_API_KEY is for NVIDIA NIM, while OpenAI API Key is needed for Nemo Guardrails. 
