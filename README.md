@@ -1,19 +1,19 @@
 # RAG practice using NVIDIA NIM, NVIDIA NeMo Guardrails, LlamaIndex, Milvus and Gradio UI
-This notebook practises building a RAG app with references to the NVIDIA Developer YouTube video: https://www.youtube.com/watch?v=09uDCmLzYHA&t=574s and a NeMo Guardrail practice at https://github.com/wenqiglantz/nemo-guardrails-llamaindex-rag. The RAG allows users to upload PDF documents and carry out Q&A with the chatbot in the context of the loaded documents. The following components have been included in the RAG:
+This notebook practises building a RAG application with references to the NVIDIA Developer YouTube video: https://www.youtube.com/watch?v=09uDCmLzYHA&t=574s and a NeMo Guardrail practice at https://github.com/wenqiglantz/nemo-guardrails-llamaindex-rag. The RAG allows users to upload PDF documents and carry out Q&A with the chatbot in the context of the loaded documents. The following components have been included in the RAG:
 
 1. Selected NVIDIA NIM as a foundational LLM model- using API key to connect;
 2. NVIDIA NeMo Guardrails, including input, output rails to structure proper bot response and reduce hallucination; 
 3. LlamaIndex as RAG management framework for efficient indexing and retrieval of information;
-4. Using of NVIDIA embeddings;
+4. Use of NVIDIA embeddings;
 5. Milvus vector database for efficient storage and retrieval of embedding vectors.
-6. Gradio as chat UI which allows you to upload PDF documents to set the context of Q&A.
+6. Gradio as chat UI which allows users to upload PDF documents to set the context of Q&A.
 
 ## Setup
 
 1. Clone the repository:
 ```
-git clone https://github.com/142CodeGreen/Basic-RAG.git
-cd Basic-RAG
+git clone https://github.com/142CodeGreen/RAG-with-NeMo-Guardrails.git
+cd RAG-with-NeMo-Guardrails
 ```
 
 2. Install the required packages:
@@ -21,7 +21,7 @@ cd Basic-RAG
 pip install -r requirements.txt
 ```
 
-3. Export NVIDIA API key
+3. Export API keys. NVIDIA_API_KEY is for NVIDIA NIM, while OpenAI API Key is needed for Nemo Guardrails. 
 ```
 export NVIDIA_API_KEY="your-api-key-here"
 echo $NVIDIA_API_KEY
@@ -44,7 +44,7 @@ python3 app.py
 
 To utilize GPU acceleration in the vector database, ensure that:
 - Your system has a compatible NVIDIA GPU.
-- You're using the GPU-enabled version of Milvus (as shown in the setup instructions).
+- You're using the GPU-enabled version of Milvus (as shown in the step 2 below).
 - There are enough concurrent requests to justify GPU usage. GPU acceleration typically shows significant benefits under high load conditions.
 
 2. It's important to note that GPU acceleration will only be used when the incoming requests are extremely high. For more detailed information on GPU indexing and search in Milvus, refer to the [official Milvus GPU Index documentation](https://milvus.io/docs/gpu_index.md).
@@ -61,9 +61,8 @@ vector_store = MilvusVectorStore(
     output_fields=["field1","field2"]
 )
 ```
-
      
-3. Upon environment set up in the above, start the GPU-accelerated Milvus container:
+3. Upon above environment set up, start the GPU-accelerated Milvus container:
 ```
 sudo docker compose up -d
 ```
@@ -87,20 +86,11 @@ python3 app.py
 
 - Once processing is complete, use the chat interface to query your documents.
 
-ectorStore(uri="./milvus_demo.db", dim=1024, overwrite=True,output_fields=[])
-
 
 ## File Structure
 
-- Congifig folder to store NeMo Guardrails yaml, colang setup.
-- `app.py`: Main Streamlit application ( if you follow the step-by-step script, do not run the app.py)
-- `requirements.txt`: List of Python dependencies
+- Config folder to store the yaml, colang files of NeMo Guardrails.
+- `app.py`: Main application ( if you follow the step-by-step script, do not run the app.py)
+- `requirements.txt`: List of application dependencies
 
-
-
-
-To utilize GPU acceleration in the vector database, ensure that:
-1. Your system has a compatible NVIDIA GPU.
-2. You're using the GPU-enabled version of Milvus (as shown in the setup instructions).
-3. There are enough concurrent requests to justify GPU usage. GPU acceleration typically shows significant benefits under high load conditions.
 
