@@ -23,10 +23,10 @@ pip install --upgrade -r requirements.txt
 
 3. Export API keys. NVIDIA_API_KEY is for NVIDIA NIM, while OpenAI API Key is needed for Nemo Guardrails. 
 ```
-env NVIDIA_API_KEY="your-api-key-here"
+export NVIDIA_API_KEY="your-api-key-here"
 echo $NVIDIA_API_KEY
 
-env OPENAI_API_KEY="your-openai-key-here"
+export OPENAI_API_KEY="your-openai-key-here"
 echo $OPENAI_API_KEY
 
 ```
