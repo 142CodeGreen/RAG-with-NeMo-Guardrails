@@ -4,12 +4,7 @@ import os
 import gradio as gr
 import openai
 
-# Set the environment variable using os.environ
-os.environ['NVIDIA_API_KEY'] = "NVIDIA_API_KEY"
-os.environ['OPENAI_API_KEY'] = "OPENAI_API_KEY"
-
-if not os.environ.get("NVIDIA_API_KEY", "").startswith("nvapi-"):
-    raise ValueError("Please set the NVIDIA_API_KEY environment variable.")
+# Set the environment
     
 from llama_index.core import Settings, SimpleDirectoryReader, VectorStoreIndex, StorageContext
 from llama_index.llms.nvidia import NVIDIA
