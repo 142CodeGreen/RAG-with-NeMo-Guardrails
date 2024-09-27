@@ -1,13 +1,13 @@
-```
+---
 title: RAG With Guardrails
-emoji: 🔥
-colorFrom: indigo
-colorTo: indigo
+emoji: 🌖
+colorFrom: pink
+colorTo: yellow
 sdk: gradio
 sdk_version: 4.44.0
 app_file: app.py
 pinned: false
-```
+---
 
 # RAG practice using NVIDIA NIM, NVIDIA NeMo Guardrails, LlamaIndex, Milvus and Gradio UI
 This notebook is to practise building a RAG application with references to the NVIDIA Developer YouTube video: https://www.youtube.com/watch?v=09uDCmLzYHA&t=574s and a NeMo Guardrail practice at https://github.com/wenqiglantz/nemo-guardrails-llamaindex-rag. The RAG allows users to upload PDF documents and carry out Q&A with the chatbot in the context of the loaded documents. The following components have been included in the RAG:
