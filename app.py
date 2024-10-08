@@ -3,6 +3,10 @@ import getpass
 import os
 import gradio as gr
 import openai
+import warnings
+warnings.filterwarnings("ignore")  # Ignore all warnings
+# Or, be more specific:
+warnings.filterwarnings("ignore", category=LangChainDeprecationWarning)  # Ignore LangChainDeprecationWarning
 
 # Set the environment
     
