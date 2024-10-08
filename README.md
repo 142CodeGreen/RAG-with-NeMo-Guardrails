@@ -68,7 +68,7 @@ vector_store = MilvusVectorStore(
     port=19530,
     dim=1024,
     collection_name="your_collection_name",
-    gpu_id=0  # Specify the GPU ID to use
+    gpu_id=0,  # Specify the GPU ID to use
     output_fields=["field1","field2"]
 )
 ```
