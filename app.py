@@ -4,9 +4,7 @@ import os
 import gradio as gr
 import openai
 import warnings
-from langchain.schema import LangChainDeprecationWarning  # Import LangChainDeprecationWarning
-
-warnings.filterwarnings("ignore", category=LangChainDeprecationWarning)  # Ignore LangChainDeprecationWarning
+warnings.filterwarnings("ignore")  # Ignore all warnings
 
 # Set the environment
     
