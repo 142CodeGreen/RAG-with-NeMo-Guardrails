@@ -9,6 +9,3 @@ gradio
 nemoguardrails
 OpenAI
 langchain-nvidia-ai-endpoints
-torch torchvision torchaudio
-tensorflow
-flax
