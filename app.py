@@ -6,7 +6,7 @@ import openai
 import warnings
 warnings.filterwarnings("ignore")  # Ignore all warnings
 
-from langchain.memory import ChatMessageHistory  # Old import
+# from langchain.memory import ChatMessageHistory  # Old import
 
 # Set the environment
     
