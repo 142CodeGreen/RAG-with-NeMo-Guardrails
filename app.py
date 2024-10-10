@@ -4,7 +4,7 @@ import os
 import gradio as gr
 import openai
 import warnings
-warnings.filterwarnings("ignore")  # Ignore all warnings
+warnings.filterwarnings("ignore", category=LangChainDeprecationWarning, module="llama_index")
 
 # from langchain.memory import ChatMessageHistory  # Old import
 from langchain_community.chat_message_histories import ChatMessageHistory
