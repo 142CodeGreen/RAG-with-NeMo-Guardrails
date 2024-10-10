@@ -7,6 +7,7 @@ import warnings
 warnings.filterwarnings("ignore")  # Ignore all warnings
 
 # from langchain.memory import ChatMessageHistory  # Old import
+from langchain_community.chat_message_histories import ChatMessageHistory
 
 # Set the environment
     
