@@ -5,7 +5,7 @@ import gradio as gr
 import openai
 
 import warnings
-# from langchain_core._api.deprecation import LangChainDeprecationWarning
+from langchain_core._api.deprecation import LangChainDeprecationWarning
 
 warnings.filterwarnings("ignore", category=LangChainDeprecationWarning, module="llama_index")
 
