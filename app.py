@@ -9,7 +9,7 @@ from langchain_core._api.deprecation import LangChainDeprecationWarning
 
 warnings.filterwarnings("ignore", category=LangChainDeprecationWarning, module="llama_index")
 
-# from langchain.memory import ChatMessageHistory  # Old import
+from langchain.memory import ChatMessageHistory  # Old import
 # from langchain_community.chat_message_histories import ChatMessageHistory
 
 # Set the environment
