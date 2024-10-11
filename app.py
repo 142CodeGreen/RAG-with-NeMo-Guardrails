@@ -61,16 +61,16 @@ def load_documents(file_objs):
             return f"No documents found in the selected files."
 
         # Create a Milvus vector store and storage context
-        # vector_store = MilvusVectorStore(
-        #    host="127.0.0.1",
-        #    port=19530,
-        #    dim=1024,
-        #    collection_name="your_collection_name",
-        #    gpu_id=0,  # Specify the GPU ID to use
-        #    output_fields=["field1","field2"]
-        #    )
+        vector_store = MilvusVectorStore(
+            host="127.0.0.1",
+            port=19530,
+            dim=1024,
+            collection_name="your_collection_name",
+            gpu_id=0,  # Specify the GPU ID to use
+            output_fields=["field1","field2"]
+        )
         
-        vector_store = MilvusVectorStore(uri="./milvus_demo.db", dim=1024, overwrite=True,output_fields=[])
+        # vector_store = MilvusVectorStore(uri="./milvus_demo.db", dim=1024, overwrite=True,output_fields=[])
         storage_context = StorageContext.from_defaults(vector_store=vector_store)
 
         # Create the index from the documents
