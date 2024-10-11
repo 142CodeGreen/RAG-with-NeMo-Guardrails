@@ -9,3 +9,4 @@ gradio
 nemoguardrails
 OpenAI
 langchain-nvidia-ai-endpoints
+transformers
