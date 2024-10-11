@@ -3,9 +3,6 @@ import torch
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model = model.to(device)
 
-python -m venv venv
-source venv/bin/activate
-
 import warnings
 from langchain_core._api.deprecation import LangChainDeprecationWarning
 
