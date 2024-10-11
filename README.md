@@ -32,27 +32,16 @@ cd RAG-with-NeMo-Guardrails
 pip install --upgrade -r requirements.txt
 ```
 
-3. Upon above environment set up, start the GPU-accelerated Milvus container:
-```
-sudo docker compose up -d
-```
-
-4. Ensure the Milvus container is running:
-```
-docker ps
-```
-
-5. Export API keys. NVIDIA_API_KEY is for NVIDIA NIM, while OpenAI API Key is needed for Nemo Guardrails. 
+3. Export API keys. NVIDIA_API_KEY is for NVIDIA NIM, while OpenAI API Key is needed for Nemo Guardrails. 
 ```
 export NVIDIA_API_KEY="your-api-key-here"
 echo $NVIDIA_API_KEY
 
 export OPENAI_API_KEY="your-openai-key-here"
 echo $OPENAI_API_KEY
-
 ```
 
-6. Run the app.py:
+4. Run the app.py:
 ```
 python3 app.py
 ```
