@@ -1,17 +1,21 @@
 # Import necessary libraries
-import getpass
-import os
-import gradio as gr
-import openai
+import torch
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+model = model.to(device)
+
+python3 -m venv myenv
+source myenv/bin/activate
 
 import warnings
 from langchain_core._api.deprecation import LangChainDeprecationWarning
 
 warnings.filterwarnings("ignore", category=LangChainDeprecationWarning, module="llama_index")
 
-import torch
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-model = model.to(device)
+import getpass
+import os
+import gradio as gr
+import openai
+
 
 # from langchain.memory import ChatMessageHistory  # Old import
 # from langchain_community.chat_message_histories import ChatMessageHistory
