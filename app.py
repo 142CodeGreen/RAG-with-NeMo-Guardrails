@@ -1,8 +1,4 @@
 # Import necessary libraries
-import torch
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-model = model.to(device)
-
 import warnings
 from langchain_core._api.deprecation import LangChainDeprecationWarning
 
