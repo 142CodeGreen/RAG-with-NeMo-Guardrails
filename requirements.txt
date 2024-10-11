@@ -9,4 +9,3 @@ gradio
 nemoguardrails
 OpenAI
 langchain-nvidia-ai-endpoints
-langchain-community==0.0.242
