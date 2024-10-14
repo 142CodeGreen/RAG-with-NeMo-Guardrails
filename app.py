@@ -7,13 +7,33 @@ warnings.filterwarnings("ignore", category=LangChainDeprecationWarning, module="
 import getpass
 import os
 import gradio as gr
-import openai
+from openai import OpenAI
 
 
 # from langchain.memory import ChatMessageHistory  # Old import
 # from langchain_community.chat_message_histories import ChatMessageHistory
 
 # Set the environment
+
+import torch  #GPU setup environment start
+from transformers import AutoModel, AutoTokenizer
+
+# Check if CUDA is available and set the device
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+print(f"Using device: {device}")
+
+# Load model and tokenizer
+model_name = "meta-llama/Llama-3.1-8B-Instruct"
+model = AutoModel.from_pretrained(model_name).to(device)
+tokenizer = AutoTokenizer.from_pretrained(model_name)
+
+# Example function for inference
+def get_response(input_text):
+    inputs = tokenizer(input_text, return_tensors="pt").to(device)
+    with torch.no_grad():
+        outputs = model(**inputs)
+    # Process outputs here, this depends on your specific model's output
+    return "Your processed output or prediction here"   #GPU setup environment end
     
 from llama_index.core import Settings, SimpleDirectoryReader, VectorStoreIndex, StorageContext
 from llama_index.llms.nvidia import NVIDIA
