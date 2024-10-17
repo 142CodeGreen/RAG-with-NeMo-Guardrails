@@ -83,34 +83,39 @@ def load_documents(file_objs):
     except Exception as e:
         return f"Error loading documents: {str(e)}"
 
-# Function to handle chat interactions
-def chat(message,history):
-    global query_engine
+def moderated_chat(message, history):
+    global query_engine, rails
     if query_engine is None:
-        return history + [("Please upload a file first.",None)]
+        return history + [("Please upload a file first.", None)]
     try:
-        #modification for nemo guardrails ( next three rows)
-        user_message = {"role":"user","content":message}
-        response = rails.generate(messages=[user_message])
-        return history + [(message,response['content'])]
+        # Get response from query engine
+        response = query_engine.query(message)
+        # Provide relevant context to guardrails
+        validated_response = rails.generate(context={"history": history, "response": response.response, "message": message}, prompt=message)
+        history.append((message, validated_response.generated_text))
+        yield history
     except Exception as e:
-        return history + [(message,f"Error processing query: {str(e)}")]
+        yield history + [(message, f"An error occurred: {str(e)}")]
 
-# Function to stream responses
-def stream_response(message,history):
+
+def stream_response(message, history):
     global query_engine
     if query_engine is None:
-        yield history + [("Please upload a file first.",None)]
+        yield history + [("Please upload a file first.", None)]
         return
 
     try:
+        # Get response from query engine
         response = query_engine.query(message)
+        # Provide relevant context to guardrails
+        validated_response = rails.generate(context={"history": history, "response": response.response, "message": message}, prompt=message)
         partial_response = ""
-        for text in response.response_gen:
+        for text in validated_response.response_gen:
             partial_response += text
-            yield history + [(message,partial_response)]
+            yield history + [(message, partial_response)]
     except Exception as e:
         yield history + [(message, f"Error processing query: {str(e)}")]
+
 
 # Create the Gradio interface
 with gr.Blocks() as demo:
