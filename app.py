@@ -96,21 +96,16 @@ def chat(message,history):
     except Exception as e:
         return history + [(message,f"Error processing query: {str(e)}")]
 
+# Function to stream response 
 def stream_response(message, history):
-    global query_engine  # Assuming rails is what we're using globally now
+    global query_engine
     if query_engine is None:
         yield history + [("Please upload a file first.", None)]
         return
-
     try:
         user_message = {"role": "user", "content": message}
-        full_response = rails.generate(messages=[user_message])
-        partial_response = ""
-        for char in full_response['content']:
-            partial_response += char
-            yield history + [(message, partial_response)]
-        # Yield one last time to ensure the final state is shown
-        yield history + [(message, full_response['content'])]
+        rails_response = rails.generate(messages=[user_message])
+        yield history + [(message, rails_response['content'])]  
     except Exception as e:
         yield history + [(message, f"Error processing query: {str(e)}")]
 
