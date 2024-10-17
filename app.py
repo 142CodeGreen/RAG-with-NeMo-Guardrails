@@ -47,8 +47,7 @@ def get_files_from_input(file_objs):
 
 # Function to load documents and create the index
 def load_documents(file_objs):
-    global rails
-    global index, query_engine
+    global index, query_engine, rails
     try:
         if not file_objs:
             return "Error: No files selected."
