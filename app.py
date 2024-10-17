@@ -47,6 +47,7 @@ def get_files_from_input(file_objs):
 
 # Function to load documents and create the index
 def load_documents(file_objs):
+    global rails
     global index, query_engine
     try:
         if not file_objs:
@@ -97,18 +98,20 @@ def chat(message,history):
         return history + [(message,f"Error processing query: {str(e)}")]
 
 def stream_response(message, history):
-    global query_engine, rails
+    global query_engine, rails  # Assuming rails is what we're using globally now
     if query_engine is None:
         yield history + [("Please upload a file first.", None)]
         return
 
     try:
         user_message = {"role": "user", "content": message}
-        response = rails.generate(messages=[user_message])
-        for i in range(0, len(response['content']), 10):  # Stream every 10 characters
-            partial_response = response['content'][:i+10]
+        full_response = rails.generate(messages=[user_message])
+        partial_response = ""
+        for char in full_response['content']:
+            partial_response += char
             yield history + [(message, partial_response)]
-        yield history + [(message, response['content'])]  # Ensure the full message is sent
+        # Yield one last time to ensure the final state is shown
+        yield history + [(message, full_response['content'])]
     except Exception as e:
         yield history + [(message, f"Error processing query: {str(e)}")]
 
