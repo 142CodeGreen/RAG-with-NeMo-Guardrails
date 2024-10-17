@@ -1,4 +1,5 @@
 llama-index-core
+llama-index
 llama-index-readers-file
 llama-index-llms-nvidia
 llama-index-embeddings-nvidia
