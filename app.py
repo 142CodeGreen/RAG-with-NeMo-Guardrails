@@ -47,7 +47,7 @@ def get_files_from_input(file_objs):
 
 # Function to load documents and create the index
 def load_documents(file_objs):
-    global index, query_engine, rails
+    global index, query_engine
     try:
         if not file_objs:
             return "Error: No files selected."
@@ -97,7 +97,7 @@ def chat(message,history):
         return history + [(message,f"Error processing query: {str(e)}")]
 
 def stream_response(message, history):
-    global query_engine, rails  # Assuming rails is what we're using globally now
+    global query_engine  # Assuming rails is what we're using globally now
     if query_engine is None:
         yield history + [("Please upload a file first.", None)]
         return
