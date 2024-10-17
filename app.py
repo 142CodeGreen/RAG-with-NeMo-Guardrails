@@ -30,8 +30,6 @@ Settings.text_splitter = SentenceSplitter(chunk_size=400)
 # Import Nemo modules
 
 from nemoguardrails import LLMRails, RailsConfig
-from Config import actions
-from actions import user_query, init
 
 # Define a RailsConfig object
 config = RailsConfig.from_path("./Config")
