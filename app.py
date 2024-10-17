@@ -96,22 +96,6 @@ def chat(message,history):
     except Exception as e:
         return history + [(message,f"Error processing query: {str(e)}")]
 
-# Function to stream responses
-def stream_response(message,history):
-    global query_engine
-    if query_engine is None:
-        yield history + [("Please upload a file first.",None)]
-        return
-
-    try:
-        response = query_engine.query(message)
-        partial_response = ""
-        for text in response.response_gen:
-            partial_response += text
-            yield history + [(message,partial_response)]
-    except Exception as e:
-        yield history + [(message, f"Error processing query: {str(e)}")]
-
 # Create the Gradio interface
 with gr.Blocks() as demo:
   gr.Markdown("# RAG Chatbot for PDF Files")
@@ -128,7 +112,7 @@ with gr.Blocks() as demo:
 
 # Set up event handler (Event handlers should be defined within the 'with gr.Blocks() as demo:' block)
   load_btn.click(load_documents, inputs=[file_input], outputs=[load_output])
-  msg.submit(stream_response, inputs=[msg, chatbot], outputs=[chatbot]) # Use submit button instead of msg
+  msg.submit(chat, inputs=[msg, chatbot], outputs=[chatbot]) # Use chat and submit button instead of msg
   clear.click(lambda: None, None, chatbot, queue=False)
 
 # Launch the Gradio interface
