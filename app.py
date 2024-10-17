@@ -83,52 +83,52 @@ def load_documents(file_objs):
     except Exception as e:
         return f"Error loading documents: {str(e)}"
 
-def initialize_engine():
-    global query_engine
-    if query_engine is None:
-        query_engine = init()
-        if query_engine is None:
-            raise Exception("Failed to initialize the query engine.")
+#def initialize_engine():
+#    global query_engine
+#    if query_engine is None:
+#        query_engine = init()
+#        if query_engine is None:
+#            raise Exception("Failed to initialize the query engine.")
 
 # Call this function before starting your chat or query process
-initialize_engine()
+#initialize_engine()
 
-class ChatBot:
-    def __init__(self):
-        self.query_engine = None
-        self.initialize_engine()
+#class ChatBot:
+#    def __init__(self):
+#        self.query_engine = None
+#        self.initialize_engine()
 
-    def initialize_engine(self):
-        if self.query_engine is None:
-            self.query_engine = init()
+#    def initialize_engine(self):
+#        if self.query_engine is None:
+#            self.query_engine = init()
 
-    def chat(message, history):
-        global query_engine
+def chat(message, history):
+    global query_engine
+    if query_engine is None:
+        query_engine = init()  # Assuming init() is defined in actions.py
         if query_engine is None:
-            query_engine = init()  # Assuming init() is defined in actions.py
-            if query_engine is None:
-                return history + [("Failed to initialize query engine. Please check your setup.", None)]
-        try:
-            # Rest of your function remains the same
-            user_message = {"role":"user","content":message}
-            response = rails.generate(messages=[user_message])
-            return history + [(message,response['content'])]
-        except Exception as e:
-            return history + [(message, f"Error processing query: {str(e)}")]
+            return history + [("Failed to initialize query engine. Please check your setup.", None)]
+    try:
+        # Rest of your function remains the same
+        user_message = {"role":"user","content":message}
+        response = rails.generate(messages=[user_message])
+        return history + [(message,response['content'])]
+    except Exception as e:
+        return history + [(message, f"Error processing query: {str(e)}")]
 
-    def stream_response(message, history):
-        global query_engine
+def stream_response(message, history):
+    global query_engine
+    if query_engine is None:
+        query_engine = init()  # Make sure init() is available here
         if query_engine is None:
-            query_engine = init()  # Make sure init() is available here
-            if query_engine is None:
-                yield history + [("Failed to initialize query engine. Please check your setup.", None)]
-                return
-        try:
-            user_message = {"role": "user", "content": message}
-            rails_response = rails.generate(messages=[user_message])
-            yield history + [(message, rails_response['content'])]   
-        except Exception as e:
-            yield history + [(message, f"Error processing query: {str(e)}")]
+            yield history + [("Failed to initialize query engine. Please check your setup.", None)]
+            return
+    try:
+        user_message = {"role": "user", "content": message}
+        rails_response = rails.generate(messages=[user_message])
+        yield history + [(message, rails_response['content'])]   
+    except Exception as e:
+        yield history + [(message, f"Error processing query: {str(e)}")]
         
 
 # Create the Gradio interface
