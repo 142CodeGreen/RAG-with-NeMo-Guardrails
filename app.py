@@ -105,10 +105,10 @@ class ChatBot:
 
     def chat(message, history):
         global query_engine
+        if query_engine is None:
+            query_engine = init()  # Assuming init() is defined in actions.py
             if query_engine is None:
-                query_engine = init()  # Assuming init() is defined in actions.py
-                if query_engine is None:
-                    return history + [("Failed to initialize query engine. Please check your setup.", None)]
+                return history + [("Failed to initialize query engine. Please check your setup.", None)]
         try:
             # Rest of your function remains the same
             user_message = {"role":"user","content":message}
