@@ -16,15 +16,8 @@ define flow self check output
 #  $answer = execute user_query
 #  bot $answer
 
-#define flow self check hallucinations
-#  $answer = execute rag()
-#  $check_hallucination = True
-#  bot $answer
-
 define flow self check hallucinations
-  print("Entering self_check_hallucinations flow")  # Add print statement here
-  $answer = execute rag() 
-  print("Answer from rag():", $answer)  # Add print statement here
+  $answer = execute rag()
   $check_hallucination = True
   bot $answer
 
