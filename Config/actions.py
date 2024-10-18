@@ -20,10 +20,10 @@ def init():
     documents = SimpleDirectoryReader("data").load_data()
     print(f'Loaded {len(documents)} documents')
 
-    # # download and install dependencies
-    # RecursiveRetrieverSmallToBigPack = download_llama_pack(
-    #     "RecursiveRetrieverSmallToBigPack", "./recursive_retriever_stb_pack"
-    # )
+    # download and install dependencies
+    RecursiveRetrieverSmallToBigPack = download_llama_pack(
+        "RecursiveRetrieverSmallToBigPack", "./recursive_retriever_stb_pack"
+    )
 
     # create the recursive_retriever_stb_pack
     recursive_retriever_stb_pack = RecursiveRetrieverSmallToBigPack(documents)
