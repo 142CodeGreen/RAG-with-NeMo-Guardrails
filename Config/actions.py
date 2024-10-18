@@ -58,12 +58,12 @@ def get_query_response(query_engine: BaseQueryEngine, query: str) -> str:
         print(f"Error getting query response: {e}")
         return ""
         
-@action(is_system_action=True)
-def user_query(context: Optional[dict] = None):
-    """
-    Function to invoke the query_engine to query user message.
-    """
-    user_message = context.get("user_message")
-    print('user_message is ', user_message)
-    query_engine = init()
-    return get_query_response(query_engine, user_message) 
+#@action(is_system_action=True)
+#def user_query(context: Optional[dict] = None):
+#    """
+#    Function to invoke the query_engine to query user message.
+#    """
+#    user_message = context.get("user_message")
+#    print('user_message is ', user_message)
+#    query_engine = init()
+#    return get_query_response(query_engine, user_message) 
