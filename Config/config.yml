@@ -1,7 +1,7 @@
 models:
   - type: main
     engine: nvidia_ai_endpoints
-    model: meta/llama3-8b-instruct
+    model: meta/llama-3.1-8b-instruct
 
 instructions:
   - type: general
