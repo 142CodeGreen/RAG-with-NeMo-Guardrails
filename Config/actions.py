@@ -1,20 +1,5 @@
-# from llama_index import ServiceContext
-
-# a directory of documents
-#documents = SimpleDirectoryReader('data').load_data()
-documents.extend(SimpleDirectoryReader(input_files=[file_path]).load_data())
-
-# Service context setup with LLM
-#from llama_index.llms import NVIDIA  # Example, use whatever LLM you have access to
-#service_context = ServiceContext.from_defaults(llm=NVIDIA(model="meta/llama-3.1-8b-instruct"))
-
-# Create an index
-#index = VectorStoreIndex.from_documents(documents, service_context=service_context)
-#index = VectorStoreIndex.from_documents(documents, storage_context=storage_context)
-
-# Create a query engine
-#query_engine = index.as_query_engine()
-#query_engine = index.as_query_engine(similarity_top_k=20, streaming=True)
+from llama_index.core import SimpleDirectoryReader
+from nemoguardrails.actions.actions import ActionResult
 
 async def rag(context, query):
     user_query = context.get("last_user_message", query)
@@ -25,14 +10,12 @@ async def rag(context, query):
     
     # response.response contains the generated answer with context
     context_updates["answer"] = response.response
-    context_updates["relevant_chunks"] = str(response.get_formatted_sources())  # If want to see what was used for the answer
+    context_updates["relevant_chunks"] = str(response.get_formatted_sources())  # If you want to see what was used for the answer
 
     return ActionResult(return_value=response.response, context_updates=context_updates)
 
-# Registering the action
 def init(app):
     app.register_action(rag, "rag")
-
 
 #from typing import Optional
 #from nemoguardrails.actions import action
