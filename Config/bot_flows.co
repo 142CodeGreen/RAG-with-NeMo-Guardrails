@@ -16,10 +16,10 @@ define flow user query
   $answer = execute user_query
   bot $answer
 
-#define flow self check hallucinations
-#  $answer = execute rag()
-#  $check_hallucination = True
-#  bot $answer
+define flow self check hallucinations
+  $answer = execute rag()
+  $check_hallucination = True
+  bot $answer
 
 define bot refuse to respond
   "I'm sorry, I can't respond to that."
