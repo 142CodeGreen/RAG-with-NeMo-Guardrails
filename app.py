@@ -5,7 +5,7 @@ from langchain_core._api.deprecation import LangChainDeprecationWarning
 warnings.filterwarnings("ignore", category=LangChainDeprecationWarning, module="llama_index")
 
 #import getpass
-import os
+#import os
 import gradio as gr
 from openai import OpenAI
 
