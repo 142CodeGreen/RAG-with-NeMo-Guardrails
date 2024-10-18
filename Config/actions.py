@@ -4,8 +4,8 @@ from llama_index import ServiceContext
 documents = SimpleDirectoryReader('data').load_data()
 
 # Service context setup with LLM
-from llama_index.llms import NVIDIA  # Example, use whatever LLM you have access to
-service_context = ServiceContext.from_defaults(llm=NVIDIA(model="meta/llama-3.1-8b-instruct"))
+#from llama_index.llms import NVIDIA  # Example, use whatever LLM you have access to
+#service_context = ServiceContext.from_defaults(llm=NVIDIA(model="meta/llama-3.1-8b-instruct"))
 
 # Create an index
 index = VectorStoreIndex.from_documents(documents, service_context=service_context)
