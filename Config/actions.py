@@ -22,6 +22,7 @@ Helpful Answer:"""
 # Custom prompt template for LlamaIndex
 llama_prompt = PromptTemplate(TEMPLATE)
 
+@action()
 async def rag(context: dict, service_context: ServiceContext, kb: KnowledgeBase) -> str:
     user_message = context.get("last_user_message")
     context_updates = {}
