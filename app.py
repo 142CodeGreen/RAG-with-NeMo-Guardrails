@@ -47,7 +47,7 @@ def get_files_from_input(file_objs):
 
 # Function to load documents and create the index
 def load_documents(file_objs):
-    global index, query_engine
+    # global index, query_engine
     try:
         if not file_objs:
             return "Error: No files selected."
@@ -55,7 +55,7 @@ def load_documents(file_objs):
         file_paths = get_files_from_input(file_objs)
         documents = []
         for file_path in file_paths:
-            directory = os.path.dirname(file_path)
+            # directory = os.path.dirname(file_path)
             documents.extend(SimpleDirectoryReader(input_files=[file_path]).load_data())
 
         if not documents:
@@ -103,11 +103,11 @@ def load_documents(file_objs):
 #            self.query_engine = init()
 
 def chat(message, history):
-    global query_engine
-    if query_engine is None:
-        query_engine = init()  # Assuming init() is defined in actions.py
-        if query_engine is None:
-            return history + [("Failed to initialize query engine. Please check your setup.", None)]
+    #global query_engine
+    #if query_engine is None:
+    #    query_engine = init()  # Assuming init() is defined in actions.py
+    #    if query_engine is None:
+    #        return history + [("Failed to initialize query engine. Please check your setup.", None)]
     try:
         # Rest of your function remains the same
         user_message = {"role":"user","content":message}
@@ -117,12 +117,12 @@ def chat(message, history):
         return history + [(message, f"Error processing query: {str(e)}")]
 
 def stream_response(message, history):
-    global query_engine
-    if query_engine is None:
-        query_engine = init()  # Make sure init() is available here
-        if query_engine is None:
-            yield history + [("Failed to initialize query engine. Please check your setup.", None)]
-            return
+    #global query_engine
+    #if query_engine is None:
+    #    query_engine = init()  # Make sure init() is available here
+    #    if query_engine is None:
+    #        yield history + [("Failed to initialize query engine. Please check your setup.", None)]
+    #        return
     try:
         user_message = {"role": "user", "content": message}
         rails_response = rails.generate(messages=[user_message])
@@ -140,7 +140,6 @@ with gr.Blocks() as demo:
       load_btn = gr.Button("Load PDF Documents only")
 
   load_output = gr.Textbox(label="Load Status")
-
   chatbot = gr.Chatbot()
   msg = gr.Textbox(label="Enter your question",interactive=True)
   clear = gr.Button("Clear")
