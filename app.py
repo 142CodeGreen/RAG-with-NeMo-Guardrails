@@ -10,9 +10,6 @@ import gradio as gr
 from openai import OpenAI
 
 
-# from langchain.memory import ChatMessageHistory  # Old import
-# from langchain_community.chat_message_histories import ChatMessageHistory
-
 # Set the environment
 
 from llama_index.core import Settings, SimpleDirectoryReader, VectorStoreIndex, StorageContext
