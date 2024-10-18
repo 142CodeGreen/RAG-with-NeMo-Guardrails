@@ -1,4 +1,4 @@
-from llama_index import ServiceContext
+# from llama_index import ServiceContext
 
 # a directory of documents
 #documents = SimpleDirectoryReader('data').load_data()
@@ -9,7 +9,8 @@ documents.extend(SimpleDirectoryReader(input_files=[file_path]).load_data())
 #service_context = ServiceContext.from_defaults(llm=NVIDIA(model="meta/llama-3.1-8b-instruct"))
 
 # Create an index
-index = VectorStoreIndex.from_documents(documents, service_context=service_context)
+#index = VectorStoreIndex.from_documents(documents, service_context=service_context)
+index = VectorStoreIndex.from_documents(documents, storage_context=storage_context)
 
 # Create a query engine
 query_engine = index.as_query_engine()
