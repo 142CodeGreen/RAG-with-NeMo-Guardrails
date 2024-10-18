@@ -36,5 +36,5 @@ rails:
   output:
     flows:
       - self check output
-      #- self check hallucinations
+      - self check hallucinations
       
