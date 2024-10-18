@@ -27,9 +27,9 @@ def init():
         print(f'Loaded {len(documents)} documents')
 
         # download and install dependencies
-        RecursiveRetrieverSmallToBigPack = download_llama_pack(
-            "RecursiveRetrieverSmallToBigPack", "./recursive_retriever_stb_pack"
-        )
+        #RecursiveRetrieverSmallToBigPack = download_llama_pack(
+        #    "RecursiveRetrieverSmallToBigPack", "./recursive_retriever_stb_pack"
+        #)
 
         # create the recursive_retriever_stb_pack
         recursive_retriever_stb_pack = RecursiveRetrieverSmallToBigPack(documents)
