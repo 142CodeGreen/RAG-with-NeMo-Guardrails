@@ -10,10 +10,11 @@ documents.extend(SimpleDirectoryReader(input_files=[file_path]).load_data())
 
 # Create an index
 #index = VectorStoreIndex.from_documents(documents, service_context=service_context)
-index = VectorStoreIndex.from_documents(documents, storage_context=storage_context)
+#index = VectorStoreIndex.from_documents(documents, storage_context=storage_context)
 
 # Create a query engine
-query_engine = index.as_query_engine()
+#query_engine = index.as_query_engine()
+#query_engine = index.as_query_engine(similarity_top_k=20, streaming=True)
 
 async def rag(context, query):
     user_query = context.get("last_user_message", query)
