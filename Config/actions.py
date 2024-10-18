@@ -59,22 +59,19 @@ def get_query_response(query_engine: BaseQueryEngine, query: str) -> str:
         return ""
 
 @action()
-def rag(query: str, contexts: list) -> str:
+def rag(query: str) -> str:
     """
     This function performs your RAG logic.
-    It takes a query string and a list of contexts as input.
+    It takes a query string as input.
     It should return the answer string.
     """
-    # ... your RAG logic here ...
-    # Example:
-    # from llama_index import GPTVectorStoreIndex, SimpleDirectoryReader
-    # documents = SimpleDirectoryReader('data').load_data()
-    # index = GPTVectorStoreIndex.from_documents(documents)   
 
-    # query_engine = index.as_query_engine()
-    # response = query_engine.query(query)
-    # return   
- str(response)
+    query_engine = init()
+    if query_engine:
+        response = get_query_response(query_engine, query)
+        return response
+    else:
+        return "Error initializing query engine." 
 
 #@action(is_system_action=True)
 #def user_query(context: Optional[dict] = None):
