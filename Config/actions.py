@@ -58,21 +58,6 @@ def get_query_response(query_engine: BaseQueryEngine, query: str) -> str:
         print(f"Error getting query response: {e}")
         return ""
 
-#@action()
-#def rag(query: str) -> str:
-#    """
-#    This function performs your RAG logic.
-#    It takes a query string as input.
-#    It should return the answer string.
-#    """
-
-#    query_engine = init()
-#    if query_engine:
-#        response = get_query_response(query_engine, query)
-#        return response
-#    else:
-#        return "Error initializing query engine." 
-
 @action(is_system_action=True)
 def user_query(context: Optional[dict] = None):
     """
@@ -81,4 +66,20 @@ def user_query(context: Optional[dict] = None):
     user_message = context.get("user_message")
     print('user_message is ', user_message)
     query_engine = init()
-    return get_query_response(query_engine, user_message) 
+    return get_query_response(query_engine, user_message)
+
+@action()
+async def rag(context: dict, llm: Any, kb: Any) -> str:  # Changed to async
+    """
+    This function performs your RAG logic.
+    It takes a query string as input.
+    It should return the answer string.
+    """
+
+    query_engine = init()
+    if query_engine:
+        user_message = context.get("last_user_message")  # Access user message from context
+        response = get_query_response(query_engine, user_message)
+        return response
+    else:
+        return "Error initializing query engine."
