@@ -15,40 +15,45 @@ def init():
     if query_engine_cache is not None:
         print('Using cached query engine')
         return query_engine_cache
+    try:
+        # load data
+        documents = SimpleDirectoryReader("data").load_data()
+        print(f'Loaded {len(documents)} documents')
 
-    # load data
-    documents = SimpleDirectoryReader("data").load_data()
-    print(f'Loaded {len(documents)} documents')
+        # download and install dependencies
+        RecursiveRetrieverSmallToBigPack = download_llama_pack(
+            "RecursiveRetrieverSmallToBigPack", "./recursive_retriever_stb_pack"
+        )
 
-    # download and install dependencies
-    RecursiveRetrieverSmallToBigPack = download_llama_pack(
-        "RecursiveRetrieverSmallToBigPack", "./recursive_retriever_stb_pack"
-    )
+        # create the recursive_retriever_stb_pack
+        recursive_retriever_stb_pack = RecursiveRetrieverSmallToBigPack(documents)
 
-    # create the recursive_retriever_stb_pack
-    recursive_retriever_stb_pack = RecursiveRetrieverSmallToBigPack(documents)
-
-    # get the query engine
-    query_engine_cache = recursive_retriever_stb_pack.query_engine
-
-    return query_engine_cache
+        # get the query engine
+        query_engine_cache = recursive_retriever_stb_pack.query_engine
+    except Exception as e:
+        print(f"Error initiatlizing query engine:{e}")
+        return None
 
 def get_query_response(query_engine: BaseQueryEngine, query: str) -> str:
     """
     Function to query based on the query_engine and query string passed in.
     """
-    response = query_engine.query(query)
-    if isinstance(response, StreamingResponse):
-        typed_response = response.get_response()
-    else:
-        typed_response = response
-    response_str = typed_response.response
-    if response_str is None:
+    try:
+        response = query_engine.query(query)
+        if isinstance(response, StreamingResponse):
+            typed_response = response.get_response()
+        else:
+            typed_response = response
+        response_str = typed_response.response
+        if response_str is None:
+            return ""
+        return response_str
+    except Exception as e:
+        print(f"Error getting query response: {e}")
         return ""
-    return response_str
-
+        
 @action(is_system_action=True)
-async def user_query(context: Optional[dict] = None):
+def user_query(context: Optional[dict] = None):
     """
     Function to invoke the query_engine to query user message.
     """
