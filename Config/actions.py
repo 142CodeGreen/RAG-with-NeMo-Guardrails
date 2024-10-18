@@ -5,9 +5,15 @@ from llama_index.core.llama_pack import download_llama_pack
 from llama_index.packs.recursive_retriever import RecursiveRetrieverSmallToBigPack
 from llama_index.core.base.base_query_engine import BaseQueryEngine
 from llama_index.core.base.response.schema import StreamingResponse
+import os
 
 # Global variable to cache the query_engine
 query_engine_cache = None
+
+if not os.path.exists("./recursive_retriever_stb_pack"):
+    RecursiveRetrieverSmallToBigPack = download_llama_pack(
+        "RecursiveRetrieverSmallToBigPack", "./recursive_retriever_stb_pack"
+    )
 
 def init():
     global query_engine_cache  # Declare to use the global variable
