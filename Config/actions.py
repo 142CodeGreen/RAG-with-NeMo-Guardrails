@@ -1,7 +1,7 @@
 from llama_index import ServiceContext
 
 # a directory of documents
-documents = SimpleDirectoryReader('data').load_data()
+#documents = SimpleDirectoryReader('data').load_data()
 
 # Service context setup with LLM
 #from llama_index.llms import NVIDIA  # Example, use whatever LLM you have access to
