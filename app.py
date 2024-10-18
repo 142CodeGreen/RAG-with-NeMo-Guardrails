@@ -144,29 +144,33 @@ with gr.Blocks() as demo:
     msg = gr.Textbox(label="Enter your question",interactive=True)
     clear = gr.Button("Clear")
 
+    load_btn.click(load_documents, inputs=[file_input], outputs=[load_output])
+    msg.submit(stream_response, inputs=[msg, chatbot], outputs=[chatbot]) # Use submit button instead of msg
+    clear.click(lambda: None, None, chatbot, queue=False)
+    
     # Store the query engine
-    current_query_engine = None  
+    #current_query_engine = None  
 
     # Set up event handler 
-    def load_and_update(file_objs):
-        load_message, current_query_engine = load_documents(file_objs)
-        return load_message, current_query_engine
+    #def load_and_update(file_objs):
+    #    load_message, current_query_engine = load_documents(file_objs)
+    #    return load_message, current_query_engine
 
-    load_btn.click(load_and_update, inputs=[file_input], outputs=[load_output, current_query_engine])
+    #load_btn.click(load_and_update, inputs=[file_input], outputs=[load_output, current_query_engine])
 
-    def chat_with_engine(message, history, query_engine):
-        if query_engine is None:
-            return history + [("Please load documents first.", None)]
-        return chat(message, history, query_engine)
+    #def chat_with_engine(message, history, query_engine):
+    #    if query_engine is None:
+    #        return history + [("Please load documents first.", None)]
+    #    return chat(message, history, query_engine)
 
-    def stream_with_engine(message, history, query_engine):
-        if query_engine is None:
-            yield history + [("Please load documents first.", None)]
-        else:
-            yield from stream_response(message, history, query_engine) 
+    #def stream_with_engine(message, history, query_engine):
+    #    if query_engine is None:
+    #        yield history + [("Please load documents first.", None)]
+    #    else:
+    #        yield from stream_response(message, history, query_engine) 
 
-    msg.submit(stream_with_engine, inputs=[msg, chatbot, current_query_engine], outputs=[chatbot])
-    clear.click(lambda: None, None, chatbot, queue=False)
+    #msg.submit(stream_with_engine, inputs=[msg, chatbot, current_query_engine], outputs=[chatbot])
+    #clear.click(lambda: None, None, chatbot, queue=False)
 
 # Launch the Gradio interface
 if __name__ == "__main__":
