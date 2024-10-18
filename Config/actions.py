@@ -1,58 +1,34 @@
 from llama_index import ServiceContext
-#from llama_index.llms import NVIDIA
-from llama_index.prompts import PromptTemplate
-from llama_index.output_parsers import StringOutputParser
-from llama_index.knowledge_base import KnowledgeBase
-from nemoguardrails import LLMRails
 
-# Assuming NVIDIA's model can be initialized like this or through an adapter
-llm = NVIDIA(model="meta/llama-3.1-8b-instruct")
+# a directory of documents
+documents = SimpleDirectoryReader('data').load_data()
 
-# Define your template. Note: You might need to adjust this for compatibility with LlamaIndex's prompt handling
-TEMPLATE = """Use the following pieces of context to answer the question at the end.
-If you don't know the answer, just say that you don't know, don't try to make up an answer.
-Use three sentences maximum and keep the answer as concise as possible.
+# Service context setup with LLM
+from llama_index.llms import NVIDIA  # Example, use whatever LLM you have access to
+service_context = ServiceContext.from_defaults(llm=NVIDIA(model="meta/llama-3.1-8b-instruct"))
 
-{context}
+# Create an index
+index = VectorStoreIndex.from_documents(documents, service_context=service_context)
 
-Question: {question}
+# Create a query engine
+query_engine = index.as_query_engine()
 
-Helpful Answer:"""
-
-# Custom prompt template for LlamaIndex
-llama_prompt = PromptTemplate(TEMPLATE)
-
-@action()
-async def rag(context: dict, service_context: ServiceContext, kb: KnowledgeBase) -> str:
-    user_message = context.get("last_user_message")
+async def rag(context, query):
+    user_query = context.get("last_user_message", query)
     context_updates = {}
+    
+    # Perform the query
+    response = query_engine.query(user_query)
+    
+    # response.response contains the generated answer with context
+    context_updates["answer"] = response.response
+    context_updates["relevant_chunks"] = str(response.get_formatted_sources())  # If want to see what was used for the answer
 
-    # Assuming LlamaIndex has an async method for searching or we use an adapter
-    chunks = await kb.search_relevant_chunks(user_message)
-    relevant_chunks = "\n".join([chunk["body"] for chunk in chunks])
-    context_updates["relevant_chunks"] = relevant_chunks
+    return ActionResult(return_value=response.response, context_updates=context_updates)
 
-    # Format the prompt with LlamaIndex's expected input
-    input_variables = {"question": user_message, "context": relevant_chunks}
-    formatted_prompt = llama_prompt.format(**input_variables)
-    context_updates["_last_bot_prompt"] = formatted_prompt
-
-    print(f"💬 RAG :: prompt_template: {formatted_prompt}")
-
-    # Use NVIDIA LLM through LlamaIndex
-    parser = StringOutputParser()
-    chain = llama_prompt | llm | parser
-    answer = await chain.ainvoke(input_variables)
-
-    return answer, context_updates  # Assuming we return both for compatibility with ActionResult
-
-def init(app: LLMRails):
-    # Assuming there's a way to get or create service context with NVIDIA LLM
-    service_context = ServiceContext.from_defaults(llm=llm)
-    app.register_action(lambda c: rag(c, service_context, app.kb), "rag")
-
-
-
+# Registering the action
+def init(app):
+    app.register_action(rag, "rag")
 
 
 #from typing import Optional
