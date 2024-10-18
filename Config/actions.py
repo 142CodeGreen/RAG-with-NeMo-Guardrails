@@ -6,7 +6,7 @@ from llama_index.knowledge_base import KnowledgeBase
 from nemoguardrails import LLMRails
 
 # Assuming NVIDIA's model can be initialized like this or through an adapter
-#llm = NVIDIA(model="your_nvidia_model_name")
+llm = NVIDIA(model="meta/llama-3.1-8b-instruct")
 
 # Define your template. Note: You might need to adjust this for compatibility with LlamaIndex's prompt handling
 TEMPLATE = """Use the following pieces of context to answer the question at the end.
