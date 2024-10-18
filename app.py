@@ -79,7 +79,7 @@ def load_documents(file_objs):
 
         # Create the query engine after the index is created
         query_engine = index.as_query_engine(similarity_top_k=20, streaming=True)
-        return f"Successfully loaded {len(documents)} documents from {len(file_paths)} files.", query_engine
+        return f"Successfully loaded {len(documents)} documents from {len(file_paths)} files." # query_engine
     except Exception as e:
         return f"Error loading documents: {str(e)}"
 
