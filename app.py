@@ -81,13 +81,13 @@ def load_documents(file_objs):
         return f"Error loading documents: {str(e)}"
 
 def chat(message, history):
-    #global query_engine
+    global query_engine
     #if query_engine is None:
     #    query_engine = init()  # Assuming init() is defined in actions.py
     #    if query_engine is None:
     #        return history + [("Failed to initialize query engine. Please check your setup.", None)]
     try:
-        # Rest of your function remains the same
+        # update for rails
         user_message = {"role":"user","content":message}
         response = rails.generate(messages=[user_message])
         return history + [(message,response['content'])]
@@ -95,7 +95,7 @@ def chat(message, history):
         return history + [(message, f"Error processing query: {str(e)}")]
 
 def stream_response(message, history):
-    #global query_engine
+    global query_engine
     #if query_engine is None:
     #    query_engine = init()  # Make sure init() is available here
     #    if query_engine is None:
