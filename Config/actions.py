@@ -1,20 +1,20 @@
 from llama_index.core import SimpleDirectoryReader
 from nemoguardrails.actions.actions import ActionResult
 
-from app import query_engine
-
 async def rag(context, query):
     user_query = context.get("last_user_message", query)
     context_updates = {}
     
-    # Perform the query
-    print(f"Querying: {user_query}")  # Debugging print statement
-    response = query_engine.query(user_query)
-    print(f"Response: {response}")  # Debugging print statement
+    # Access the query_engine from the context
+    query_engine = context.get('query_engine') 
     
-    # response.response contains the generated answer with context
+    # Perform the query
+    print(f"Querying: {user_query}")
+    response = query_engine.query(user_query)
+    print(f"Response: {response}")
+    
     context_updates["answer"] = response.response
-    context_updates["relevant_chunks"] = str(response.get_formatted_sources())  # see what was used for the answer
+    context_updates["relevant_chunks"] = str(response.get_formatted_sources())
 
     return ActionResult(return_value=response.response, context_updates=context_updates)
 
