@@ -94,6 +94,9 @@ def chat(message, history):
     except Exception as e:
         return history + [(message, f"Error processing query: {str(e)}")]
 
+# Import actions 
+from actions import init, rag  # Import the init function
+
 def stream_response(message, history):
     global query_engine
     #if query_engine is None:
@@ -102,9 +105,12 @@ def stream_response(message, history):
     #        yield history + [("Failed to initialize query engine. Please check your setup.", None)]
     #        return
     try:
+        # Use the query_engine to generate the response
+        response = query_engine.query(message) 
+        
         user_message = {"role": "user", "content": message}
-        rails_response = rails.generate(messages=[user_message])
-        yield history + [(message, rails_response['content'])]   
+        rails_response = rails.generate(messages=[user_message], context={"answer": response.response}) # Pass the response to rails
+        yield history + [(message, rails_response['content'])]
     except Exception as e:
         yield history + [(message, f"Error processing query: {str(e)}")]
         
@@ -126,8 +132,8 @@ with gr.Blocks() as demo:
     msg.submit(stream_response, inputs=[msg, chatbot], outputs=[chatbot]) # Use submit button instead of msg
     clear.click(lambda: None, None, chatbot, queue=False)
 
-    #msg.submit(stream_with_engine, inputs=[msg, chatbot, current_query_engine], outputs=[chatbot])
-    #clear.click(lambda: None, None, chatbot, queue=False)
+    # Initialize and register the rag action
+    rails.register_action(rag, "rag")  # Register the action with rails
 
 # Launch the Gradio interface
 if __name__ == "__main__":
