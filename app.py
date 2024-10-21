@@ -8,7 +8,7 @@ warnings.filterwarnings("ignore", category=LangChainDeprecationWarning, module="
 from utils import query_engine, load_documents
 
 # Import actions 
-from Config.actions import rag  # Import the init function
+#from Config.actions import rag  # Import the init function
 
 #import getpass
 import os
@@ -75,7 +75,9 @@ def stream_response(message, history):
         yield history + [(message, rails_response['content'])]
     except Exception as e:
         yield history + [(message, f"Error processing query: {str(e)}")]
-        
+
+# Import actions 
+from Config.actions import rag  # Import the init function
 
 # Create the Gradio interface
 with gr.Blocks() as demo:
