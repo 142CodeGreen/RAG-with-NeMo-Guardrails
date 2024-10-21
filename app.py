@@ -59,7 +59,17 @@ rails = LLMRails(config)
 #        return history + [(message, f"Error processing query: {str(e)}")]
 
 def stream_response(message, history):
-    global query_engine
+    global query_engine 
+    try:
+        user_message = {"role": "user", "content": message}
+        rails_response = rails.generate(messages=[user_message])  # No context
+        yield history + [(message, rails_response['content'])]
+    except Exception as e:
+        yield history + [(message, f"Error processing query: {str(e)}")]
+
+
+#def stream_response(message, history):
+#    global query_engine
     #if query_engine is None:
     #    yield history + [("Query engine not initialized. Please load documents first.", None)]
     #    return
@@ -67,14 +77,14 @@ def stream_response(message, history):
     #    if query_engine is None:
     #        yield history + [("Failed to initialize query engine. Please check your setup.", None)]
     #        return
-    try:
+#    try:
         #Add query engine to context
         context = {"query_engine": query_engine}
         user_message = {"role": "user", "content": message}
         rails_response = rails.generate(messages=[user_message], context=context)
-        yield history + [(message, rails_response['content'])]
-    except Exception as e:
-        yield history + [(message, f"Error processing query: {str(e)}")]
+#        yield history + [(message, rails_response['content'])]
+#    except Exception as e:
+#        yield history + [(message, f"Error processing query: {str(e)}")]
 
 # Import actions 
 from Config.actions import rag  # Import the init function
