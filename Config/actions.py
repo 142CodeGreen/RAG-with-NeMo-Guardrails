@@ -2,12 +2,11 @@ from llama_index.core import SimpleDirectoryReader
 from nemoguardrails.actions.actions import ActionResult
 
 async def rag(context, query):
-    global query_engine
     user_query = context.get("last_user_message", query)
     context_updates = {}
     
-    # Access the query_engine from the context
-    query_engine = context.get('query_engine') 
+    # Access the query_engine from the global scope
+    global query_engine
     
     # Perform the query
     print(f"Querying: {user_query}")
