@@ -1,12 +1,40 @@
+
 query_engine = None  # Initialize query_engine
 
+# Function to load documents and create the index
 def load_documents(file_objs):
-    global query_engine
+    global index, query_engine
     try:
-        # ... (your existing code to load documents) ...
+        if not file_objs:
+            return "Error: No files selected."
 
+        file_paths = get_files_from_input(file_objs)
+        documents = []
+        for file_path in file_paths:
+            # directory = os.path.dirname(file_path)
+            documents.extend(SimpleDirectoryReader(input_files=[file_path]).load_data())
+
+        if not documents:
+            return f"No documents found in the selected files."
+
+        # Create a Milvus vector store and storage context
+        # vector_store = MilvusVectorStore(
+        #    host="127.0.0.1",
+        #    port=19530,
+        #    dim=1024,
+        #    collection_name="your_collection_name",
+        #    gpu_id=0,  # Specify the GPU ID to use
+        #    output_fields=["field1","field2"]
+        #)
+        
+        vector_store = MilvusVectorStore(uri="./milvus_demo.db", dim=1024, overwrite=True,output_fields=[])
+        storage_context = StorageContext.from_defaults(vector_store=vector_store)
+
+        # Create the index from the documents
+        index = VectorStoreIndex.from_documents(documents, storage_context=storage_context) # Create index inside the function after documents are loaded
+
+        # Create the query engine after the index is created
         query_engine = index.as_query_engine(similarity_top_k=20, streaming=True)
-
-        return f"Successfully loaded {len(documents)} documents from {len(file_paths)} files." 
+        return f"Successfully loaded {len(documents)} documents from {len(file_paths)} files." # query_engine
     except Exception as e:
         return f"Error loading documents: {str(e)}"
