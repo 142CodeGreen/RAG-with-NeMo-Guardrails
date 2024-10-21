@@ -1,3 +1,5 @@
+from llama_index.core import Settings, SimpleDirectoryReader, VectorStoreIndex, StorageContext
+from llama_index.vector_stores.milvus import MilvusVectorStore
 
 query_engine = None  # Initialize query_engine
 
