@@ -99,7 +99,9 @@ from Config.actions import init, rag  # Import the init function
 
 def stream_response(message, history):
     global query_engine
-    #if query_engine is None:
+    if query_engine is None:
+        yield history + [("Query engine not initialized. Please load documents first.", None)]
+        return
     #    query_engine = init()  # Make sure init() is available here
     #    if query_engine is None:
     #        yield history + [("Failed to initialize query engine. Please check your setup.", None)]
