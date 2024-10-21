@@ -18,18 +18,17 @@ from openai import OpenAI
 
 # Set the environment
 
-#from llama_index.core import Settings, SimpleDirectoryReader, VectorStoreIndex, StorageContext
-from llama_index.core import Settings
+#from llama_index.core import Settings
 from llama_index.llms.nvidia import NVIDIA
 Settings.llm = NVIDIA(model="meta/llama-3.1-8b-instruct")
 
-from llama_index.embeddings.nvidia import NVIDIAEmbedding
-Settings.embed_model = NVIDIAEmbedding(model="NV-Embed-QA", truncate="END")
+#from llama_index.embeddings.nvidia import NVIDIAEmbedding
+#Settings.embed_model = NVIDIAEmbedding(model="NV-Embed-QA", truncate="END")
 
 #from llama_index.vector_stores.milvus import MilvusVectorStore
 
-from llama_index.core.node_parser import SentenceSplitter
-Settings.text_splitter = SentenceSplitter(chunk_size=400)
+#from llama_index.core.node_parser import SentenceSplitter
+#Settings.text_splitter = SentenceSplitter(chunk_size=400)
 
 # Import Nemo modules
 
