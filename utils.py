@@ -4,6 +4,8 @@ from llama_index.embeddings.nvidia import NVIDIAEmbedding
 from llama_index.core.node_parser import SentenceSplitter
 from llama_index.core import Settings
 
+from llama_index.llms.nvidia import NVIDIA
+Settings.llm = NVIDIA(model="meta/llama-3.1-8b-instruct")
 Settings.embed_model = NVIDIAEmbedding(model="NV-Embed-QA", truncate="END")
 Settings.text_splitter = SentenceSplitter(chunk_size=400)
 
