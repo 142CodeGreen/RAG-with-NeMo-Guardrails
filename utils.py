@@ -1,8 +1,15 @@
 from llama_index.core import SimpleDirectoryReader, VectorStoreIndex, StorageContext
 from llama_index.vector_stores.milvus import MilvusVectorStore
 
+# Initialize global variables for the index and query engine
+index = None
+query_engine = None
 
-query_engine = None  # Initialize query_engine
+# Function to get file names from file objects
+def get_files_from_input(file_objs):
+    if not file_objs:
+        return []
+    return [file_obj.name for file_obj in file_objs]
 
 # Function to load documents and create the index
 def load_documents(file_objs):
