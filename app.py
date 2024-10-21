@@ -19,8 +19,8 @@ from openai import OpenAI
 # Set the environment
 
 #from llama_index.core import Settings
-from llama_index.llms.nvidia import NVIDIA
-Settings.llm = NVIDIA(model="meta/llama-3.1-8b-instruct")
+#from llama_index.llms.nvidia import NVIDIA
+#Settings.llm = NVIDIA(model="meta/llama-3.1-8b-instruct")
 
 #from llama_index.embeddings.nvidia import NVIDIAEmbedding
 #Settings.embed_model = NVIDIAEmbedding(model="NV-Embed-QA", truncate="END")
