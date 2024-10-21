@@ -4,6 +4,9 @@ from langchain_core._api.deprecation import LangChainDeprecationWarning
 
 warnings.filterwarnings("ignore", category=LangChainDeprecationWarning, module="llama_index")
 
+# Import actions 
+from Config.actions import rag  # Import the init function
+
 #import getpass
 import os
 import gradio as gr
@@ -93,9 +96,6 @@ def chat(message, history):
         return history + [(message,response['content'])]
     except Exception as e:
         return history + [(message, f"Error processing query: {str(e)}")]
-
-# Import actions 
-from Config.actions import rag  # Import the init function
 
 def stream_response(message, history):
     global query_engine
