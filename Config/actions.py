@@ -16,7 +16,5 @@ async def rag(context, query):
     context_updates["answer"] = response.response
     context_updates["relevant_chunks"] = str(response.get_formatted_sources())
 
-    return ActionResult(return_value=response.response, context_updates=context_updates)
-
 #def init(app):
 #    app.register_action(rag, "rag")
