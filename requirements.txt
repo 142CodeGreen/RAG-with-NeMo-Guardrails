@@ -11,6 +11,6 @@ nemoguardrails
 OpenAI
 langchain-nvidia-ai-endpoints
 transformers 
-torch  # Assuming you're using PyTorch for GPU acceleration
+#torch  # Assuming you're using PyTorch for GPU acceleration
 nvidia-ml-py3  # For NVIDIA GPU utilities, if needed for monitoring or other purposes
 
