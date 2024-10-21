@@ -5,8 +5,7 @@ llama-index-llms-nvidia==0.1.4
 llama-index-embeddings-nvidia==0.1.4
 #llama-index-postprocessor-nvidia-rerank
 llama-index-vector-stores-Milvus==0.1.20
-#ipywidgets
-pymilvus==2.4.4
+ipywidgets
 gradio==4.37.2
 nemoguardrails
 OpenAI
