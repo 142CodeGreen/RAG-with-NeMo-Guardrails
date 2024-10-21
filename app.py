@@ -60,9 +60,9 @@ rails = LLMRails(config)
 
 def stream_response(message, history):
     global query_engine
-    if query_engine is None:
-        yield history + [("Query engine not initialized. Please load documents first.", None)]
-        return
+    #if query_engine is None:
+    #    yield history + [("Query engine not initialized. Please load documents first.", None)]
+    #    return
     #    query_engine = init()  # Make sure init() is available here
     #    if query_engine is None:
     #        yield history + [("Failed to initialize query engine. Please check your setup.", None)]
