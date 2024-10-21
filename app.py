@@ -19,6 +19,7 @@ from openai import OpenAI
 # Set the environment
 
 #from llama_index.core import Settings, SimpleDirectoryReader, VectorStoreIndex, StorageContext
+from llama_index.core import Settings
 from llama_index.llms.nvidia import NVIDIA
 Settings.llm = NVIDIA(model="meta/llama-3.1-8b-instruct")
 
