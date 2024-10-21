@@ -107,13 +107,10 @@ def stream_response(message, history):
     #        yield history + [("Failed to initialize query engine. Please check your setup.", None)]
     #        return
     try:
-        # Use the query_engine to generate the response
-        response = query_engine.query(message)
-        for chunk in response.response_gen:
-            pass
-        
+        #Add query engine to context
+        context = {"query_engine": query_engine}
         user_message = {"role": "user", "content": message}
-        rails_response = rails.generate(messages=[user_message], action_params={"rag": {"query_engine": query_engine}}) # Pass the response to rails
+        rails_response = rails.generate(messages=[user_message], context=context)
         yield history + [(message, rails_response['content'])]
     except Exception as e:
         yield history + [(message, f"Error processing query: {str(e)}")]
