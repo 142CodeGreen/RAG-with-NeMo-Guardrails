@@ -95,7 +95,7 @@ def chat(message, history):
         return history + [(message, f"Error processing query: {str(e)}")]
 
 # Import actions 
-from actions import init, rag  # Import the init function
+from .Config.actions import init, rag  # Import the init function
 
 def stream_response(message, history):
     global query_engine
