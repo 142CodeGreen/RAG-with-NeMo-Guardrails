@@ -16,24 +16,16 @@ define flow self check output
 #  $answer = execute user_query
 #  bot $answer
 
-#define flow self check hallucinations
-#  $result = execute rag()
-#  if $result.return_value
-#    $answer = $result.return_value
-#    bot $answer
-#  else
-#    bot "Could not retrieve information."
-#  $check_hallucination = True
-
-define flow self check hallucinations
-  $answer = execute rag(query=$last_user_message)  # Pass the user query here
-  $check_hallucination = True
-  bot $answer
 
 #define flow self check hallucinations
-#  $answer = execute rag()
+#  $answer = execute rag(query=$last_user_message)  # Pass the user query here
 #  $check_hallucination = True
 #  bot $answer
+
+define flow self check hallucinations
+  $answer = execute rag()
+  $check_hallucination = True
+  bot $answer
 
 define bot refuse to respond
   "I'm sorry, I can't respond to that."
