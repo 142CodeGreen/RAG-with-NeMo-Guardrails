@@ -30,7 +30,7 @@ rails:
   input:
     flows:
       - self check input
-      #- user query
+      - self check hallucinations
 
   # Output rails are triggered after a bot message has been generated.
   output:
