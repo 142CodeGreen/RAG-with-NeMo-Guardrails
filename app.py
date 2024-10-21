@@ -40,14 +40,8 @@ config = RailsConfig.from_path("./Config")
 rails = LLMRails(config)
 
 # Initialize global variables for the index and query engine
-index = None
-query_engine = None
 
 # Function to get file names from file objects
-def get_files_from_input(file_objs):
-    if not file_objs:
-        return []
-    return [file_obj.name for file_obj in file_objs]
 
 # Function to load documents and create the index
 
