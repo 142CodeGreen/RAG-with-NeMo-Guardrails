@@ -6,7 +6,7 @@ llama-index-embeddings-nvidia
 llama-index-postprocessor-nvidia-rerank
 llama-index-vector-stores-Milvus
 ipywidgets
-gradio==
+gradio
 nemoguardrails
 OpenAI
 langchain-nvidia-ai-endpoints
