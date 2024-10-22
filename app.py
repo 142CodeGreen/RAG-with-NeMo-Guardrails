@@ -38,6 +38,14 @@ from nemoguardrails import LLMRails, RailsConfig
 config = RailsConfig.from_path("./Config")
 rails = LLMRails(config)
 
+query_engine = None
+def setup_rails_actions():
+    global query_engine, rails
+    if query_engine:
+        rails.register_action(lambda query: rag(query, query_engine), "rag")
+    else:
+        print("Warning: query_engine not yet initialized during action setup.")
+
 # Initialize global variables for the index and query engine
 
 # Function to get file names from file objects
@@ -47,9 +55,9 @@ rails = LLMRails(config)
 def chat(message, history):
     global query_engine
     if query_engine is None:
-        query_engine = init()  # Assuming init() is defined in actions.py
-        if query_engine is None:
-            return history + [("Failed to initialize query engine. Please check your setup.", None)]
+        #query_engine = init()  # Assuming init() is defined in actions.py
+        #if query_engine is None:
+        return history + [("Failed to initialize query engine. Please check your setup.", None)]
     try:
         # update for rails
         user_message = {"role":"user","content":message}
@@ -61,9 +69,10 @@ def chat(message, history):
 def stream_response(message, history):
     global query_engine
     if query_engine is None:
-        query_engine = init()  # Assuming init() is defined in actions.py
-        if query_engine is None:
-            return history + [("Failed to initialize query engine. Please check your setup.", None)]
+        #query_engine = init()  # Assuming init() is defined in actions.py
+        #if query_engine is None:
+        return history + [("Failed to initialize query engine. Please check your setup.", None)]
+        
     try:
         user_message = {"role": "user", "content": message}
         rails_response = rails.generate(messages=[user_message], context={"query": message})  # No context
@@ -71,24 +80,6 @@ def stream_response(message, history):
     except Exception as e:
         yield history + [(message, f"Error processing query: {str(e)}")]
 
-
-#def stream_response(message, history):
-#    global query_engine
-    #if query_engine is None:
-    #    yield history + [("Query engine not initialized. Please load documents first.", None)]
-    #    return
-    #    query_engine = init()  # Make sure init() is available here
-    #    if query_engine is None:
-    #        yield history + [("Failed to initialize query engine. Please check your setup.", None)]
-    #        return
-#    try:
-        #Add query engine to context
-        context = {"query_engine": query_engine}
-        user_message = {"role": "user", "content": message}
-        rails_response = rails.generate(messages=[user_message], context=context)
-#        yield history + [(message, rails_response['content'])]
-#    except Exception as e:
-#        yield history + [(message, f"Error processing query: {str(e)}")]
 
 # Import actions 
 from Config.actions import rag  # Import the init function
@@ -106,12 +97,28 @@ with gr.Blocks() as demo:
     msg = gr.Textbox(label="Enter your question",interactive=True)
     clear = gr.Button("Clear")
 
-    load_btn.click(load_documents, inputs=[file_input], outputs=[load_output])
-    msg.submit(stream_response, inputs=[msg, chatbot], outputs=[chatbot]) # Use submit button instead of msg
+    def ensure_query_engine_initialized():
+        global query_engine
+        if query_engine is None:
+            # Here you might want to initialize query_engine or show an error
+            query_engine = init()  # Assuming init() initializes the query_engine
+            if query_engine is None:
+                return "Failed to initialize query engine. Please check your setup."
+        return "Query engine initialized or already exists."
+
+    load_btn.click(load_documents, inputs=[file_input], outputs=[load_output], 
+                   _js="(files) => {ensure_query_engine_initialized(); return files;}")
+    msg.submit(ensure_query_engine_initialized, None, load_output).then(
+        stream_response, inputs=[msg, chatbot], outputs=[chatbot]) 
     clear.click(lambda: None, None, chatbot, queue=False)
+    
+    #load_btn.click(load_documents, inputs=[file_input], outputs=[load_output])
+    #msg.submit(stream_response, inputs=[msg, chatbot], outputs=[chatbot]) # Use submit button instead of msg
+    #clear.click(lambda: None, None, chatbot, queue=False)
 
     # Initialize and register the rag action
-    rails.register_action(rag, "rag")  # Register the action with rails
+    setup_rails_actions()
+    #rails.register_action(rag, "rag")  # Register the action with rails
 
 # Launch the Gradio interface
 if __name__ == "__main__":
