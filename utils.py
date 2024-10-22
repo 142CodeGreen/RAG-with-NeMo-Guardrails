@@ -1,3 +1,5 @@
+import os
+import shutil
 from llama_index.core import Settings, SimpleDirectoryReader, VectorStoreIndex, StorageContext
 from llama_index.vector_stores.milvus import MilvusVectorStore
 from llama_index.embeddings.nvidia import NVIDIAEmbedding
@@ -29,10 +31,19 @@ def load_documents(file_objs):
 
         file_paths = get_files_from_input(file_objs)
         documents = []
+
+        # Create the kb directory if it doesn't exist
+        kb_dir = "./Config/kb"
+        os.makedirs(kb_dir, exist_ok=True)
+        
         for file_path in file_paths:
             try:
-            # directory = os.path.dirname(file_path)
-                documents.extend(SimpleDirectoryReader(input_files=[file_path]).load_data())
+                # directory = os.path.dirname(file_path)
+                # Move the file to the kb directory
+                new_file_path = os.path.join(kb_dir, os.path.basename(file_path))
+                shutil.move(file_path, new_file_path)
+                
+                documents.extend(SimpleDirectoryReader(input_files=[new_file_path]).load_data())
             except Exception as e:
                 print(f"Error loading file {file_path}: {e}") 
                 return f"Error loading file {file_path}: {e}"
