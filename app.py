@@ -40,7 +40,7 @@ rails = LLMRails(config)
 
 rails.register_action(rag, "rag")
 
-query_engine = None
+#query_engine = None
 
 # Initialize global variables for the index and query engine
 
