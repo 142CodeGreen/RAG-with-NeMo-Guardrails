@@ -75,7 +75,7 @@ def stream_response(message, history):
         
     try:
         user_message = {"role": "user", "content": message}
-        rails_response = rails.generate(messages=[user_message], context={"query": message})  # No context
+        rails_response = rails.generate(messages=[user_message]) # context={"query": message}) No context
         yield history + [(message, rails_response['content'])]
     except Exception as e:
         yield history + [(message, f"Error processing query: {str(e)}")]
