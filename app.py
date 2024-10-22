@@ -106,15 +106,9 @@ with gr.Blocks() as demo:
                 return "Failed to initialize query engine. Please check your setup."
         return "Query engine initialized or already exists."
 
-    load_btn.click(load_documents, inputs=[file_input], outputs=[load_output], 
-                   _js="(files) => {ensure_query_engine_initialized(); return files;}")
-    msg.submit(ensure_query_engine_initialized, None, load_output).then(
-        stream_response, inputs=[msg, chatbot], outputs=[chatbot]) 
+    load_btn.click(load_documents, inputs=[file_input], outputs=[load_output])
+    msg.submit(stream_response, inputs=[msg, chatbot], outputs=[chatbot]) # Use submit button instead of msg
     clear.click(lambda: None, None, chatbot, queue=False)
-    
-    #load_btn.click(load_documents, inputs=[file_input], outputs=[load_output])
-    #msg.submit(stream_response, inputs=[msg, chatbot], outputs=[chatbot]) # Use submit button instead of msg
-    #clear.click(lambda: None, None, chatbot, queue=False)
 
     # Initialize and register the rag action
     setup_rails_actions()
