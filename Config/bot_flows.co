@@ -17,15 +17,15 @@ define flow self check output
 #  bot $answer
 
 
-#define flow self check hallucinations
-#  $answer = execute rag(query=$last_user_message)  # Pass the user query here
-#  $check_hallucination = True
-#  bot $answer
-
 define flow self check hallucinations
-  $answer = execute rag()
+  $answer = execute rag(query=$last_user_message)  # Pass the user query here
   $check_hallucination = True
   bot $answer
+
+#define flow self check hallucinations
+#  $answer = execute rag()
+#  $check_hallucination = True
+#  bot $answer
 
 define bot refuse to respond
   "I'm sorry, I can't respond to that."
