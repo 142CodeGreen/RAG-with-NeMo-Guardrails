@@ -46,10 +46,10 @@ rails = LLMRails(config)
 
 def chat(message, history):
     global query_engine
-    #if query_engine is None:
-    #    query_engine = init()  # Assuming init() is defined in actions.py
-    #    if query_engine is None:
-    #        return history + [("Failed to initialize query engine. Please check your setup.", None)]
+    if query_engine is None:
+        query_engine = init()  # Assuming init() is defined in actions.py
+        if query_engine is None:
+            return history + [("Failed to initialize query engine. Please check your setup.", None)]
     try:
         # update for rails
         user_message = {"role":"user","content":message}
@@ -59,7 +59,11 @@ def chat(message, history):
         return history + [(message, f"Error processing query: {str(e)}")]
 
 def stream_response(message, history):
-    global query_engine 
+    global query_engine
+    if query_engine is None:
+        query_engine = init()  # Assuming init() is defined in actions.py
+        if query_engine is None:
+            return history + [("Failed to initialize query engine. Please check your setup.", None)]
     try:
         user_message = {"role": "user", "content": message}
         rails_response = rails.generate(messages=[user_message], context={"query": message})  # No context
