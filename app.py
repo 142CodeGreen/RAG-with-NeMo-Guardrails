@@ -8,7 +8,7 @@ warnings.filterwarnings("ignore", category=LangChainDeprecationWarning, module="
 from utils import query_engine, load_documents
 
 # Import actions 
-#from Config.actions import rag  # Import the init function
+from Config.actions import rag  # Import the init function
 
 #import getpass
 import os
@@ -38,7 +38,7 @@ from nemoguardrails import LLMRails, RailsConfig
 config = RailsConfig.from_path("./Config")
 rails = LLMRails(config)
 
-#rails.register_action(rag, "rag")
+rails.register_action(rag, "rag")
 
 #query_engine = None
 
@@ -50,10 +50,10 @@ rails = LLMRails(config)
 
 def chat(message, history):
     global query_engine
-    if query_engine is None:
+    #if query_engine is None:
         #query_engine = init()  # Assuming init() is defined in actions.py
         #if query_engine is None:
-        return history + [("Failed to initialize query engine. Please check your setup.", None)]
+        #return history + [("Failed to initialize query engine. Please check your setup.", None)]
     try:
         # update for rails
         user_message = {"role":"user","content":message}
@@ -64,10 +64,10 @@ def chat(message, history):
 
 def stream_response(message, history):
     global query_engine
-    if query_engine is None:
+    #if query_engine is None:
         #query_engine = init()  # Assuming init() is defined in actions.py
         #if query_engine is None:
-        return history + [("Failed to initialize query engine. Please check your setup.", None)]
+        #return history + [("Failed to initialize query engine. Please check your setup.", None)]
         
     try:
         user_message = {"role": "user", "content": message}
@@ -99,7 +99,7 @@ with gr.Blocks() as demo:
 
     # Initialize and register the rag action
     #setup_rails_actions()
-    rails.register_action(rag, "rag")  # Register the action with rails
+    #rails.register_action(rag, "rag")  # Register the action with rails
 
 # Launch the Gradio interface
 if __name__ == "__main__":
