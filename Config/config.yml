@@ -38,11 +38,3 @@ rails:
       - self check output
       - self check hallucinations
   
-  # define the rag action with the query parameter:
-  actions:
-  - name: rag
-    description: "Performs RAG over the documents"
-    parameters:
-      - name: query
-        type: string
-        description: "The user's query"
