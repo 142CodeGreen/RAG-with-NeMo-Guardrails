@@ -39,6 +39,9 @@ config = RailsConfig.from_path("./Config")
 rails = LLMRails(config)
 
 rails.register_action(rag, "rag")
+# Manual action execution (place here)
+result = rails.execute_action(action_name="rag", query="This is a test query")
+print(result)
 
 #query_engine = None
 
