@@ -32,6 +32,9 @@ def load_documents(file_objs):
         for file_path in file_paths:
             # directory = os.path.dirname(file_path)
             documents.extend(SimpleDirectoryReader(input_files=[file_path]).load_data())
+            except Exception as e:
+                print(f"Error loading file {file_path}: {e}") 
+                return f"Error loading file {file_path}: {e}"
 
         if not documents:
             return f"No documents found in the selected files."
