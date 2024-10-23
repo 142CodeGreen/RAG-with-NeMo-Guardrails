@@ -6,7 +6,7 @@ from nemoguardrails import LLMRails
 from nemoguardrails.actions.actions import ActionResult
 from nemoguardrails.kb.kb import KnowledgeBase
 
-from .utils import query_engine  # Import the query_engine from utils.py
+from ..utils import query_engine  # Import the query_engine from utils.py
 
 #from llama_index.llms.nvidia import NVIDIA
 #Settings.llm = NVIDIA(model="meta/llama-3.1-8b-instruct")
