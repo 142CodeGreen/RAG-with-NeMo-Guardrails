@@ -27,11 +27,6 @@ define flow self check hallucinations
   $check_hallucination = True
   bot $answer
 
-#define flow answer report question
-#  user ...
-#  $answer = execute rag()
-#  $check_hallucination = True
-#  bot $answer
 
 define bot refuse to respond
   "I'm sorry, I can't respond to that."
