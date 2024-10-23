@@ -4,9 +4,9 @@
 
 from nemoguardrails import LLMRails
 from nemoguardrails.actions.actions import ActionResult
-from nemoguardrails.kb.kb import KnowledgeBase
+#from nemoguardrails.kb.kb import KnowledgeBase
 
-from utils import query_engine  # Import the query_engine from utils.py
+from utils import load_documents, query_engine  # Import the query_engine from utils.py
 Settings.llm = NVIDIA(model="meta/llama-3.1-8b-instruct")
 
 TEMPLATE = """Use the following pieces of context to answer the question at the end.
@@ -20,7 +20,7 @@ Question: {question}
 Helpful Answer:"""
 
 
-async def rag(context: dict, llm, kb: KnowledgeBase) -> ActionResult:
+async def rag(context: dict, llm, kb: load_documents) -> ActionResult:
     user_message = context.get("last_user_message")
     context_updates = {}
 
