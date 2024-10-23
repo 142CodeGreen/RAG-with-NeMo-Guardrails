@@ -5,7 +5,7 @@ from langchain_core._api.deprecation import LangChainDeprecationWarning
 warnings.filterwarnings("ignore", category=LangChainDeprecationWarning, module="llama_index")
 
 # Import from utils.py
-from utils import query_engine, load_documents
+from utils import load_documents
 
 # Import actions 
 from Config.actions import rag  # Import the init function
