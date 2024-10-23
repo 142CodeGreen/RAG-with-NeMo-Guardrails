@@ -28,7 +28,7 @@ async def rag(context: dict, llm, kb: KnowledgeBase) -> ActionResult:
     chunks = await kb.search_relevant_chunks(user_message)
     relevant_chunks = "\n".join([chunk["body"] for chunk in chunks])
     # 💡 Store the chunks for fact-checking
-    context_updates["relevant_chunks"] = relevant_chunks
+    #context_updates["relevant_chunks"] = relevant_chunks
 
     # Use a custom prompt template
     prompt_template = PromptTemplate.from_template(TEMPLATE)
