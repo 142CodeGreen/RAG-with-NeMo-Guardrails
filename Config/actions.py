@@ -2,17 +2,26 @@ from nemoguardrails import LLMRails
 from nemoguardrails.actions.actions import ActionResult
 from nemoguardrails.kb.kb import KnowledgeBase
 
-from utils import query_engine  # Import query_engine from utils.py
+from utils import query_engine, load_documents  # Import query_engine from utils.py
 
 async def rag(context: dict, llm, kb: KnowledgeBase) -> ActionResult: 
     user_message = context.get("last_user_message")
     context_updates = {}
 
-    # Use LlamaIndex to retrieve relevant chunks
+    # Call load_documents to initialize query_engine (add1)
+    load_documents_result = load_documents([])
+
+    # Check if load_documents was successful (add2)
+    if "Successfully loaded" not in load_documents_result:
+        return ActionResult(return_value=f"Error initializing query engine: {load_documents_result}", context_updates=context_updates)
+
+    # Now you can access the global query_engine (add3)
+    global query_engine 
+    
     response = query_engine.query(user_message)
     relevant_chunks = response.response  # Extract the text response
     # 💡 Store the chunks for fact-checking
-    context_updates["relevant_chunks"] = relevant_chunks
+    #context_updates["relevant_chunks"] = relevant_chunks
 
     # No need for a separate prompt template, use LlamaIndex's internal prompt
 
