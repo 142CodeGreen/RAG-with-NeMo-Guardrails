@@ -1,28 +1,33 @@
 from nemoguardrails import LLMRails
 from nemoguardrails.actions.actions import ActionResult
+from nemoguardrails.kb.kb import KnowledgeBase
 
-from utils import query_engine  # Import only query_engine
+from utils import query_engine  # Import query_engine from utils.py
 
-async def rag(context: dict, kb) -> ActionResult:
+async def rag(context: dict, llm, kb: KnowledgeBase) -> ActionResult: 
     user_message = context.get("last_user_message")
     context_updates = {}
-    
+
     # Use LlamaIndex to retrieve relevant chunks
     response = query_engine.query(user_message)
     relevant_chunks = response.response  # Extract the text response
+    # 💡 Store the chunks for fact-checking
     context_updates["relevant_chunks"] = relevant_chunks
 
-    # Construct the prompt directly (replace with your actual prompt structure)
-    prompt = f"Use the following context to answer the question:\n\n{relevant_chunks}\n\nQuestion: {user_message}\n\nAnswer:"
-    context_updates["_last_bot_prompt"] = prompt  
+    # No need for a separate prompt template, use LlamaIndex's internal prompt
 
-    print(f" RAG :: prompt: {prompt}")
+    # 💡 Store the prompt for hallucination-checking (if accessible)
+    # This might require accessing the internal prompt from LlamaIndex
+    # context_updates["_last_bot_prompt"] = ... 
 
-    # Generate the answer using your LLM (from utils.py)
-    answer = await llm.agenerate(prompts=[prompt], temperature=0.1) 
-    answer = answer.generations[0][0].text
+    print(f"RAG :: relevant_chunks: {context_updates['relevant_chunks']}")
+
+    # Generate the answer using the provided llm (NVIDIA NeMo)
+    # Assuming your llm has a generate method that accepts a string
+    answer = llm.generate(relevant_chunks)  
 
     return ActionResult(return_value=answer, context_updates=context_updates)
+
 
 def init(app: LLMRails):
     app.register_action(rag, "rag")
