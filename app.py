@@ -8,10 +8,10 @@ warnings.filterwarnings("ignore", category=LangChainDeprecationWarning, module="
 from utils import load_documents
 
 # Import actions 
-from Config.actions import rag  # Import the init function
+from Config.actions import rag, init  # Import the init function
 
 #import getpass
-import os
+#import os
 import gradio as gr
 from openai import OpenAI
 
@@ -37,6 +37,8 @@ from nemoguardrails import LLMRails, RailsConfig
 # Define a RailsConfig object
 config = RailsConfig.from_path("./Config")
 rails = LLMRails(config)
+
+init(rails)
 
 #rails.register_action(rag, "rag")
 
