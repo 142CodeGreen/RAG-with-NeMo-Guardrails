@@ -8,7 +8,7 @@ warnings.filterwarnings("ignore", category=LangChainDeprecationWarning, module="
 from utils import load_documents
 
 # Import actions 
-from Config.actions import rag, init  # Import the init function
+from Config.actions import rag  # Import the init function
 
 #import getpass
 #import os
