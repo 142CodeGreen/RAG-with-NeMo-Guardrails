@@ -2,7 +2,7 @@ from nemoguardrails import LLMRails
 from nemoguardrails.actions.actions import ActionResult
 from nemoguardrails.kb.kb import KnowledgeBase
 
-from utils import query_engine, load_documents  # Import query_engine from utils.py
+from utils import load_documents  # Import query_engine from utils.py
 
 async def rag(context: dict, llm, kb: KnowledgeBase) -> ActionResult: 
     user_message = context.get("last_user_message")
