@@ -12,8 +12,8 @@ async def rag(context: dict, llm, kb: KnowledgeBase) -> ActionResult:
     load_documents_result = load_documents([])
 
     # Check if load_documents was successful (add2)
-    if "Successfully loaded" not in load_documents_result:
-        return ActionResult(return_value=f"Error initializing query engine: {load_documents_result}", context_updates=context_updates)
+    #if "Successfully loaded" not in load_documents_result:
+    #    return ActionResult(return_value=f"Error initializing query engine: {load_documents_result}", context_updates=context_updates)
 
     # Now you can access the global query_engine (add3)
     global query_engine 
