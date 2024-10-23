@@ -38,7 +38,7 @@ from nemoguardrails import LLMRails, RailsConfig
 config = RailsConfig.from_path("./Config")
 rails = LLMRails(config)
 
-rails.register_action(rag, "rag")
+#rails.register_action(rag, "rag")
 
 #query_engine = None
 
