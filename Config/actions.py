@@ -19,7 +19,7 @@ Question: {question}
 Helpful Answer:"""
 
 
-async def rag(context: dict, llm: BaseLLM, kb: KnowledgeBase) -> ActionResult:
+async def rag(context: dict, llm, kb: KnowledgeBase) -> ActionResult:
     user_message = context.get("last_user_message")
     context_updates = {}
 
