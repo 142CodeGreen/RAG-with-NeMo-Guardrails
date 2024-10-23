@@ -6,7 +6,7 @@ from nemoguardrails import LLMRails
 from nemoguardrails.actions.actions import ActionResult
 #from nemoguardrails.kb.kb import KnowledgeBase
 
-from utils import load_documents, query_engine  # Import the query_engine from utils.py
+from utils import query_engine  # Import the query_engine from utils.py
 
 #from llama_index.llms.nvidia import NVIDIA
 #Settings.llm = NVIDIA(model="meta/llama-3.1-8b-instruct")
@@ -22,7 +22,7 @@ Question: {question}
 Helpful Answer:"""
 
 
-async def rag(context: dict, llm, kb: load_documents) -> ActionResult:
+async def rag(context: dict, llm, kb: KnowledgeBase) -> ActionResult:
     user_message = context.get("last_user_message")
     context_updates = {}
 
@@ -43,11 +43,11 @@ async def rag(context: dict, llm, kb: load_documents) -> ActionResult:
     # --- Llamaindex integration without LLMPredictor and ServiceContext ---
 
     # Use the imported query_engine from utils.py
-    if query_engine is None:
-        return ActionResult(
-            return_value="Error: No documents loaded. Please load documents first.",
-            context_updates=context_updates,
-        )
+    #if query_engine is None:
+    #    return ActionResult(
+    #        return_value="Error: No documents loaded. Please load documents first.",
+    #        context_updates=context_updates,
+    #    )
 
     # Directly use the LLM object for response generation
     response = query_engine.query(user_message, llm_predictor=llm)
