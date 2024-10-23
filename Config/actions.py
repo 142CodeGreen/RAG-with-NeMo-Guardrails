@@ -2,41 +2,41 @@ from nemoguardrails import LLMRails
 from nemoguardrails.actions.actions import ActionResult
 from nemoguardrails.kb.kb import KnowledgeBase
 
-from utils import load_documents  # Import query_engine from utils.py
+from utils import load_documents
+#from llama_index.core import Settings
 
-async def rag(context: dict, llm, kb: KnowledgeBase) -> ActionResult: 
+async def rag(context: dict, llm, kb: KnowledgeBase) -> ActionResult:  # kb argument added back
     user_message = context.get("last_user_message")
     context_updates = {}
 
-    # Call load_documents to initialize query_engine (add1)
-    load_documents_result = load_documents([])
+    # Call load_documents to ensure the KB is loaded and indexed
+    load_documents_result = load_documents(context.get("files"))
+    if isinstance(load_documents_result, str):  # Check if error message is returned
+        return ActionResult(return_value=load_documents_result, context_updates=context_updates)
 
-    # Check if load_documents was successful (add2)
-    #if "Successfully loaded" not in load_documents_result:
-    #    return ActionResult(return_value=f"Error initializing query engine: {load_documents_result}", context_updates=context_updates)
-
-    # Now you can access the global query_engine (add3)
-    global query_engine 
-    
+    # Get relevant chunks using the query_engine created by load_documents
     response = query_engine.query(user_message)
-    relevant_chunks = response.response  # Extract the text response
-    # 💡 Store the chunks for fact-checking
-    #context_updates["relevant_chunks"] = relevant_chunks
+    relevant_chunks = response.response
+    context_updates["relevant_chunks"] = relevant_chunks
 
-    # No need for a separate prompt template, use LlamaIndex's internal prompt
+    # Construct the prompt with relevant context
+    prompt_template = f"""Use the following pieces of context to answer the question at the end.
+If you don't know the answer, just say that you don't know, don't try to make up an answer.
+Use three sentences maximum and keep the answer as concise as possible. Answer in a polite way.
 
-    # 💡 Store the prompt for hallucination-checking (if accessible)
-    # This might require accessing the internal prompt from LlamaIndex
-    # context_updates["_last_bot_prompt"] = ... 
+{relevant_chunks}
 
-    print(f"RAG :: relevant_chunks: {context_updates['relevant_chunks']}")
+Question: {user_message}
 
-    # Generate the answer using the provided llm (NVIDIA NeMo)
-    # Assuming your llm has a generate method that accepts a string
-    answer = llm.generate(relevant_chunks)  
+Helpful Answer:"""
+
+    context_updates["_last_bot_prompt"] = prompt_template
+    print(f"💬 RAG :: prompt_template: {context_updates['_last_bot_prompt']}")
+
+    # Generate answer using the provided llm
+    answer = await Settings.llm.agenerate(prompts=[prompt_template], stop=["\n"])
 
     return ActionResult(return_value=answer, context_updates=context_updates)
-
 
 def init(app: LLMRails):
     app.register_action(rag, "rag")
