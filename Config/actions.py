@@ -3,7 +3,6 @@ from nemoguardrails.actions.actions import ActionResult
 from nemoguardrails.kb.kb import KnowledgeBase
 
 from utils import load_documents
-#from llama_index.core import Settings
 
 async def rag(context: dict, llm, kb: KnowledgeBase) -> ActionResult:  # kb argument added back
     user_message = context.get("last_user_message")
