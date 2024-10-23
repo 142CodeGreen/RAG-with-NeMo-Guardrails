@@ -61,8 +61,7 @@ def load_documents(file_objs):
         #    output_fields=["field1","field2"]
         #)
 
-        vector_store = MilvusVectorStore(uri="./Config/kb/milvus_demo.db", dim=1024, overwrite=True,output_fields=[])
-        #vector_store = MilvusVectorStore(uri="./milvus_demo.db", dim=1024, overwrite=True,output_fields=[])
+        vector_store = MilvusVectorStore(uri="./milvus_demo.db", dim=1024, overwrite=True,output_fields=[])
         storage_context = StorageContext.from_defaults(vector_store=vector_store)
 
         # Create the index from the documents
