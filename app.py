@@ -8,7 +8,7 @@ warnings.filterwarnings("ignore", category=LangChainDeprecationWarning, module="
 from utils import query_engine, load_documents
 
 # Import actions 
-#from Config.actions import rag  # Import the init function
+from Config.actions import rag  # Import the init function
 
 #import getpass
 import os
@@ -38,7 +38,7 @@ from nemoguardrails import LLMRails, RailsConfig
 config = RailsConfig.from_path("./Config")
 rails = LLMRails(config)
 
-#rails.register_action(rag, "rag")
+rails.register_action(rag, "rag")
 
 #query_engine = None
 
