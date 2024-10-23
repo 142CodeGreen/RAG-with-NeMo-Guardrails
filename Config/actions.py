@@ -1,6 +1,6 @@
 # actions.py
 
-from llama_index.prompts import PromptTemplate
+#from llama_index.prompts import PromptTemplate
 
 from nemoguardrails import LLMRails
 from nemoguardrails.actions.actions import ActionResult
