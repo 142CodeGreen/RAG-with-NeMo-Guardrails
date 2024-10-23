@@ -17,7 +17,7 @@ async def rag(context: dict, kb: KnowledgeBase) -> ActionResult:
     prompt = f"Use the following context to answer the question:\n\n{relevant_chunks}\n\nQuestion: {user_message}\n\nAnswer:"
     context_updates["_last_bot_prompt"] = prompt  
 
-    print(f"💬 RAG :: prompt: {prompt}")
+    print(f" RAG :: prompt: {prompt}")
 
     # Generate the answer using your LLM (from utils.py)
     answer = await llm.agenerate(prompts=[prompt], temperature=0.1) 
