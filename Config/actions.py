@@ -7,6 +7,8 @@ from nemoguardrails.actions.actions import ActionResult
 #from nemoguardrails.kb.kb import KnowledgeBase
 
 from utils import load_documents, query_engine  # Import the query_engine from utils.py
+
+from llama_index.llms.nvidia import NVIDIA
 Settings.llm = NVIDIA(model="meta/llama-3.1-8b-instruct")
 
 TEMPLATE = """Use the following pieces of context to answer the question at the end.
