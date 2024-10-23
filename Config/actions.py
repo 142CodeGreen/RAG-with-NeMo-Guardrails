@@ -9,20 +9,20 @@ async def rag(context: dict, llm, kb: KnowledgeBase) -> ActionResult:  # kb argu
     user_message = context.get("last_user_message")
     context_updates = {}
 
-    # Call load_documents to ensure the KB is loaded and indexed
-    load_documents_result = load_documents(context.get("files"))
-    if isinstance(load_documents_result, str):  # Check if error message is returned
-        return ActionResult(return_value=load_documents_result, context_updates=context_updates)
+    if "query_engine" not in context:  # Check if query_engine is available
+        load_documents_result, query_engine = load_documents(context.get("files"))  # Get query_engine
+        if isinstance(load_documents_result, str):  # Check for errors
+            return ActionResult(return_value=load_documents_result, context_updates=context_updates)
+        context_updates["query_engine"] = query_engine  # Store in context
 
-    # Get relevant chunks using the query_engine created by load_documents
-    response = query_engine.query(user_message)
-    relevant_chunks = response.response
-    context_updates["relevant_chunks"] = relevant_chunks
+    # use the query_engine from context
+    response = context_updates["query_engine"].query(user_message)
+    context_updates["relevant_chunks"] = response.response
 
     # Construct the prompt with relevant context
     prompt_template = f"""Use the following pieces of context to answer the question at the end.
 If you don't know the answer, just say that you don't know, don't try to make up an answer.
-Use three sentences maximum and keep the answer as concise as possible. Answer in a polite way.
+Use three sentences maximum and keep the answer as concise as possible.
 
 {relevant_chunks}
 
@@ -31,10 +31,10 @@ Question: {user_message}
 Helpful Answer:"""
 
     context_updates["_last_bot_prompt"] = prompt_template
-    print(f"💬 RAG :: prompt_template: {context_updates['_last_bot_prompt']}")
+    print(f"RAG :: prompt_template: {context_updates['_last_bot_prompt']}")
 
     # Generate answer using the provided llm
-    answer = await Settings.llm.agenerate(prompts=[prompt_template], stop=["\n"])
+    answer = await llm.agenerate(prompts=[prompt_template], stop=["\n"])
 
     return ActionResult(return_value=answer, context_updates=context_updates)
 
