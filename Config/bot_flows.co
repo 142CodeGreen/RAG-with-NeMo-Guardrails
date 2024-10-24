@@ -18,12 +18,12 @@ define flow self check output
 
 #define flow answer report question
 #  user ...
-#  $answer = execute rag(kb="my_knowledge_base")
+#  $answer = execute rag()   #kb="my_knowledge_base"
 #  $check_hallucination = True
 #  bot $answer
 
 define flow self check hallucinations
-  $answer = execute rag(kb="my_knowledge_base")
+  $answer = execute rag()   #kb="my_knowledge_base"
   $check_hallucination = True
   bot $answer
 
