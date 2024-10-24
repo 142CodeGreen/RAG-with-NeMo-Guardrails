@@ -5,7 +5,7 @@ from langchain_core._api.deprecation import LangChainDeprecationWarning
 warnings.filterwarnings("ignore", category=LangChainDeprecationWarning, module="llama_index")
 
 # Import from utils.py
-from utils import load_documents
+from utils import load_documents, index
 
 # Import actions 
 from Config.actions import init  # Import the init function
@@ -51,7 +51,7 @@ init(rails)
 # Function to load documents and create the index
 
 def chat(message, history):
-    global query_engine
+    #global query_engine
     #if query_engine is None:
         #query_engine = init()  # Assuming init() is defined in actions.py
         #if query_engine is None:
@@ -65,7 +65,7 @@ def chat(message, history):
         return history + [(message, f"Error processing query: {str(e)}")]
 
 def stream_response(message, history):
-    global query_engine
+    #global query_engine
     #if query_engine is None:
         #query_engine = init()  # Assuming init() is defined in actions.py
         #if query_engine is None:
