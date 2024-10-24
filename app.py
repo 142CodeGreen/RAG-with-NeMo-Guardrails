@@ -92,14 +92,14 @@ def stream_response(message, history):
 
         # 4. Now call rails.generate with stream=True to stream the rest
         user_message = {"role": "user", "content": message}
-        context = {"user_message": message}
+
+        # 5. Pass the user message directly (no context parameter)
         rails_response_gen = rails.generate(
             messages=[user_message], 
-            context=context, 
             stream=True
         )
-
-        # 5. Stream the remaining response from rails.generate (includes rag() output)
+    
+        # 6. Stream the remaining response from rails.generate (includes rag() output)
         for rails_response in rails_response_gen:
             yield history + [(message, rails_response['content'])]
 
