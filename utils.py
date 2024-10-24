@@ -14,7 +14,7 @@ Settings.text_splitter = SentenceSplitter(chunk_size=400)
 
 # Initialize global variables for the index and query engine
 index = None
-query_engine = None
+#query_engine = None
 
 # Function to get file names from file objects
 def get_files_from_input(file_objs):
@@ -24,7 +24,7 @@ def get_files_from_input(file_objs):
 
 # Function to load documents and create the index
 def load_documents(file_objs):
-    global index, query_engine
+    global index # query_engine
     try:
         if not file_objs:
             return "Error: No files selected."
@@ -72,3 +72,13 @@ def load_documents(file_objs):
         return f"Successfully loaded {len(documents)} documents from {len(file_paths)} files.", query_engine
     except Exception as e:
         return f"Error loading documents: {str(e)}"
+
+def query_engine():
+    """Returns the query engine from the global index."""
+    global index
+    if index:
+        return index.as_query_engine(similarity_top_k=20, streaming=True)
+    else:
+        return None  # Or raise an exception if appropriate
+
+
