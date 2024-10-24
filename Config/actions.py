@@ -30,7 +30,7 @@ async def rag(context: dict, kb: KnowledgeBase) -> ActionResult:  # Updated func
     chunks = await kb.search_relevant_chunks(user_message)
     relevant_chunks = "\n".join([chunk["body"] for chunk in chunks])
     # 💡 Store the chunks for fact-checking
-    context_updates["relevant_chunks"] = relevant_chunks
+    #context_updates["relevant_chunks"] = relevant_chunks
 
     # Use a custom prompt template
     prompt_template = PromptTemplate(TEMPLATE)
@@ -38,7 +38,7 @@ async def rag(context: dict, kb: KnowledgeBase) -> ActionResult:  # Updated func
     # 💡 Store the template for hallucination-checking
     context_updates["_last_bot_prompt"] = prompt_template.format(**input_variables)
 
-    print(f"💬 RAG :: prompt_template: {context_updates['_last_bot_prompt']}")
+    print(f"RAG :: prompt_template: {context_updates['_last_bot_prompt']}")
 
     # Initialize the LLM and ServiceContext
     llm = NVIDIA(model="meta/llama-3.1-8b-instruct") 
