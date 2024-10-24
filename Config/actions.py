@@ -1,7 +1,9 @@
 #from llama_index_core.prompts import PromptTemplate
 #from llama_index_core.indices.service_context import ServiceContext  
-from llama_index.llms.nvidia import NVIDIA
-from llama_index_core.indices.vector_store import VectorStoreIndex
+#from llama_index.llms.nvidia import NVIDIA
+#from llama_index_core.indices.vector_store import VectorStoreIndex
+
+from utils import vector_store, storage_context, NVIDIA, VectorStoreIndex
 from llama_index_core.response.schema import Response
 from nemoguardrails import LLMRails
 from nemoguardrails.actions.actions import ActionResult
@@ -43,7 +45,9 @@ async def rag(context: dict, kb: KnowledgeBase) -> ActionResult:  # Updated func
     llm = NVIDIA(model="meta/llama-3.1-8b-instruct")
 
     # Put together a LlamaIndex chain
-    index = VectorStoreIndex([], llm_predictor=llm)  # Pass llm_predictor directly
+    index = VectorStoreIndex.from_documents([], 
+                                             storage_context=storage_context,
+                                             llm_predictor=llm)
     query_engine = index.as_query_engine()
     response: Response = await query_engine.aquery(prompt)
     answer = response.response
