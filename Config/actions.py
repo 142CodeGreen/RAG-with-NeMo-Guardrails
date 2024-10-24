@@ -3,7 +3,7 @@
 #from llama_index.llms.nvidia import NVIDIA
 #from llama_index_core.indices.vector_store import VectorStoreIndex
 
-from utils import vector_store, storage_context, NVIDIA, VectorStoreIndex
+from utils import load_documents, query_engine
 from llama_index_core.response.schema import Response
 from nemoguardrails import LLMRails
 from nemoguardrails.actions.actions import ActionResult
@@ -41,14 +41,18 @@ async def rag(context: dict, kb: KnowledgeBase) -> ActionResult:  # Updated func
 
     print(f"RAG :: prompt_template: {context_updates['_last_bot_prompt']}")
 
+    documents = load_documents()
+    
     # Initialize the LLM and ServiceContext
     llm = NVIDIA(model="meta/llama-3.1-8b-instruct")
 
     # Put together a LlamaIndex chain
-    index = VectorStoreIndex.from_documents([], 
-                                             storage_context=storage_context,
+    index = VectorStoreIndex.from_documents(documents,
+                                             storage_context=storage_context, 
                                              llm_predictor=llm)
-    query_engine = index.as_query_engine()
+
+    # Get the query engine (modified)
+    query_engine = index.as_query_engine
     response: Response = await query_engine.aquery(prompt)
     answer = response.response
 
