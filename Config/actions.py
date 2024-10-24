@@ -1,4 +1,4 @@
-from llama_index_core.prompts import PromptTemplate
+#from llama_index_core.prompts import PromptTemplate
 from llama_index_core.indices.service_context import ServiceContext  
 from llama_index.llms.nvidia import NVIDIA
 from llama_index_core.indices.vector_store import VectorStoreIndex
@@ -33,10 +33,9 @@ async def rag(context: dict, kb: KnowledgeBase) -> ActionResult:  # Updated func
     #context_updates["relevant_chunks"] = relevant_chunks
 
     # Use a custom prompt template
-    prompt_template = PromptTemplate(TEMPLATE)
-    input_variables = {"question": user_message, "context": relevant_chunks}
-    # 💡 Store the template for hallucination-checking
-    context_updates["_last_bot_prompt"] = prompt_template.format(**input_variables)
+    prompt = TEMPLATE.format(question=user_message, context=relevant_chunks)
+    # 💡 Store the prompt for hallucination-checking
+    context_updates["_last_bot_prompt"] = prompt
 
     print(f"RAG :: prompt_template: {context_updates['_last_bot_prompt']}")
 
@@ -46,10 +45,8 @@ async def rag(context: dict, kb: KnowledgeBase) -> ActionResult:  # Updated func
 
     # Put together a LlamaIndex chain
     index = VectorStoreIndex([], service_context=service_context)
-    query_engine = index.as_query_engine()  
-    response: Response = await query_engine.aquery(
-        prompt_template.format(**input_variables)
-    )
+    query_engine = index.as_query_engine()
+    response: Response = await query_engine.aquery(prompt) # Use formatted prompt directly
     answer = response.response
     
     return ActionResult(return_value=answer, context_updates=context_updates)
