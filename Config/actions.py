@@ -12,7 +12,7 @@ async def rag(context: dict, llm: NVIDIA, kb: KnowledgeBase) -> ActionResult:
         query_engine = index.as_query_engine()
 
         # Get the user's message from the context
-        message = context.get('user_message') 
+        message = context.get('user_input') 
         if message is None:
             return ActionResult(return_value="No user message found.", context_updates={})
 
