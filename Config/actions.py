@@ -1,5 +1,5 @@
 #from llama_index_core.prompts import PromptTemplate
-from llama_index_core.indices.service_context import ServiceContext  
+#from llama_index_core.indices.service_context import ServiceContext  
 from llama_index.llms.nvidia import NVIDIA
 from llama_index_core.indices.vector_store import VectorStoreIndex
 from llama_index_core.response.schema import Response
@@ -40,15 +40,14 @@ async def rag(context: dict, kb: KnowledgeBase) -> ActionResult:  # Updated func
     print(f"RAG :: prompt_template: {context_updates['_last_bot_prompt']}")
 
     # Initialize the LLM and ServiceContext
-    llm = NVIDIA(model="meta/llama-3.1-8b-instruct") 
-    service_context = ServiceContext.from_defaults(llm_predictor=llm)
+    llm = NVIDIA(model="meta/llama-3.1-8b-instruct")
 
     # Put together a LlamaIndex chain
-    index = VectorStoreIndex([], service_context=service_context)
+    index = VectorStoreIndex([], llm_predictor=llm)  # Pass llm_predictor directly
     query_engine = index.as_query_engine()
-    response: Response = await query_engine.aquery(prompt) # Use formatted prompt directly
+    response: Response = await query_engine.aquery(prompt)
     answer = response.response
-    
+
     return ActionResult(return_value=answer, context_updates=context_updates)
 
 
