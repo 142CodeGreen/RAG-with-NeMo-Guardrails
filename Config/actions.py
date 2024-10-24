@@ -4,7 +4,7 @@
 #from llama_index_core.indices.vector_store import VectorStoreIndex
 
 from utils import load_documents, query_engine
-from llama_index_core.response.schema import Response
+#from llama_index_core.response.schema import Response
 from nemoguardrails import LLMRails
 from nemoguardrails.actions.actions import ActionResult
 from nemoguardrails.kb.kb import KnowledgeBase
@@ -52,9 +52,8 @@ async def rag(context: dict, kb: KnowledgeBase) -> ActionResult:  # Updated func
                                              llm_predictor=llm)
 
     # Get the query engine (modified)
-    query_engine = index.as_query_engine
-    response: Response = await query_engine.aquery(prompt)
-    answer = response.response
+    response = await query_engine.aquery(prompt)
+    answer = response.response  # Access the 'response' attribute directly
 
     return ActionResult(return_value=answer, context_updates=context_updates)
 
