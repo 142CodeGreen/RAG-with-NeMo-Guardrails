@@ -96,6 +96,7 @@ def stream_response(message, history):
         # 5. Pass the user message directly (no context parameter)
         rails_response_gen = rails.generate(
             messages=[user_message], 
+            context={"user_input": message},  # Correct way to pass context
             stream=True
         )
     
