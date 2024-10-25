@@ -114,7 +114,7 @@ with gr.Blocks() as demo:
     clear = gr.Button("Clear")
 
     load_btn.click(load_documents, inputs=[file_input], outputs=[load_output])
-    msg.submit(await stream_response, inputs=[msg, chatbot], outputs=[chatbot]) # Use submit button instead of msg
+    msg.submit(stream_response, inputs=[msg, chatbot], outputs=[chatbot]) # Use submit button instead of msg
     clear.click(lambda: None, None, chatbot, queue=False)
 
     # Initialize and register the rag action
