@@ -82,7 +82,7 @@ def stream_response(message, history):
             # Apply Nemo Guardrails to the partial response
             user_message = {"role": "user", "content": message}
             bot_message = {"role": "bot", "content": partial_response}
-            context = {"user_message": message}  # Pass user message in context
+            context = {"user_input": message}  # Pass user message in context
             rails_response = rails.generate(messages=[user_message, bot_message], context=context)
             yield history + [(message, rails_response['content'])] 
 
@@ -93,14 +93,13 @@ def stream_response(message, history):
         # 4. Now call rails.generate with stream=True to stream the rest
         user_message = {"role": "user", "content": message}
 
-        # 5. Pass the user message directly (no context parameter)
+        # 5. Stream the remaining response
         rails_response_gen = rails.generate(
             messages=[user_message], 
-            context={"user_input": message},  # Correct way to pass context
             stream=True
         )
     
-        # 6. Stream the remaining response from rails.generate (includes rag() output)
+        # 6. Stream the response from rails.generate (includes rag() output)
         for rails_response in rails_response_gen:
             yield history + [(message, rails_response['content'])]
 
