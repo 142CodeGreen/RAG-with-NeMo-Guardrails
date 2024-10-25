@@ -82,7 +82,7 @@ async def stream_response(message, history):
             # Apply Nemo Guardrails to the partial response
             user_message = {"role": "user", "content": message}
             bot_message = {"role": "bot", "content": partial_response}
-            rails_response = rails.generate(messages=[user_message, bot_message])
+            rails_response = await rails.generate_async(messages=[user_message, bot_message])
             yield history + [(message, rails_response['content'])] 
 
             # Break early to avoid streaming the entire initial response
@@ -91,7 +91,7 @@ async def stream_response(message, history):
 
         # 4. call rails.generate with stream=True to stream the rest
         user_message = {"role": "user", "content": message}
-        rails_response_gen = rails.generate(messages=[user_message], stream=True)
+        rails_response_gen = rails.generate_async(messages=[user_message], stream=True)
 
         # 5. Stream the remaining response from rails.generate
         async for rails_response in rails_response_gen:  # Use async for to handle the asynchronous generator
