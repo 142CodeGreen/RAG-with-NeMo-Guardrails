@@ -62,7 +62,7 @@ def load_documents(file_objs):
     except Exception as e:
         return f"Error loading documents: {str(e)}"
 
-def stream_response(message, history):
+async def stream_response(message, history):
     global query_engine  # You still need the query_engine for initial context
     if query_engine is None:
         yield history + [("Please upload a file first.", None)]
@@ -114,7 +114,7 @@ with gr.Blocks() as demo:
     clear = gr.Button("Clear")
 
     load_btn.click(load_documents, inputs=[file_input], outputs=[load_output])
-    msg.submit(stream_response, inputs=[msg, chatbot], outputs=[chatbot]) # Use submit button instead of msg
+    msg.submit(await stream_response, inputs=[msg, chatbot], outputs=[chatbot]) # Use submit button instead of msg
     clear.click(lambda: None, None, chatbot, queue=False)
 
     # Initialize and register the rag action
