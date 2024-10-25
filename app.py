@@ -69,7 +69,7 @@ def stream_response(message, history):
         return
 
     try:
-        # 1. Get an initial response for context (not streamed)
+        # 1. Get an initial response
         initial_response = query_engine.query(message) 
 
         # 2. Initialize partial_response 
@@ -82,27 +82,21 @@ def stream_response(message, history):
             # Apply Nemo Guardrails to the partial response
             user_message = {"role": "user", "content": message}
             bot_message = {"role": "bot", "content": partial_response}
-            context = {"user_input": message}  # Pass user message in context
-            rails_response = rails.generate(messages=[user_message, bot_message], context=context)
+            rails_response = rails.generate(messages=[user_message, bot_message])
             yield history + [(message, rails_response['content'])] 
 
             # Break early to avoid streaming the entire initial response
             if len(partial_response) > 100:  # Adjust the threshold as needed
                 break 
 
-        # 4. Now call rails.generate with stream=True to stream the rest
+        # 4. call rails.generate with stream=True to stream the rest
         user_message = {"role": "user", "content": message}
+        rails_response_gen = rails.generate(messages=[user_message], stream=True)
 
-        # 5. Stream the remaining response
-        rails_response_gen = rails.generate(
-            messages=[user_message], 
-            stream=True
-        )
-    
-        # 6. Stream the response from rails.generate (includes rag() output)
-        for rails_response in rails_response_gen:
+        # 5. Stream the remaining response from rails.generate
+        async for rails_response in rails_response_gen:  # Use async for to handle the asynchronous generator
             yield history + [(message, rails_response['content'])]
-
+            
     except Exception as e:
         yield history + [(message, f"Error processing query: {str(e)}")]
 
