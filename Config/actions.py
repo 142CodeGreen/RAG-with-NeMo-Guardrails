@@ -4,7 +4,7 @@ from llama_index.core import StorageContext, load_index_from_storage
 
 @action(name="rag")
 #async def rag(context: dict, llm: NVIDIA, kb: KnowledgeBase) -> ActionResult:
-async def rag(context: dict, llm) -> ActionResult:
+async def rag(context: dict, llm, kb) -> ActionResult:
     """
     This function performs retrieval augmented generation (RAG) using LlamaIndex.
     """
@@ -26,6 +26,7 @@ async def rag(context: dict, llm) -> ActionResult:
         return ActionResult(return_value=response.response, context_updates={})  
 
     except Exception as e:
+        print(f"Error in rag action: {e}")
         return ActionResult(return_value=f"Error processing query: {str(e)}", context_updates={})
 
 def init(app: LLMRails):
