@@ -6,6 +6,8 @@ warnings.filterwarnings("ignore", category=LangChainDeprecationWarning, module="
 
 import os
 import gradio as gr
+import shutil  # For copying files
+import asyncio
 
 from llama_index.core import Settings, SimpleDirectoryReader, VectorStoreIndex, StorageContext
 from llama_index.llms.nvidia import NVIDIA
@@ -19,8 +21,13 @@ from llama_index.core.node_parser import SentenceSplitter
 Settings.text_splitter = SentenceSplitter(chunk_size=400)
 
 from nemoguardrails import LLMRails, RailsConfig
+from nemoguardrails.streaming import StreamingHandler
+
 config = RailsConfig.from_path("./Config")
 rails = LLMRails(config)
+
+# Import the init function from actions.py
+from Config.actions import init
 
 index = None
 query_engine = None
@@ -47,6 +54,9 @@ def load_documents(file_objs):
             directory = os.path.dirname(file_path)
             documents.extend(SimpleDirectoryReader(input_files=[file_path]).load_data())
 
+            # Copy the PDF file to the kb directory
+            shutil.copy2(file_path, kb_dir) 
+
         if not documents:
             return f"No documents found in the selected files."
 
@@ -69,34 +79,20 @@ async def stream_response(message, history):
         return
 
     try:
-        # 1. Get an initial response
-        initial_response = query_engine.query(message) 
+        streaming_handler = StreamingHandler()
+        async def process_tokens():
+            async for chunk in streaming_handler:
+                # Apply Nemo Guardrails to the chunk
+                user_message = {"role": "user", "content": message}
+                bot_message = {"role": "bot", "content": chunk['content']}
+                rails_response = await rails.generate_async(messages=[user_message, bot_message])
+                yield history + [(message, rails_response['content'])]
 
-        # 2. Initialize partial_response 
-        partial_response = ""
+        asyncio.create_task(process_tokens())
 
-        # 3. Stream the initial response for the first few tokens
-        for text_chunk in initial_response.response_gen:  
-            partial_response += text_chunk
-            
-            # Apply Nemo Guardrails to the partial response
-            user_message = {"role": "user", "content": message}
-            bot_message = {"role": "bot", "content": partial_response}
-            rails_response = await rails.generate_async(messages=[user_message, bot_message])
-            yield history + [(message, rails_response['content'])] 
+        # Get the response from LlamaIndex with the streaming handler
+        _ = query_engine.query(message, streaming_handler=streaming_handler)
 
-            # Break early to avoid streaming the entire initial response
-            if len(partial_response) > 100:  # Adjust the threshold as needed
-                break 
-
-        # 4. call rails.generate with stream=True to stream the rest
-        user_message = {"role": "user", "content": message}
-        rails_response_gen = await rails.generate_async(messages=[user_message], stream=True)
-
-        # 5. Stream the remaining response from rails.generate
-        async for rails_response in rails_response_gen:  # Use async for to handle the asynchronous generator
-            yield history + [(message, rails_response['content'])]
-            
     except Exception as e:
         yield history + [(message, f"Error processing query: {str(e)}")]
 
@@ -118,8 +114,7 @@ with gr.Blocks() as demo:
     clear.click(lambda: None, None, chatbot, queue=False)
 
     # Initialize and register the rag action
-    #setup_rails_actions()
-    #rails.register_action(rag, "rag")  # Register the action with rails
+    init(rails)  # Call init to register the rag action
 
 # Launch the Gradio interface
 if __name__ == "__main__":
