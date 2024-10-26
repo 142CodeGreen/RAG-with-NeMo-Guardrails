@@ -91,7 +91,7 @@ async def stream_response(message, history):
 
         # 4. call rails.generate with stream=True to stream the rest
         user_message = {"role": "user", "content": message}
-        rails_response_gen = rails.generate_async(messages=[user_message], stream=True)
+        rails_response_gen = await rails.generate_async(messages=[user_message], stream=True)
 
         # 5. Stream the remaining response from rails.generate
         async for rails_response in rails_response_gen:  # Use async for to handle the asynchronous generator
