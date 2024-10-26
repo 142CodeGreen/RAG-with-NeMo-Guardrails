@@ -7,7 +7,7 @@ warnings.filterwarnings("ignore", category=LangChainDeprecationWarning, module="
 import os
 import gradio as gr
 import shutil  # For copying files
-import asyncio
+#import asyncio
 
 from llama_index.core import Settings, SimpleDirectoryReader, VectorStoreIndex, StorageContext
 from llama_index.llms.nvidia import NVIDIA
@@ -21,7 +21,7 @@ from llama_index.core.node_parser import SentenceSplitter
 Settings.text_splitter = SentenceSplitter(chunk_size=400)
 
 from nemoguardrails import LLMRails, RailsConfig
-from nemoguardrails.streaming import StreamingHandler
+#from nemoguardrails.streaming import StreamingHandler
 
 config = RailsConfig.from_path("./Config")
 rails = LLMRails(config)
@@ -72,29 +72,27 @@ def load_documents(file_objs):
     except Exception as e:
         return f"Error loading documents: {str(e)}"
 
-async def stream_response(message, history):
+def stream_response(message, history):
     global query_engine  # You still need the query_engine for initial context
     if query_engine is None:
-        yield history + [("Please upload a file first.", None)]
-        return
+        return history + [{"role": "user", "content": message}, {"role": "bot", "content": "Please upload a file first."}]
+        
 
     try:
-        streaming_handler = StreamingHandler()
-        async def process_tokens():
-            async for chunk in streaming_handler:
-                # Apply Nemo Guardrails to the chunk
-                user_message = {"role": "user", "content": message}
-                bot_message = {"role": "bot", "content": chunk['content']}
-                rails_response = await rails.generate_async(messages=[user_message, bot_message])
-                yield history + [(message, rails_response['content'])]
+        response = query_engine.query(message)
 
-        asyncio.create_task(process_tokens())
-
-        # Get the response from LlamaIndex with the streaming handler
-        _ = query_engine.query(message, streaming_handler=streaming_handler)
+        # Apply Nemo Guardrails to the chunk
+        user_message = {"role": "user", "content": message}
+        bot_message = {"role": "bot", "content": response.response}
+        rails_response = rails.generate(messages=[user_message, bot_message])
+        
+        return history + [{"role": "user", "content": message}, {"role": "bot", "content": rails_response['content']}]  
+        
+        #        yield {"role": "user", "content": rails_response['content']}
 
     except Exception as e:
-        yield history + [(message, f"Error processing query: {str(e)}")]
+        yield history + [{"role": "user", "content": message}, {"role": "bot", "content": f"Error processing query: {str(e)}"}]
+
 
 # Create the Gradio interface
 with gr.Blocks() as demo:
@@ -105,21 +103,20 @@ with gr.Blocks() as demo:
         load_btn = gr.Button("Load PDF Documents only")
 
     load_output = gr.Textbox(label="Load Status")
-    chatbot = gr.Chatbot()
+    chatbot = gr.Chatbot(type='messages')
     msg = gr.Textbox(label="Enter your question",interactive=True)
     clear = gr.Button("Clear")
+
+    init(rails)
 
     load_btn.click(load_documents, inputs=[file_input], outputs=[load_output])
     msg.submit(stream_response, inputs=[msg, chatbot], outputs=[chatbot]) # Use submit button instead of msg
     clear.click(lambda: None, None, chatbot, queue=False)
 
-    # Initialize and register the rag action
-    init(rails)  # Call init to register the rag action
-
+    
 # Launch the Gradio interface
 if __name__ == "__main__":
     demo.queue().launch(share=True,debug=True)
-
 
 # Import from utils.py
 #from utils import load_documents
