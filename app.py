@@ -36,6 +36,11 @@ def load_documents(file_objs):
         if not file_objs:
             return "Error: No files selected."
 
+        # Create the 'kb' directory if it doesn't exist
+        kb_dir = "./Config/kb"
+        if not os.path.exists(kb_dir):
+            os.makedirs(kb_dir)
+
         file_paths = get_files_from_input(file_objs)
         documents = []
         for file_path in file_paths:
@@ -49,11 +54,6 @@ def load_documents(file_objs):
         storage_context = StorageContext.from_defaults(vector_store=vector_store)
         index = VectorStoreIndex.from_documents(documents, storage_context=storage_context)
 
-        # Create the 'kb' directory if it doesn't exist
-        kb_dir = "./Config/kb"
-        if not os.path.exists(kb_dir):
-            os.makedirs(kb_dir)
-            
         # Save the index to the 'kb' subfolder
         storage_context.persist(persist_dir="./Config/kb")  
 
