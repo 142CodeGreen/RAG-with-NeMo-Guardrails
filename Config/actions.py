@@ -3,7 +3,8 @@ from nemoguardrails.actions.actions import ActionResult
 from llama_index.core import KnowledgeBase, StorageContext, load_index_from_storage
 
 @action(name="rag")
-async def rag(context: dict, llm: NVIDIA, kb: KnowledgeBase) -> ActionResult:
+#async def rag(context: dict, llm: NVIDIA, kb: KnowledgeBase) -> ActionResult:
+async def rag(context: dict, llm) -> ActionResult:
     """
     This function performs retrieval augmented generation (RAG) using LlamaIndex.
     """
@@ -25,7 +26,7 @@ async def rag(context: dict, llm: NVIDIA, kb: KnowledgeBase) -> ActionResult:
         return ActionResult(return_value=response.response, context_updates={})  
 
     except Exception as e:
-        return ActionResult(return_value=f"Error processing query: {str(e)}", context_updates=context_updates)
+        return ActionResult(return_value=f"Error processing query: {str(e)}", context_updates={})
 
 def init(app: LLMRails):
     app.register_action(rag, "rag")
