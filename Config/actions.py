@@ -1,6 +1,8 @@
 from nemoguardrails.actions import action
 from nemoguardrails.actions.actions import ActionResult
 from llama_index.core import StorageContext, load_index_from_storage
+from llama_index.llms.nvidia import NVIDIA
+
 from nemoguardrails import LLMRails
 
 @action(name="rag")
@@ -20,11 +22,17 @@ async def rag(context: dict, llm, kb) -> ActionResult:
         if message is None:
             return ActionResult(return_value="No user message found.", context_updates={})
 
-        # Perform the query using the query engine
-        response = query_engine.query(message)
+        llm = NVIDIA(model="meta/llama-3.1-8b-instruct")
 
-        # Return the response text and update the context (optional)
-        return ActionResult(return_value=response.response, context_updates={})  
+        # Search for relevant chunks using kb
+        relevant_chunks = kb.search_relevant_chunks(message)
+        context_updates = {"retrieved_chunks": relevant_chunks}  # Store in context
+
+        # Construct a prompt with the retrieved chunks
+        prompt = f"Answer the question based on this context:\n\n{relevant_chunks}\n\nQuestion: {message}"
+        response = llm(prompt)
+
+        return ActionResult(return_value=response, context_updates=context_updates)
 
     except Exception as e:
         print(f"Error in rag action: {e}")
