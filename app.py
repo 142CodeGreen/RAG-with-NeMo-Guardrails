@@ -79,14 +79,16 @@ def stream_response(message, history):
         
 
     try:
-        response = query_engine.query(message)
+        full_message = ""
+        for chunk in query_engine.query(message):
+            full_response += chunk.response # accumulate response chunks    
+            yield history + [{"role": "user", "content": message}, {"role": "bot", "content": full_response}]
 
         # Apply Nemo Guardrails to the chunk
         user_message = {"role": "user", "content": message}
-        bot_message = {"role": "bot", "content": response.response}
-        rails_response = rails.generate(messages=[user_message, bot_message])
-        
-        return history + [{"role": "user", "content": message}, {"role": "bot", "content": rails_response['content']}]  
+        bot_message = {"role": "bot", "content": full_response}
+        rails_response = rails.generate(messages=[user_message, bot_message], context={"knowledge": full_response})  # Include context
+        yield history + [{"role": "user", "content": message}, {"role": "bot", "content": rails_response['content']}]  
         
         #        yield {"role": "user", "content": rails_response['content']}
 
@@ -110,7 +112,7 @@ with gr.Blocks() as demo:
     init(rails)
 
     load_btn.click(load_documents, inputs=[file_input], outputs=[load_output])
-    msg.submit(stream_response, inputs=[msg, chatbot], outputs=[chatbot]) # Use submit button instead of msg
+    msg.stream(stream_response, inputs=[msg, chatbot], outputs=[chatbot]) # Use submit button instead of msg
     clear.click(lambda: None, None, chatbot, queue=False)
 
     
