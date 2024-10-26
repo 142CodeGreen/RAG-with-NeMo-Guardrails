@@ -112,7 +112,7 @@ with gr.Blocks() as demo:
     init(rails)
 
     load_btn.click(load_documents, inputs=[file_input], outputs=[load_output])
-    msg.stream(stream_response, inputs=[msg, chatbot], outputs=[chatbot]) # Use submit button instead of msg
+    msg.submit(stream_response, inputs=[msg, chatbot], outputs=[chatbot]) # Use submit button instead of msg
     clear.click(lambda: None, None, chatbot, queue=False)
 
     
