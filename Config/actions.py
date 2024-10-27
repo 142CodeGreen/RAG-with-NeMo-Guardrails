@@ -13,12 +13,10 @@ async def rag(context: dict, llm, kb) -> ActionResult:
     This function performs retrieval augmented generation (RAG) using LlamaIndex.
     """
     try:
-        #print(f"Entering rag action with context: {context}") #1
-        
         # Load the index from the 'kb' subfolder
-        #storage_context = StorageContext.from_defaults(persist_dir="./Config/kb")
-        #index = load_index_from_storage(storage_context)
-        #query_engine = index.as_query_engine()
+        storage_context = StorageContext.from_defaults(persist_dir="./Config/kb")
+        index = load_index_from_storage(storage_context)
+        query_engine = index.as_query_engine()
 
         #print("LlamaIndex knowledge base loaded successfully.") #2
 
