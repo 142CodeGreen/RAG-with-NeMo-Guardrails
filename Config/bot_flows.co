@@ -23,7 +23,7 @@ define flow self check output
 #  bot $answer
 
 define flow self check hallucinations
-  $answer = execute rag()   #kb="my_knowledge_base"
+  $answer = execute rag()
   $check_hallucination = True
   bot $answer
 
