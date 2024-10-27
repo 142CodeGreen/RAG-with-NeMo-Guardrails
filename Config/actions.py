@@ -28,7 +28,8 @@ async def rag(context: dict, llm, kb) -> ActionResult:
             return ActionResult(return_value="No user message found.", context_updates={})
         print(f"User input: {message}")  # 4.
         
-        llm = NVIDIA(model="meta/llama-3.1-8b-instruct")
+        #llm = NVIDIA(model="meta/llama-3.1-8b-instruct")
+        Settings.llm = NVIDIA(model="meta/llama-3.1-8b-instruct")
         print("LLM initialized.")  # 5.
 
         # Search for relevant chunks using kb
