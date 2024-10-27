@@ -12,26 +12,42 @@ async def rag(context: dict, llm, kb) -> ActionResult:
     This function performs retrieval augmented generation (RAG) using LlamaIndex.
     """
     try:
+        print(f"Entering rag action with context: {context}") #1
+        
         # Load the index from the 'kb' subfolder
         storage_context = StorageContext.from_defaults(persist_dir="./Config/kb")
         index = load_index_from_storage(storage_context)
         query_engine = index.as_query_engine()
 
+        print("LlamaIndex knowledge base loaded successfully.") #2
+
         # Get the user's message from the context
         message = context.get('user_input') 
         if message is None:
+            print("Error: No user_input found in context.")  # 3.
             return ActionResult(return_value="No user message found.", context_updates={})
-
+        print(f"User input: {message}")  # 4.
+        
         llm = NVIDIA(model="meta/llama-3.1-8b-instruct")
+        print("LLM initialized.")  # 5.
 
         # Search for relevant chunks using kb
+        print("Searching for relevant chunks...")  # 6.
         relevant_chunks = kb.search_relevant_chunks(message)
-        context_updates = {"retrieved_chunks": relevant_chunks}  # Store in context
+        print(f"Relevant chunks found: {relevant_chunks}")  # 7. 
+        
+        #context_updates = {"retrieved_chunks": relevant_chunks}  # Store in context
 
         # Construct a prompt with the retrieved chunks
         prompt = f"Answer the question based on this context:\n\n{relevant_chunks}\n\nQuestion: {message}"
+        print(f"Prompt constructed: {prompt}")  # 8.
+        
         response = llm(prompt)
+        print(f"Generated response: {response}")  # 10.
 
+        context_updates = {"retrieved_chunks": relevant_chunks}  # Store in context
+        print(f"Returning response with context updates: {context_updates}") #11
+        
         return ActionResult(return_value=response, context_updates=context_updates)
 
     except Exception as e:
