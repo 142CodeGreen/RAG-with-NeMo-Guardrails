@@ -5,7 +5,7 @@ from llama_index.llms.nvidia import NVIDIA
 
 from nemoguardrails import LLMRails
 
-@action(name="rag")
+@action(is_system_action=True)
 #async def rag(context: dict, llm: NVIDIA, kb: KnowledgeBase) -> ActionResult:
 async def rag(context: dict, llm, kb) -> ActionResult:
     """
