@@ -28,6 +28,7 @@ rails = LLMRails(config)
 
 # Import the init function from actions.py
 from Config.actions import init
+init(rails)
 
 index = None
 query_engine = None
@@ -125,8 +126,7 @@ with gr.Blocks() as demo:
     msg = gr.Textbox(label="Enter your question",interactive=True)
     clear = gr.Button("Clear")
 
-    init(rails)
-
+    #init(rails)
     load_btn.click(load_documents, inputs=[file_input], outputs=[load_output])
     msg.submit(stream_response, inputs=[msg, chatbot], outputs=[chatbot]) # Use submit button instead of msg
     clear.click(lambda: None, None, chatbot, queue=False)
