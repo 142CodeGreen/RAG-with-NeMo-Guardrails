@@ -65,17 +65,32 @@ def load_documents(file_objs):
         index = VectorStoreIndex.from_documents(documents, storage_context=storage_context)
 
         # Save the index to the 'kb' subfolder
-        storage_context.persist(persist_dir="./Config/kb")  
+        #storage_context.persist(persist_dir="./Config/kb")  
 
         query_engine = index.as_query_engine(similarity_top_k=20, streaming=True)
         return f"Successfully loaded {len(documents)} documents from {len(file_paths)} files."
     except Exception as e:
         return f"Error loading documents: {str(e)}"
 
+# Function to handle chat interactions
+def chat(message,history):
+    global query_engine
+    if query_engine is None:
+        return history + [{"role": "user", "content": message}, {"role": "bot", "content": "Please upload a file first.", None}]
+        
+    try:
+        #modification for nemo guardrails ( next three rows)
+        user_message = {"role":"user","content":message}
+        response = rails.generate(messages=[user_message])
+        return history + [(message,response['content'])]
+    except Exception as e:
+        return history + [(message,f"Error processing query: {str(e)}")]
+
+
 def stream_response(message, history):
     global query_engine  # You still need the query_engine for initial context
     if query_engine is None:
-        return history + [{"role": "user", "content": message}, {"role": "bot", "content": "Please upload a file first."}]
+        return history + [{"role": "user", "content": message}, {"role": "bot", "content": "Please upload a file first.", None}]
         
 
     try:
