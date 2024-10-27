@@ -76,7 +76,7 @@ def load_documents(file_objs):
 def chat(message,history):
     global query_engine
     if query_engine is None:
-        return history + [{"role": "user", "content": message}, {"role": "bot", "content": "Please upload a file first.", None}]
+        return history + [("Please upload a file first.",None)]
         
     try:
         #modification for nemo guardrails ( next three rows)
@@ -90,7 +90,8 @@ def chat(message,history):
 def stream_response(message, history):
     global query_engine  # You still need the query_engine for initial context
     if query_engine is None:
-        return history + [{"role": "user", "content": message}, {"role": "bot", "content": "Please upload a file first.", None}]
+        return history + [("Please upload a file first.",None)]
+        #return history + [{"role": "user", "content": message}, {"role": "bot", "content": "Please upload a file first.", None}]
         
 
     try:
