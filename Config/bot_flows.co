@@ -13,7 +13,7 @@ define flow self check output
     stop
 
 define flow user query
-  $answer = execute user_query
+  $answer = execute rag()
   bot $answer
 
 #define flow answer report question
