@@ -22,9 +22,9 @@ async def rag(context: dict, llm, kb) -> ActionResult:
         print("LlamaIndex knowledge base loaded successfully.") #2
 
         # Get the user's message from the context
-        message = context.get('user_input') 
+        message = context.get('user_message') 
         if message is None:
-            print("Error: No user_input found in context.")  # 3.
+            print("Error: No user_message found in context.")  # 3.
             return ActionResult(return_value="No user message found.", context_updates={})
         print(f"User input: {message}")  # 4.
         
