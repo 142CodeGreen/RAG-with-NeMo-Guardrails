@@ -38,6 +38,13 @@ def get_files_from_input(file_objs):
         return []
     return [file_obj.name for file_obj in file_objs]
 
+def initialize_kb(documents):
+    """Initialize the knowledge base with the provided documents."""
+    vector_store = MilvusVectorStore(uri="./milvus_demo.db", dim=1024, overwrite=True, output_fields=[])
+    storage_context = StorageContext.from_defaults(vector_store=vector_store)
+    index = VectorStoreIndex.from_documents(documents, storage_context=storage_context)
+    return index
+
 def load_documents(file_objs):
     global index, query_engine
     try:
@@ -61,49 +68,38 @@ def load_documents(file_objs):
         if not documents:
             return f"No documents found in the selected files."
 
-        vector_store = MilvusVectorStore(uri="./milvus_demo.db", dim=1024, overwrite=True, output_fields=[])
-        storage_context = StorageContext.from_defaults(vector_store=vector_store)
-        index = VectorStoreIndex.from_documents(documents, storage_context=storage_context)
+        #vector_store = MilvusVectorStore(uri="./milvus_demo.db", dim=1024, overwrite=True, output_fields=[])
+        #storage_context = StorageContext.from_defaults(vector_store=vector_store)
+        #index = VectorStoreIndex.from_documents(documents, storage_context=storage_context)
 
         # Save the index to the 'kb' subfolder
         #storage_context.persist(persist_dir="./Config/kb")  
-
+        
+        index = initialize_kb(documents)
         query_engine = index.as_query_engine(similarity_top_k=20, streaming=True)
         return f"Successfully loaded {len(documents)} documents from {len(file_paths)} files."
     except Exception as e:
         return f"Error loading documents: {str(e)}"
 
-# Function to handle chat interactions
-def chat(message,history):
+def stream_respons(message, history):
+    """Handle chat interactions."""
     global query_engine
     if query_engine is None:
-        return history + [("Please upload a file first.",None)]
+        return history + [("Please upload a file first.", None)]
         
     try:
-        #modification for nemo guardrails ( next three rows)
-        user_message = {"role":"user","content":message}
-        response = rails.generate(messages=[user_message], context={"kb": kb})
-        return history + [(message,response['content'])]
-    except Exception as e:
-        return history + [(message,f"Error processing query: {str(e)}")]
+        # Query for relevant information
+        response = query_engine.query(message)
 
-def stream_response(message, history):
-    global query_engine  # You still need the query_engine for initial context
-    if query_engine is None:
-        return history + [("Please upload a file first.",None)]
-        #return history + [{"role": "user", "content": message}, {"role": "bot", "content": "Please upload a file first.", None}]
-    
-    try:
-        full_response = query_engine.query(message)
-    
-        # Apply Nemo Guardrails to the chunk
+        # Using Nemo Guardrails to process the response
         user_message = {"role": "user", "content": message}
-        bot_message = {"role": "bot", "content": full_response.response}
-        rails_response = rails.generate(messages=[user_message, bot_message], context={"kb": full_response.response}) #context={"knowledge": full_response.response})  # Include context
-        return history + [{"role": "user", "content": message}, {"role": "bot", "content": rails_response['content']}]  
-    except Exception as e:
-        return history + [{"role": "user", "content": message}, {"role": "bot", "content": f"Error processing query: {str(e)}"}]
+        bot_message = {"role": "bot", "content": response.response}
+        rails_response = rails.generate(messages=[user_message, bot_message], 
+                                        context={"kb": response})
 
+        return history + [(message, rails_response['content'])]
+    except Exception as e:
+        return history + [(message, f"Error processing query: {str(e)}")]
 
 # Create the Gradio interface
 with gr.Blocks() as demo:
@@ -114,16 +110,15 @@ with gr.Blocks() as demo:
         load_btn = gr.Button("Load PDF Documents only")
 
     load_output = gr.Textbox(label="Load Status")
-    chatbot = gr.Chatbot(type='messages')
-    msg = gr.Textbox(label="Enter your question",interactive=True)
+    chatbot = gr.Chatbot()
+    msg = gr.Textbox(label="Enter your question", interactive=True)
     clear = gr.Button("Clear")
 
-    #init(rails)
     load_btn.click(load_documents, inputs=[file_input], outputs=[load_output])
-    msg.submit(stream_response, inputs=[msg, chatbot], outputs=[chatbot]) # Use submit button instead of msg
+    msg.submit(stream_response, inputs=[msg, chatbot], outputs=[chatbot])
     clear.click(lambda: None, None, chatbot, queue=False)
 
-    
+
 # Launch the Gradio interface
 if __name__ == "__main__":
     demo.queue().launch(share=True,debug=True)
