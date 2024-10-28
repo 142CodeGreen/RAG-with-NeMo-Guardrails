@@ -36,7 +36,7 @@ rails:
   output:
     flows:
       - self check output
-      - self check hallucinations
+      #- self check hallucinations
 
   # Whether to try to use a single LLM call for generating the user intent, next step and bot message.
   dialog:
