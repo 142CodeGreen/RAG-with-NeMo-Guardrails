@@ -94,8 +94,7 @@ def stream_response(message, history):
         # Using Nemo Guardrails to process the response
         user_message = {"role": "user", "content": message}
         bot_message = {"role": "bot", "content": response.response}
-        rails_response = rails.generate(messages=[user_message, bot_message], 
-                                        context={"kb": response})
+        rails_response = rails.generate(messages=[user_message, bot_message])
 
         return history + [(message, rails_response['content'])]
     except Exception as e:
