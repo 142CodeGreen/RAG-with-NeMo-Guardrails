@@ -90,7 +90,14 @@ async def chat(message, history):
     try:
         # Query for relevant information
         streaming_response = query_engine.query(message) 
-        response = streaming_response.response
+
+        # Gather the response chunks
+        response_list = []
+        async for chunk in streaming_response:
+            response_list.append(chunk)
+
+        # Combine the chunks into a single string
+        response = "".join(response_list) 
         
         # Using Nemo Guardrails to process the response
         user_message = {"role": "user", "content": message}
