@@ -81,23 +81,19 @@ def load_documents(file_objs):
     except Exception as e:
         return f"Error loading documents: {str(e)}"
 
-async def stream_response(message, history):
+def stream_response(message, history):
     """Handle chat interactions."""
     global query_engine
     if query_engine is None:
         return history + [("Please upload a file first.", None)]
         
     try:
-        streaming_response = query_engine.query(message)
-        response_chunks = []
-        async for chunk in streaming_response.response_gen:
-            response_chunks.append(chunk)
-        response = "".join(response_chunks)
+        response = query_engine.query(message)
         
         # Using Nemo Guardrails to process the response
         user_message = {"role": "user", "content": message}
         bot_message = {"role": "bot", "content": response.response}
-        rails_response = await rails.generate(messages=[user_message, bot_message], 
+        rails_response = rails.generate(messages=[user_message, bot_message], 
                                         context={"kb": response})
 
         return history + [(message, rails_response['content'])]
