@@ -87,30 +87,43 @@ def chat(message,history):
     except Exception as e:
         return history + [(message,f"Error processing query: {str(e)}")]
 
-
 def stream_response(message, history):
-    global query_engine  # You still need the query_engine for initial context
+    global query_engine 
     if query_engine is None:
         return history + [("Please upload a file first.",None)]
-        #return history + [{"role": "user", "content": message}, {"role": "bot", "content": "Please upload a file first.", None}]
-        
 
     try:
-        full_response = query_engine.query(message)
-        #for chunk in query_engine.query(message):
-        #    full_response += chunk.response # accumulate response chunks    
-        #    yield history + [{"role": "user", "content": message}, {"role": "bot", "content": full_response}]
-
-        # Apply Nemo Guardrails to the chunk
-        user_message = {"role": "user", "content": message}
-        bot_message = {"role": "bot", "content": full_response.response}
-        rails_response = rails.generate(messages=[user_message, bot_message], context={"kb": kb}) #context={"knowledge": full_response.response})  # Include context
-        return history + [{"role": "user", "content": message}, {"role": "bot", "content": rails_response['content']}]  
-        
-        #        yield {"role": "user", "content": rails_response['content']}
+        for chunk in query_engine.query(message):
+            # Apply Nemo Guardrails to the chunk
+            user_message = {"role": "user", "content": message}
+            bot_message = {"role": "bot", "content": chunk.response}  # Use chunk.response
+            rails_response = rails.generate(messages=[user_message, bot_message], context={"kb": kb, "relevant_chunks": chunk.metadata}) # Include relevant chunks for this chunk
+            yield history + [{"role": "user", "content": message}, {"role": "bot", "content": rails_response['content']}] 
 
     except Exception as e:
         return history + [{"role": "user", "content": message}, {"role": "bot", "content": f"Error processing query: {str(e)}"}]
+
+
+#def stream_response(message, history):
+#    global query_engine  # You still need the query_engine for initial context
+#    if query_engine is None:
+#        return history + [("Please upload a file first.",None)]
+        #return history + [{"role": "user", "content": message}, {"role": "bot", "content": "Please upload a file first.", None}]
+        
+
+ #   try:
+ #       full_response = query_engine.query(message)
+    
+        # Apply Nemo Guardrails to the chunk
+ #       user_message = {"role": "user", "content": message}
+ #       bot_message = {"role": "bot", "content": full_response.response}
+ #       rails_response = rails.generate(messages=[user_message, bot_message], context={"kb": kb}) #context={"knowledge": full_response.response})  # Include context
+ #       return history + [{"role": "user", "content": message}, {"role": "bot", "content": rails_response['content']}]  
+        
+        #        yield {"role": "user", "content": rails_response['content']}
+
+  #  except Exception as e:
+  #      return history + [{"role": "user", "content": message}, {"role": "bot", "content": f"Error processing query: {str(e)}"}]
 
 
 # Create the Gradio interface
