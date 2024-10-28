@@ -101,9 +101,6 @@ def stream_response(message, history):
         bot_message = {"role": "bot", "content": full_response.response}
         rails_response = rails.generate(messages=[user_message, bot_message], context={"kb": full_response.response}) #context={"knowledge": full_response.response})  # Include context
         return history + [{"role": "user", "content": message}, {"role": "bot", "content": rails_response['content']}]  
-        
-        #        yield {"role": "user", "content": rails_response['content']}
-
       except Exception as e:
         return history + [{"role": "user", "content": message}, {"role": "bot", "content": f"Error processing query: {str(e)}"}]
 
