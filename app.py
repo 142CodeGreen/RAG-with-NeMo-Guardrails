@@ -81,7 +81,7 @@ def load_documents(file_objs):
     except Exception as e:
         return f"Error loading documents: {str(e)}"
 
-async def stream_response(message, history):
+async def chat(message, history):
     """Handle chat interactions."""
     global query_engine
     if query_engine is None:
@@ -115,7 +115,7 @@ with gr.Blocks() as demo:
     clear = gr.Button("Clear")
 
     load_btn.click(load_documents, inputs=[file_input], outputs=[load_output])
-    msg.submit(stream_response, inputs=[msg, chatbot], outputs=[chatbot])
+    msg.submit(chat, inputs=[msg, chatbot], outputs=[chatbot])
     clear.click(lambda: None, None, chatbot, queue=False)
 
 
