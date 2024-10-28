@@ -17,8 +17,9 @@ async def rag(context: dict, llm, kb) -> ActionResult:
         query_engine = index.as_query_engine()
 
         # Get the user's message from the context
-        message = context.get('user_message')
         context_update = {}
+        message = context.get('last_user_message')
+        #context_update = {}
 
         print("Searching for relevant chunks...")  # 6.
         
