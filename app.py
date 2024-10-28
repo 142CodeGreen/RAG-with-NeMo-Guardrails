@@ -81,7 +81,7 @@ def load_documents(file_objs):
     except Exception as e:
         return f"Error loading documents: {str(e)}"
 
-async def chat(message, history):
+def chat(message, history):
     """Handle chat interactions."""
     global query_engine
     if query_engine is None:
@@ -89,12 +89,12 @@ async def chat(message, history):
         
     try:
         # Query for relevant information
-        response = await query_engine.query(message)
+        response = query_engine.query(message)
 
         # Using Nemo Guardrails to process the response
         user_message = {"role": "user", "content": message}
         bot_message = {"role": "bot", "content": response.response}
-        rails_response = await rails.generate(messages=[user_message, bot_message], 
+        rails_response = rails.generate(messages=[user_message, bot_message], 
                                         context={"kb": response})
 
         return history + [(message, rails_response['content'])]
