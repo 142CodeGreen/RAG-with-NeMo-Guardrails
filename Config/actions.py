@@ -20,11 +20,12 @@ def rag(context: dict, llm) -> ActionResult:
     :return: ActionResult with the generated response and updates to context
     """
     try:
+        context_update = {}
         message = context.get('last_user_message')
         kb = load_kb_from_storage()
         # Query the knowledge base for relevant information
         query_engine = kb.as_query_engine(similarity_top_k=20)
-        response = query_engine.aquery(message)
+        response = query_engine.query(message)
         relevant_chunks = response.source_nodes
 
         # Construct the prompt for the LLM
