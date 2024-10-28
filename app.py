@@ -81,7 +81,7 @@ def load_documents(file_objs):
     except Exception as e:
         return f"Error loading documents: {str(e)}"
 
-async def stream_respons(message, history):
+async def stream_response(message, history):
     """Handle chat interactions."""
     global query_engine
     if query_engine is None:
