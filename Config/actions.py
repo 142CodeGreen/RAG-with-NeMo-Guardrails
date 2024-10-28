@@ -10,7 +10,7 @@ def load_kb_from_storage():
     return index
 
 @action(is_system_action=True)
-async def rag(context: dict, llm) -> ActionResult:
+def rag(context: dict, llm) -> ActionResult:
     """
     Retrieve and generate a response based on the user's message using RAG.
     
@@ -23,7 +23,7 @@ async def rag(context: dict, llm) -> ActionResult:
         kb = load_kb_from_storage()
         # Query the knowledge base for relevant information
         query_engine = kb.as_query_engine(similarity_top_k=20)
-        response = await query_engine.aquery(message)
+        response = query_engine.aquery(message)
         relevant_chunks = response.source_nodes
 
         # Construct the prompt for the LLM
