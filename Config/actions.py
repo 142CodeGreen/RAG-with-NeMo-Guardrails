@@ -26,6 +26,7 @@ def template(question, context):
 @action(is_system_action=True)
 def rag(context: dict, llm) -> ActionResult:
     try:
+        context_updates = {}
         message = context.get('last_user_message')
         
         kb = load_kb_from_storage()
