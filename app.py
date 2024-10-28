@@ -93,7 +93,7 @@ async def stream_response(message, history):
 
         # Gather the response chunks
         response_list = []
-        async for chunk in streaming_response:
+        async for chunk in streaming_response.aiter():
             response_list.append(chunk)
 
         # Combine the chunks into a single string
