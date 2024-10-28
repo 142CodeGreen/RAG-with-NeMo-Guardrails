@@ -89,8 +89,9 @@ async def chat(message, history):
         
     try:
         # Query for relevant information
-        response = await query_engine.query(message)
-
+        streaming_response = query_engine.query(message) 
+        response = streaming_response.response
+        
         # Using Nemo Guardrails to process the response
         user_message = {"role": "user", "content": message}
         bot_message = {"role": "bot", "content": response.response}
