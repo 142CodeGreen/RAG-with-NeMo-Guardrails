@@ -7,7 +7,7 @@ from nemoguardrails.kb.kb import KnowledgeBase
 from nemoguardrails import LLMRails
 
 @action(is_system_action=True)
-async def rag(context: dict, llm, kb) -> ActionResult:
+async def rag(context: dict, llm, kb: KnowledgeBase) -> ActionResult:
     """
     This function performs retrieval augmented generation (RAG) using LlamaIndex.
     """
