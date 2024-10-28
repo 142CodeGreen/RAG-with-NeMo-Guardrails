@@ -88,16 +88,11 @@ async def stream_response(message, history):
         return history + [("Please upload a file first.", None)]
         
     try:
-        # Query for relevant information
-        streaming_response = query_engine.query(message) 
-
-        # Gather the response chunks
-        response_list = []
-        async for chunk in streaming_response.stream():
-            response_list.append(chunk)
-
-        # Combine the chunks into a single string
-        response = "".join(response_list) 
+        streaming_response = query_engine.query(message)
+        response_chunks = []
+        async for chunk in streaming_response.response_gen:
+            response_chunks.append(chunk)
+        response = "".join(response_chunks)
         
         # Using Nemo Guardrails to process the response
         user_message = {"role": "user", "content": message}
