@@ -10,27 +10,35 @@ def load_kb_from_storage():
     index = load_index_from_storage(storage_context)
     return index
 
+def template(question, context):
+    return f"""Use the following pieces of context to answer the question at the end.
+    
+    {context}
+    
+    1.You only answer the USER QUESTION using the CONTEXT INFORMATION. 
+    2. You do not make up a story. 
+    3. Keep your answer as concise as possible.
+    4. Shoud not answer any out-of-context USER QUESTION.
+
+    USER QUESTION: ```{question}```
+    Answer in markdown:"""
+
 @action(is_system_action=True)
 def rag(context: dict, llm) -> ActionResult:
-    """
-    Retrieve and generate a response based on the user's message using RAG.
     
-    :param context: Dictionary containing the user's last message
-    :param llm: Language model instance for generating responses
-    :return: ActionResult with the generated response and updates to context
-    """
     try:
         context_update = {}
         message = context.get('last_user_message')
+        
         kb = load_kb_from_storage()
-        # Query the knowledge base for relevant information
         query_engine = kb.as_query_engine(similarity_top_k=20)
         response = query_engine.query(message)
         relevant_chunks = response.source_nodes
+        context_updates["relevant_chunks"] = relevant_chunks
 
         # Construct the prompt for the LLM
         prompt = f"Answer the question based on this context:\n\n{relevant_chunks}\n\nQuestion: {message}"
-        generated_response = llm.invoke(prompt).content
+        generated_response = llm.(prompt)
 
         context_updates = {
             "relevant_chunks": relevant_chunks,
