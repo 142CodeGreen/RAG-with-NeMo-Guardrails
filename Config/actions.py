@@ -5,6 +5,7 @@ from nemoguardrails import LLMRails
 
 def load_kb_from_storage():
     """Load the knowledge base from storage."""
+    vector_store = MilvusVectorStore(uri="./milvus_demo.db", dim=1024, overwrite=True, output_fields=[])
     storage_context = StorageContext.from_defaults(persist_dir="./Config/kb")
     index = load_index_from_storage(storage_context)
     return index
