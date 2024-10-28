@@ -15,10 +15,9 @@ def template(question, context):
     
     {context}
     
-    1.You only answer the USER QUESTION using the CONTEXT INFORMATION. 
-    2. You do not make up a story. 
-    3. Keep your answer as concise as possible.
-    4. Shoud not answer any out-of-context USER QUESTION.
+    1. You do not make up a story. 
+    2. Keep your answer as concise as possible.
+    3. Shoud not answer any out-of-context USER QUESTION.
 
     USER QUESTION: ```{question}```
     Answer in markdown:"""
