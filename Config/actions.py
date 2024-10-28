@@ -1,6 +1,6 @@
 from nemoguardrails.actions import action
 from nemoguardrails.actions.actions import ActionResult
-from llama_index.core import StorageContext, load_index_from_storage
+from llama_index.core import StorageContext, load_index_from_storage, PromptTemplate
 from nemoguardrails import LLMRails
 
 def load_kb_from_storage():
