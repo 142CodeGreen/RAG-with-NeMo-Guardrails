@@ -1,12 +1,12 @@
 from nemoguardrails.actions import action
 from nemoguardrails.actions.actions import ActionResult
 from llama_index.core import StorageContext, load_index_from_storage
-from nemoguardrails.kb.kb import KnowledgeBase
+#from nemoguardrails.kb.kb import KnowledgeBase
 
 from nemoguardrails import LLMRails
 
 @action(is_system_action=True)
-async def rag(context: dict, llm, kb: KnowledgeBase) -> ActionResult:
+async def rag(context: dict, llm, kb) -> ActionResult:
     """
     This function performs retrieval augmented generation (RAG) using LlamaIndex.
     """
