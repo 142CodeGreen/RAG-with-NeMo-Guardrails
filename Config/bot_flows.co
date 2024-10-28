@@ -12,9 +12,9 @@ define flow self check output
     bot refuse to respond
     stop
 
-#define flow user query
-#  $answer = execute rag()
-#  bot $answer
+define flow user query
+  $answer = execute rag()
+  bot $answer
 
 
 define flow self check hallucinations
