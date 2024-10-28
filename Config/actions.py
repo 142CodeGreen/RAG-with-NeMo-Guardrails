@@ -7,7 +7,6 @@ from nemoguardrails.kb.kb import KnowledgeBase
 from nemoguardrails import LLMRails
 
 @action(is_system_action=True)
-#async def rag(context: dict, llm: NVIDIA, kb: KnowledgeBase) -> ActionResult:
 async def rag(context: dict, llm, kb) -> ActionResult:
     """
     This function performs retrieval augmented generation (RAG) using LlamaIndex.
@@ -30,7 +29,7 @@ async def rag(context: dict, llm, kb) -> ActionResult:
         #    print(f"User input: {message}")  # 4.
         
         #llm = NVIDIA(model="meta/llama-3.1-8b-instruct")
-        Settings.llm = NVIDIA(model="meta/llama-3.1-8b-instruct")
+        #Settings.llm = NVIDIA(model="meta/llama-3.1-8b-instruct")
         #print("LLM initialized.")  # 5.
 
         # Search for relevant chunks using kb
