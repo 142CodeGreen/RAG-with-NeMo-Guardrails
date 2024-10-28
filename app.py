@@ -104,7 +104,7 @@ def stream_response(message, history):
         # Apply Nemo Guardrails to the chunk
         user_message = {"role": "user", "content": message}
         bot_message = {"role": "bot", "content": full_response.response}
-        rails_response = rails.generate(messages=[user_message, bot_message], context={"knowledge": full_response.response})  # Include context
+        rails_response = rails.generate(messages=[user_message, bot_message], context={"kb": kb}) #context={"knowledge": full_response.response})  # Include context
         return history + [{"role": "user", "content": message}, {"role": "bot", "content": rails_response['content']}]  
         
         #        yield {"role": "user", "content": rails_response['content']}
