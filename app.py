@@ -82,7 +82,7 @@ def chat(message,history):
     try:
         #modification for nemo guardrails ( next three rows)
         user_message = {"role":"user","content":message}
-        response = rails.generate(messages=[user_message])
+        response = rails.generate(messages=[user_message], context={"kb": kb})
         return history + [(message,response['content'])]
     except Exception as e:
         return history + [(message,f"Error processing query: {str(e)}")]
