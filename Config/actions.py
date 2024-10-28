@@ -25,27 +25,26 @@ def template(question, context):
 
 @action(is_system_action=True)
 def rag(context: dict, llm) -> ActionResult:
-    
     try:
-        context_update = {}
         message = context.get('last_user_message')
         
         kb = load_kb_from_storage()
         query_engine = kb.as_query_engine(similarity_top_k=20)
         response = query_engine.query(message)
         relevant_chunks = response.source_nodes
-        context_updates["relevant_chunks"] = relevant_chunks
-
-        # Construct the prompt for the LLM
-        prompt = f"Answer the question based on this context:\n\n{relevant_chunks}\n\nQuestion: {message}"
-        generated_response = llm.(prompt)
+        
+        # Use the template function here
+        context_str = "\n\n".join(chunk.text for chunk in relevant_chunks)
+        prompt = template(message, context_str)
+        
+        answer = llm(prompt)
 
         context_updates = {
             "relevant_chunks": relevant_chunks,
             "_last_bot_prompt": prompt
         }
 
-        return ActionResult(return_value=generated_response, context_updates=context_updates)
+        return ActionResult(return_value=answer, context_updates=context_updates)
 
     except Exception as e:
         return ActionResult(return_value=f"Error processing query: {str(e)}", context_updates={})
