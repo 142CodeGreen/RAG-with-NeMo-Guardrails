@@ -12,20 +12,20 @@ async def rag(context: dict, llm, kb) -> ActionResult:
     """
     try:
         # Load the index from the 'kb' subfolder
-        storage_context = StorageContext.from_defaults(persist_dir="./Config/kb")
-        index = load_index_from_storage(storage_context)
-        query_engine = index.as_query_engine()
+        #storage_context = StorageContext.from_defaults(persist_dir="./Config/kb")
+        #index = load_index_from_storage(storage_context)
+        #query_engine = index.as_query_engine()
 
         # Get the user's message from the context
         context_update = {}
         message = context.get('last_user_message')
         #context_update = {}
 
-        print("Searching for relevant chunks...")  # 6.
+        #print("Searching for relevant chunks...")  # 6.
         
         relevant_chunks = await kb.search_relevant_chunks(message)
         print(f"Relevant chunks found: {relevant_chunks}")  # 7. 
-        context_updates["relevant_chunks"] = relevant_chunks
+        #context_updates["relevant_chunks"] = relevant_chunks
         
         prompt = f"Answer the question based on this context:\n\n{relevant_chunks}\n\nQuestion: {message}"
         response = llm(prompt)
