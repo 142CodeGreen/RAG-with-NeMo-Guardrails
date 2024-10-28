@@ -1,37 +1,31 @@
-from nemoguardrails.actions import action
-from nemoguardrails.actions.actions import ActionResult
-from llama_index.core import StorageContext, load_index_from_storage
-#from nemoguardrails.kb.kb import KnowledgeBase
+from llama_index import VectorStoreIndex, StorageContext, load_index_from_storage
+from nemoguardrails import action, LLMRails, ActionResult
 
-from nemoguardrails import LLMRails
+# Import the vector_store from app.py
+from app import vector_store 
 
 @action(is_system_action=True)
-async def rag(context: dict, llm, kb) -> ActionResult:
+async def rag(message: str) -> ActionResult:
     """
-    This function performs retrieval augmented generation (RAG) using LlamaIndex.
+    This function uses LlamaIndex to answer questions based on the files uploaded by the user.
     """
+    context_updates = {}
     try:
+        # Use the existing vector_store from app.py
+        storage_context = StorageContext.from_defaults(vector_store=vector_store)
+
         # Load the index from the 'kb' subfolder
-        #storage_context = StorageContext.from_defaults(persist_dir="./Config/kb")
-        #index = load_index_from_storage(storage_context)
-        #query_engine = index.as_query_engine()
+        index = load_index_from_storage(storage_context, persist_dir="./Config/kb")
+        query_engine = index.as_query_engine(similarity_top_k=20)
 
-        # Get the user's message from the context
-        context_update = {}
-        message = context.get('last_user_message')
-        #context_update = {}
+        # Get the answer from the query engine
+        response = query_engine.query(message)
 
-        #print("Searching for relevant chunks...")  # 6.
-        
-        relevant_chunks = await kb.search_relevant_chunks(message)
-        print(f"Relevant chunks found: {relevant_chunks}")  # 7. 
-        #context_updates["relevant_chunks"] = relevant_chunks
-        
-        prompt = f"Answer the question based on this context:\n\n{relevant_chunks}\n\nQuestion: {message}"
-        response = llm(prompt)
-        print(f"Generated response: {response}")  # 10.
+        # You can add context updates here if needed
+        # For example, to add the retrieved source nodes to the context:
+        # context_updates = {"source_nodes": response.source_nodes} 
 
-        return ActionResult(return_value=response, context_updates=context_updates)
+        return ActionResult(return_value=response.response, context_updates=context_updates)
 
     except Exception as e:
         return ActionResult(return_value=f"Error processing query: {str(e)}", context_updates=context_updates)
