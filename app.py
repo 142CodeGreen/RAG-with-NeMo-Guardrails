@@ -76,7 +76,7 @@ def load_documents(file_objs):
         #storage_context.persist(persist_dir="./Config/kb")  
         
         index = initialize_kb(documents)
-        query_engine = index.as_query_engine(similarity_top_k=20, streaming=True)
+        query_engine = index.as_query_engine(similarity_top_k=20) # streaming=True)
         return f"Successfully loaded {len(documents)} documents from {len(file_paths)} files."
     except Exception as e:
         return f"Error loading documents: {str(e)}"
@@ -89,6 +89,7 @@ def stream_response(message, history):
         
     try:
         response = query_engine.query(message)
+        response_text = response.response
         
         # Using Nemo Guardrails to process the response
         user_message = {"role": "user", "content": message}
