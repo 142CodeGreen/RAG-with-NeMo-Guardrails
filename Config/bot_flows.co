@@ -16,11 +16,6 @@ define flow self check output
 #  $answer = execute rag()
 #  bot $answer
 
-#define flow answer report question
-#  user ...
-#  $answer = execute rag()
-#  $check_hallucination = True
-#  bot $answer
 
 define flow self check hallucinations
   user ...
