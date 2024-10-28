@@ -32,18 +32,19 @@ def rag(context: dict, llm) -> ActionResult:
         kb = load_kb_from_storage()
         query_engine = kb.as_query_engine(similarity_top_k=20)
         response = query_engine.query(message)
-        relevant_chunks = response.source_nodes
+        relevant_chunks = response.source_nodes[0].node.text
         
         # Use the template function here
-        context_str = "\n\n".join(chunk.text for chunk in relevant_chunks)
-        prompt = template(message, context_str)
-        
-        answer = llm(prompt)
+        #context_str = "\n\n".join(chunk.text for chunk in relevant_chunks)
+        #prompt = template(message, context_str)
 
-        context_updates = {
-            "relevant_chunks": relevant_chunks,
-            "_last_bot_prompt": prompt
-        }
+        prompt_template = PromptTemplate(tempalte)
+        input_variables = {"question": user_message, "context": relevant_chunks}
+
+        print(f" RAG :: prompt_template: {context_updates['_last_bot_prompt']}")
+
+        # Generate answer using LlamaIndex (LLM is configured globally)
+        answer = Settings.llm(context_updates["_last_bot_prompt"])
 
         return ActionResult(return_value=answer, context_updates=context_updates)
 
