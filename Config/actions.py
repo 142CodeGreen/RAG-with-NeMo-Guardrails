@@ -33,44 +33,49 @@ def rag(context: dict, llm, kb: KnowledgeBase) -> ActionResult:
         context_updates = {}
         message = context.get('last_user_message')
 
-        # Access the kb directory using kb.kb_dir
-        kb_dir = kb.kb_dir
+        # Check if documents have been loaded
+        if not context.get('documents_loaded', False):
+            return ActionResult(return_value="Documents are not yet loaded. Please upload documents first.", context_updates={})
 
-        documents = SimpleDirectoryReader(kb_dir).load_data()
+        # Access the kb directory using kb.kb_dir
+        #kb_dir = kb.kb_dir
+
+        #documents = SimpleDirectoryReader(kb_dir).load_data()
 
         # Create index and query_engine (adapt if needed)
-        vector_store = MilvusVectorStore(uri="./milvus_demo.db", dim=1024, overwrite=True, output_fields=[])
-        storage_context = StorageContext.from_defaults(vector_store=vector_store)
-        index = VectorStoreIndex.from_documents(documents, storage_context=storage_context)
+        #vector_store = MilvusVectorStore(uri="./milvus_demo.db", dim=1024, overwrite=True, output_fields=[])
+        #storage_context = StorageContext.from_defaults(vector_store=vector_store)
+        #index = VectorStoreIndex.from_documents(documents, storage_context=storage_context)
+        #query_engine = index.as_query_engine(similarity_top_k=20)
+
+        storage_context = StorageContext.from_defaults(persist_dir="./Config/kb")
+        index = load_index_from_storage(storage_context)
         query_engine = index.as_query_engine(similarity_top_k=20)
            
         response = query_engine.query(message)
-        relevant_chunks = response.source_nodes[0].node.text
+        if response:
+            relevant_chunks = response.source_nodes[0].node.text
+            # Use the template function here
+            prompt = template(message, relevant_chunks)  # Pass relevant_chunks directly
+            # Use the template function here
+            #context_str = "\n\n".join(chunk.text for chunk in relevant_chunks)
+            #prompt = template(message, context_str)
+            prompt_template = PromptTemplate(prompt)
+            input_variables = {"question": message, "context": relevant_chunks}
 
-        # Use the template function here
-        prompt = template(message, relevant_chunks)  # Pass relevant_chunks directly
-        
-        # Use the template function here
-        #context_str = "\n\n".join(chunk.text for chunk in relevant_chunks)
-        #prompt = template(message, context_str)
+            # Store the template for hallucination-checking
+            context_updates["_last_bot_prompt"] = prompt_template.format(
+                **input_variables
+            )
 
-        prompt_template = PromptTemplate(prompt)
-        input_variables = {"question": message, "context": relevant_chunks}
+            print(f" RAG :: prompt_template: {context_updates['_last_bot_prompt']}")
 
-        # Store the template for hallucination-checking
-        context_updates["_last_bot_prompt"] = prompt_template.format(
-            **input_variables
-        )
+            # Generate answer using LlamaIndex (LLM is configured globally)
+            answer = llm(context_updates["_last_bot_prompt"])
+            return ActionResult(return_value=answer, context_updates=context_updates)
 
-        print(f" RAG :: prompt_template: {context_updates['_last_bot_prompt']}")
-
-        # Generate answer using LlamaIndex (LLM is configured globally)
-        answer = llm(context_updates["_last_bot_prompt"])
-
-        return ActionResult(return_value=answer, context_updates=context_updates)
-
-    except Exception as e:
-        return ActionResult(return_value=f"Error processing query: {str(e)}", context_updates={})
+        except Exception as e:
+            return ActionResult(return_value=f"Error processing query: {str(e)}", context_updates={})
 
 def init(app: LLMRails):
     """Initialize the RAG action with the LLMRails instance."""
