@@ -20,7 +20,7 @@ def template(question, context):
 @action(is_system_action=True)
 def rag(context: dict, llm, kb: KnowledgeBase) -> ActionResult:
     try:
-        context_updates = {}
+        #context_updates = {}
         message = context.get('last_user_message')
 
         # Check if documents have been loaded
