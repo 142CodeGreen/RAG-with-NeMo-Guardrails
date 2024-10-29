@@ -16,7 +16,6 @@ define flow user query
   $answer = execute rag()
   bot $answer
 
-
 #define flow self check hallucinations
 #  user ...
 #  $answer = execute rag()
