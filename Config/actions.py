@@ -19,10 +19,10 @@ def template(question, context):
 
 @action(is_system_action=True)
 def rag(context: dict, llm, kb: KnowledgeBase) -> ActionResult:
+    global loaded_documents
     try:
         #context_updates = {}
         message = context.get('last_user_message')
-        global loaded_documents
         docs = [Document(page_content=doc['content']) for doc in loaded_documents]
         chunks = kb.search_relevant_chunks(message, docs=docs)
         # chunks = kb.search_relevant_chunks(message)
