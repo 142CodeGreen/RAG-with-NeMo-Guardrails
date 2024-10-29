@@ -23,7 +23,7 @@ def template(question, context):
     Answer in markdown:"""
 
 @action(is_system_action=True)
-def rag(context: dict, llm) -> ActionResult:
+def rag(context: dict, llm, kb) -> ActionResult:
     try:
         context_updates = {}
         message = context.get('last_user_message')
