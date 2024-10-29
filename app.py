@@ -120,5 +120,5 @@ with gr.Blocks() as demo:
 
 
 # Launch the Gradio interface
-if __name__ == "__main__"
+if __name__ == "__main__":
     demo.queue().launch(share=True,debug=True)
