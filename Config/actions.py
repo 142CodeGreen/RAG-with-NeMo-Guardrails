@@ -22,19 +22,29 @@ def rag(context: dict, llm, kb: KnowledgeBase) -> ActionResult:
     try:
         #context_updates = {}
         message = context.get('last_user_message')
-
-        # Check if documents have been loaded
-        if not context.get('documents_loaded', False):
-            return ActionResult(return_value="Documents are not yet loaded. Please upload documents first.", context_updates={})
-
-        chunks = kb.search_relevant_chunks(message)
+        
+        global loaded_documents
+        docs = [Document(page_content=doc['content']) for doc in loaded_documents]
+        chunks = kb.search_relevant_chunks(message, docs=docs)
+        # chunks = kb.search_relevant_chunks(message)
         relevant_chunks = "\n".join([chunk["body"] for chunk in chunks])
         prompt = template(message, relevant_chunks)  # Pass relevant_chunks directly
         answer = llm(prompt)
         return ActionResult(return_value=answer, context_updates=context_updates)
     except Exception as e:
         return ActionResult(return_value=f"Error processing query: {str(e)}", context_updates={})
-        
+
+def init(app: LLMRails):
+    if not app.context.get('documents_loaded', False):  #new
+        print("Warning: Documents not loaded. Guardrails initialization delayed.")  #new
+        return  #new
+    app.register_action(rag, "rag")
+
+
+# Check if documents have been loaded
+#        if not context.get('documents_loaded', False):
+#            return ActionResult(return_value="Documents are not yet loaded. Please upload documents first.", context_updates={})
+
         #input_variables = {"question": message, "context": relevant_chunks}
 
         #global query_engine
@@ -63,9 +73,3 @@ def rag(context: dict, llm, kb: KnowledgeBase) -> ActionResult:
         #else:
         #    return ActionResult(return_value="No relevant information found in the loaded documents.", context_updates={})
    
-def init(app: LLMRails):
-    if not app.context.get('documents_loaded', False):  #new
-        print("Warning: Documents not loaded. Guardrails initialization delayed.")  #new
-        return  #new
-
-    app.register_action(rag, "rag")
