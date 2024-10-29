@@ -93,10 +93,11 @@ def load_documents(file_objs):
 from Config.actions import init
 init(rails)
 
-#def init_guardrails():    #move init to be after load doc
-#    # Initialize and register the rag action
-#    init(rails)
-#    return "Guardrails initialized and RAG action registered."
+def init_guardrails():    #move init to be after load doc
+    # Initialize and register the rag action
+    from Config.actions import init
+    init(rails)
+    return "Guardrails initialized and RAG action registered."
 
 def stream_response(message, history):
     if query_engine is None:
