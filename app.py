@@ -25,12 +25,23 @@ from llama_index.core.node_parser import SentenceSplitter
 Settings.text_splitter = SentenceSplitter(chunk_size=400)
 
 from nemoguardrails import LLMRails, RailsConfig
+    from Config.actions import init, rag  # Import init() and rag()
+    # Add the following line if your file is not in a subdirectory of app.py:
+    import sys; sys.path.append('./Config')
+
+    config = RailsConfig.from_path("./Config")
+    config.run_local()
+    app = LLMRails(config)
+
+
+#from nemoguardrails import LLMRails, RailsConfig
 #from nemoguardrails.streaming import StreamingHandler
 
-config = RailsConfig.from_path("./Config")
-rails = LLMRails(config)
+#config = RailsConfig.from_path("./Config")
+#rails = LLMRails(config)
 
-from Config.actions import init
+#from Config.actions import init
+#init(rails)
 
 index = None
 query_engine = None
