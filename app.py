@@ -97,17 +97,17 @@ def init_guardrails():    #move init to be after load doc
     init(rails)
     return "Guardrails initialized and RAG action registered."
 
-
 def stream_response(message, history):
-    if not rails.documents_loaded:
-        return history + [("Please upload a file first.", None)]
-
     try:
         user_message = {"role": "user", "content": message}
         rails_response = rails.generate(messages=[user_message])
 
+        rag_result = rag(query_engine, message)
+
+        # Check if RAG is needed based on guardrails output
         if "RAG_needed" in rails_response['content']:
-            rag_result = rag()
+            # Call rag() with necessary arguments (e.g., query_engine, message)
+            rag_result = rag(query_engine, message)  
             rails_response['content'] += f"\n\nRAG Results:\n{rag_result}"
 
         return history + [(message, rails_response['content'])]
