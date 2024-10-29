@@ -5,7 +5,7 @@ from nemoguardrails import LLMRails
 
 import sys
 sys.path.append('../')  # Add the parent directory to the Python path
-import app  # Now you can import app.py
+from app import initialize_kb
 
 #def load_kb_from_storage():
 #    """Load the knowledge base from storage."""
@@ -32,9 +32,8 @@ def rag(context: dict, llm, kb) -> ActionResult:
         context_updates = {}
         message = context.get('last_user_message')
         
-        #kb = load_kb_from_storage()
-        #query_engine = kb.as_query_engine(similarity_top_k=20)
-        query_engine = app.query_engine(similarity_top_k=20)
+        index = initialize_kb(documents)
+        query_engine = index.query_engine(similarity_top_k=20)
         response = query_engine.query(message)
         relevant_chunks = response.source_nodes[0].node.text
 
