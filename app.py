@@ -28,7 +28,7 @@ from nemoguardrails import LLMRails, RailsConfig
 from Config.actions import init, rag  # Import init() and rag()
 config = RailsConfig.from_path("./Config")
 #config.run_local()
-app = LLMRails(config)
+rails = LLMRails(config)
 
 
 #from nemoguardrails import LLMRails, RailsConfig
@@ -99,7 +99,7 @@ def load_documents(file_objs):
 
         # Update app.context (This is the important line)
         loaded_documents = documents
-        app.context['documents_loaded'] = True
+        rails.context['documents_loaded'] = True
         
         return f"Successfully loaded {len(documents)} documents from {len(file_paths)} files.", gr.update(interactive=True) #add interactive
     except Exception as e:
@@ -108,17 +108,17 @@ def load_documents(file_objs):
 def init_guardrails():    #move init to be after load doc
     # Initialize and register the rag action
     print("Initializing guardrails...")
-    init(app)
+    init(rails)
     return "Guardrails initialized and RAG action registered."
 
 
 def stream_response(message, history):
-    if not app.context.get('documents_loaded', False):
+    if not rails.context.get('documents_loaded', False):
         return history + [("Please upload a file first.", None)]
 
     try:
         user_message = {"role": "user", "content": message}
-        rails_response = app.generate(messages=[user_message])
+        rails_response = rails.generate(messages=[user_message])
 
         if "RAG_needed" in rails_response['content']:
             rag_result = rag()
