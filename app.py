@@ -10,6 +10,9 @@ import shutil  # For copying files
 import logging
 #import asyncio
 
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
 from llama_index.core import Settings, SimpleDirectoryReader, VectorStoreIndex, StorageContext
 from llama_index.llms.nvidia import NVIDIA
 Settings.llm = NVIDIA(model="meta/llama-3.1-8b-instruct")
