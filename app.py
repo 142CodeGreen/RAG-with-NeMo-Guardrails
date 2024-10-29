@@ -30,10 +30,6 @@ from nemoguardrails import LLMRails, RailsConfig
 config = RailsConfig.from_path("./Config")
 rails = LLMRails(config)
 
-# Import the init function from actions.py
-from Config.actions import init
-#init(rails)
-
 index = None
 query_engine = None
 
@@ -93,10 +89,14 @@ def load_documents(file_objs):
     except Exception as e:
         return f"Error loading documents: {str(e)}", gr.update(interactive=False)
 
-def init_guardrails():    #move init to be after load doc
-    # Initialize and register the rag action
-    init(rails)
-    return "Guardrails initialized and RAG action registered."
+# Import the init function from actions.py
+from Config.actions import init
+init(rails)
+
+#def init_guardrails():    #move init to be after load doc
+#    # Initialize and register the rag action
+#    init(rails)
+#    return "Guardrails initialized and RAG action registered."
 
 def stream_response(message, history):
     if query_engine is None:
