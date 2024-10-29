@@ -25,20 +25,17 @@ from llama_index.core.node_parser import SentenceSplitter
 Settings.text_splitter = SentenceSplitter(chunk_size=400)
 
 from nemoguardrails import LLMRails, RailsConfig
-    from Config.actions import init, rag  # Import init() and rag()
-    # Add the following line if your file is not in a subdirectory of app.py:
-    import sys; sys.path.append('./Config')
-
-    config = RailsConfig.from_path("./Config")
-    config.run_local()
-    app = LLMRails(config)
+from Config.actions import init, rag  # Import init() and rag()
+config = RailsConfig.from_path("./Config")
+config.run_local()
+app = LLMRails(config)
 
 
 #from nemoguardrails import LLMRails, RailsConfig
 #from nemoguardrails.streaming import StreamingHandler
 
-config = RailsConfig.from_path("./Config")
-rails = LLMRails(config)
+#config = RailsConfig.from_path("./Config")
+#rails = LLMRails(config)
 
 #from Config.actions import init
 #init(rails)
@@ -86,8 +83,6 @@ def load_documents(file_objs):
         #documents_loaded = True     # to add sequence for rag
         query_engine = index.as_query_engine(similarity_top_k=20) # streaming=True)
 
-        loaded_documents = documents
-
         def test_query_engine():
             global query_engine
             if query_engine:
@@ -103,6 +98,7 @@ def load_documents(file_objs):
         test_query_engine()
 
         # Update app.context (This is the important line)
+        loaded_documents = documents
         app.context['documents_loaded'] = True
         
         return f"Successfully loaded {len(documents)} documents from {len(file_paths)} files.", gr.update(interactive=True) #add interactive
@@ -112,25 +108,44 @@ def load_documents(file_objs):
 def init_guardrails():    #move init to be after load doc
     # Initialize and register the rag action
     print("Initializing guardrails...")
-    init(rails)
+    init(app)
     return "Guardrails initialized and RAG action registered."
 
+
 def stream_response(message, history):
-    if query_engine is None:
+    if not app.context.get('documents_loaded', False):
         return history + [("Please upload a file first.", None)]
-        
+
     try:
+        user_message = {"role": "user", "content": message}
+        rails_response = app.generate(messages=[user_message])
+
+        if "RAG_needed" in rails_response['content']:
+            rag_result = rag()
+            rails_response['content'] += f"\n\nRAG Results:\n{rag_result}"
+
+        return history + [(message, rails_response['content'])]
+
+    except Exception as e:
+        return history + [(message, f"Error processing query: {str(e)}")]
+
+
+#def stream_response(message, history):
+#    if query_engine is None:
+#        return history + [("Please upload a file first.", None)]
+        
+#    try:
         #response = query_engine.query(message)  delete
         #response_text = response.response  delete
         
         # Using Nemo Guardrails to process the response
-        user_message = {"role": "user", "content": message}
+#        user_message = {"role": "user", "content": message}
         #bot_message = {"role": "bot", "content": response.response}   delete
-        rails_response = rails.generate(messages=[user_message]) # bot_message])
+ #       rails_response = rails.generate(messages=[user_message]) # bot_message])
 
-        return history + [(message, rails_response['content'])]
-    except Exception as e:
-        return history + [(message, f"Error processing query: {str(e)}")]
+ #       return history + [(message, rails_response['content'])]
+ #   except Exception as e:
+ #       return history + [(message, f"Error processing query: {str(e)}")]
 
 # Create the Gradio interface
 with gr.Blocks() as demo:
