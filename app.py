@@ -23,8 +23,6 @@ Settings.text_splitter = SentenceSplitter(chunk_size=400)
 from nemoguardrails import LLMRails, RailsConfig
 #from nemoguardrails.streaming import StreamingHandler
 
-config = RailsConfig.from_path("./Config")
-rails = LLMRails(config)
 
 # Import the init function from actions.py
 from Config.actions import init
@@ -77,6 +75,11 @@ def load_documents(file_objs):
         
         index = initialize_kb(documents)
         query_engine = index.as_query_engine(similarity_top_k=20) # streaming=True)
+
+        # Import the init function from actions.py
+        from Config.actions import init
+        init(rails)
+
         return f"Successfully loaded {len(documents)} documents from {len(file_paths)} files."
     except Exception as e:
         return f"Error loading documents: {str(e)}"
