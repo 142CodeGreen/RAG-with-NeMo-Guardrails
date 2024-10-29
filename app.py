@@ -28,6 +28,7 @@ from nemoguardrails import LLMRails, RailsConfig
 from Config.actions import rag  #,init Import init() and rag()
 config = RailsConfig.from_path("./Config")
 rails = LLMRails(config)
+rails.documents_loaded = False
 
 
 index = None
@@ -69,7 +70,6 @@ def load_documents(file_objs):
         index = VectorStoreIndex.from_documents(documents, storage_context=storage_context)
 
         index.storage_context.persist(persist_dir='./Config/kb/')   # to add sequence for rag
-        #documents_loaded = True     # to add sequence for rag
         query_engine = index.as_query_engine(similarity_top_k=20) # streaming=True)
 
     
@@ -90,6 +90,7 @@ def load_documents(file_objs):
         # Update app.context (This is the important line)
         loaded_documents = documents
         documents_loaded = True
+        rails.documents_loaded = True
         
         return f"Successfully loaded {len(documents)} documents from {len(file_paths)} files.", gr.update(interactive=True) #add interactive
     except Exception as e:
@@ -106,7 +107,7 @@ def init_guardrails():    #move init to be after load doc
 
 
 def stream_response(message, history):
-    if not rails.context.get('documents_loaded', False):
+    if not rails.documents_loaded:
         return history + [("Please upload a file first.", None)]
 
     try:
