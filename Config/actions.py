@@ -8,7 +8,7 @@ from llama_index.core import StorageContext, load_index_from_storage, PromptTemp
 def template(question, context):
     return f"""Answer user questions based on loaded documents. 
     
-    {context: load_documents}
+    {context}
     
     1. You do not make up a story. 
     2. Keep your answer as concise as possible.
@@ -30,7 +30,12 @@ def rag(context: dict, llm, kb: KnowledgeBase) -> ActionResult:
         chunks = kb.search_relevant_chunks(message)
         relevant_chunks = "\n".join([chunk["body"] for chunk in chunks])
         prompt = template(message, relevant_chunks)  # Pass relevant_chunks directly
-        input_variables = {"question": message, "context": relevant_chunks}
+        answer = llm(prompt)
+        return ActionResult(return_value=answer, context_updates=context_updates)
+    except Exception as e:
+        return ActionResult(return_value=f"Error processing query: {str(e)}", context_updates={})
+        
+        #input_variables = {"question": message, "context": relevant_chunks}
 
         #global query_engine
     
@@ -46,21 +51,21 @@ def rag(context: dict, llm, kb: KnowledgeBase) -> ActionResult:
         #    input_variables = {"question": message, "context": relevant_chunks}
 
             # Store the template for hallucination-checking
-        context_updates["_last_bot_prompt"] = prompt_template.format(
-            **input_variables
-        )
+        #context_updates["_last_bot_prompt"] = prompt_template.format(
+        #    **input_variables
+        #)
 
-        print(f" RAG :: prompt_template: {context_updates['_last_bot_prompt']}")
+        #print(f" RAG :: prompt_template: {context_updates['_last_bot_prompt']}")
 
             # Generate answer using LlamaIndex (LLM is configured globally)
-        answer = llm(context_updates["_last_bot_prompt"])
-        return ActionResult(return_value=answer, context_updates=context_updates)
+        #answer = llm(context_updates["_last_bot_prompt"])
+        #return ActionResult(return_value=answer, context_updates=context_updates)
         #else:
         #    return ActionResult(return_value="No relevant information found in the loaded documents.", context_updates={})
    
-    except Exception as e:
-        return ActionResult(return_value=f"Error processing query: {str(e)}", context_updates={})
-
 def init(app: LLMRails):
-    """Initialize the RAG action with the LLMRails instance."""
+    if not app.context.get('documents_loaded', False):  #new
+        print("Warning: Documents not loaded. Guardrails initialization delayed.")  #new
+        return  #new
+
     app.register_action(rag, "rag")
