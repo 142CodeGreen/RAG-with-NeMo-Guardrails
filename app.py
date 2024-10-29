@@ -89,6 +89,9 @@ def load_documents(file_objs):
         # Call this function after initialization for testing
         test_query_engine()
 
+        # Update app.context (This is the important line)
+        rails.context['documents_loaded'] = True
+        
         return f"Successfully loaded {len(documents)} documents from {len(file_paths)} files.", gr.update(interactive=True) #add interactive
     except Exception as e:
         return f"Error loading documents: {str(e)}", gr.update(interactive=False)
