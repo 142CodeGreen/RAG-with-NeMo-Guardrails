@@ -88,7 +88,7 @@ def load_documents(file_objs):
         
         return f"Successfully loaded {len(documents)} documents from {len(file_paths)} files." # gr.update(interactive=True) #add interactive
     except Exception as e:
-        return f"Error loading documents: {str(e)}") # gr.update(interactive=False)
+        return f"Error loading documents: {str(e)}" # gr.update(interactive=False)
 
 #config = RailsConfig.from_path("./Config")
 #rails = LLMRails(config)
