@@ -6,7 +6,7 @@ from llama_index.core import StorageContext, load_index_from_storage, PromptTemp
 
 
 def template(question, context):
-    return f"""Answer user questions based on the loaded documents. 
+    return f"""Answer user questions based on loaded documents. 
     
     {context = load_documents}
     
