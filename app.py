@@ -134,8 +134,7 @@ with gr.Blocks() as demo:
         guardrails_btn = gr.Button("Initialize Guardrails", interactive=False) #new
 
     load_btn.click(load_documents, inputs=[file_input], outputs=[load_output])
-    #guardrails_btn.click(init_guardrails, outputs=[guardrails_output])   #new
-    guardrails_btn.click(init_guardrails, outputs=[gr.update(value="Guardrails initialized and RAG action registered.", interactive=True)])
+    guardrails_btn.click(init_guardrails, outputs=[guardrails_output])   #new
     msg.submit(stream_response, inputs=[msg, chatbot], outputs=[chatbot])
     clear.click(lambda: None, None, chatbot, queue=False)
 
