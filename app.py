@@ -25,25 +25,15 @@ from llama_index.core.node_parser import SentenceSplitter
 Settings.text_splitter = SentenceSplitter(chunk_size=400)
 
 from nemoguardrails import LLMRails, RailsConfig
-from Config.actions import init, rag  # Import init() and rag()
+from Config.actions import rag  #,init Import init() and rag()
 config = RailsConfig.from_path("./Config")
-#config.run_local()
 rails = LLMRails(config)
 
-
-#from nemoguardrails import LLMRails, RailsConfig
-#from nemoguardrails.streaming import StreamingHandler
-
-#config = RailsConfig.from_path("./Config")
-#rails = LLMRails(config)
-
-#from Config.actions import init
-#init(rails)
 
 index = None
 query_engine = None
 
-from Config.actions import init
+#from Config.actions import init
 
 def get_files_from_input(file_objs):
     if not file_objs:
@@ -78,11 +68,11 @@ def load_documents(file_objs):
         storage_context = StorageContext.from_defaults(vector_store=vector_store)
         index = VectorStoreIndex.from_documents(documents, storage_context=storage_context)
 
-
         index.storage_context.persist(persist_dir='./Config/kb/')   # to add sequence for rag
         #documents_loaded = True     # to add sequence for rag
         query_engine = index.as_query_engine(similarity_top_k=20) # streaming=True)
 
+    
         def test_query_engine():
             global query_engine
             if query_engine:
@@ -104,6 +94,9 @@ def load_documents(file_objs):
         return f"Successfully loaded {len(documents)} documents from {len(file_paths)} files.", gr.update(interactive=True) #add interactive
     except Exception as e:
         return f"Error loading documents: {str(e)}", gr.update(interactive=False)
+
+#config = RailsConfig.from_path("./Config")
+#rails = LLMRails(config)
 
 def init_guardrails():    #move init to be after load doc
     # Initialize and register the rag action
