@@ -7,11 +7,11 @@ warnings.filterwarnings("ignore", category=LangChainDeprecationWarning, module="
 import os
 import gradio as gr
 import shutil  # For copying files
-import logging
+#import logging
 #import asyncio
 
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+#logging.basicConfig(level=logging.INFO)
+#logger = logging.getLogger(__name__)
 
 from llama_index.core import Settings, SimpleDirectoryReader, VectorStoreIndex, StorageContext
 from llama_index.llms.nvidia import NVIDIA
@@ -67,19 +67,19 @@ def load_documents(file_objs):
         index.storage_context.persist(persist_dir='./Config/kb/')   # to add sequence for rag
         query_engine = index.as_query_engine(similarity_top_k=20) # streaming=True)
     
-        def test_query_engine():
-            global query_engine
-            if query_engine:
-                try:
-                    response = query_engine.query("Test Query")
-                    logger.info(f"Test query response: {response.response}")
-                except Exception as e:
-                    logger.error(f"Query engine failed with error: {str(e)}")
-            else:
-                logger.error("Query engine is not initialized")
+        #def test_query_engine():
+        #    global query_engine
+        #    if query_engine:
+        #        try:
+        #            response = query_engine.query("Test Query")
+        #            logger.info(f"Test query response: {response.response}")
+        #        except Exception as e:
+        #            logger.error(f"Query engine failed with error: {str(e)}")
+        #    else:
+        #        logger.error("Query engine is not initialized")
 
         # Call this function after initialization for testing
-        test_query_engine()
+        #test_query_engine()
 
         # Update app.context (This is the important line)
         #rails.documents_loaded = True
