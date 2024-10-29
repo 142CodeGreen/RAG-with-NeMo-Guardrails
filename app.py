@@ -99,7 +99,6 @@ def init_guardrails():    #move init to be after load doc
     return "Guardrails initialized and RAG action registered."
 
 def stream_response(message, history):
-    global query_engine
     if query_engine is None:
         return history + [("Please upload a file first.", None)]
         
