@@ -33,11 +33,12 @@ def rag(context: dict, llm, kb: KnowledgeBase) -> ActionResult:
     except Exception as e:
         return ActionResult(return_value=f"Error processing query: {str(e)}", context_updates={})
 
-def init(app: LLMRails):
-    if not app.context.get('documents_loaded', False):  #new
-        print("Warning: Documents not loaded. Guardrails initialization delayed.")  #new
-        return  #new
-    app.register_action(rag, "rag")
+#def init(app: LLMRails):
+#    app.register_action(rag, "rag")
+#    if not app.context.get('documents_loaded', False):  #new
+#        print("Warning: Documents not loaded. Guardrails initialization delayed.")  #new
+#        return  #new
+#    app.register_action(rag, "rag")
 
 
 # Check if documents have been loaded
