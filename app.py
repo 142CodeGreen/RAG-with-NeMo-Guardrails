@@ -27,9 +27,9 @@ Settings.text_splitter = SentenceSplitter(chunk_size=400)
 from nemoguardrails import LLMRails, RailsConfig
 from Config.actions import rag  #,init Import init() and rag()
 config = RailsConfig.from_path("./Config")
+
 rails = LLMRails(config)
 rails.documents_loaded = False
-
 
 index = None
 query_engine = None
@@ -48,18 +48,14 @@ def load_documents(file_objs):
         if not file_objs:
             return "Error: No files selected."
 
-        # Create the 'kb' directory if it doesn't exist
-        kb_dir = "./Config/kb"
+        kb_dir = "./Config/kb"  # Create the 'kb' directory if it doesn't exist
         if not os.path.exists(kb_dir):
             os.makedirs(kb_dir)
 
         file_paths = get_files_from_input(file_objs)
         documents = []
         for file_path in file_paths:
-            #directory = os.path.dirname(file_path)
             documents.extend(SimpleDirectoryReader(input_files=[file_path]).load_data())
-
-            # Copy the PDF file to the kb directory
             shutil.copy2(file_path, kb_dir)
 
         if not documents:
@@ -68,10 +64,8 @@ def load_documents(file_objs):
         vector_store = MilvusVectorStore(uri="./milvus_demo.db", dim=1024, overwrite=True, output_fields=[])
         storage_context = StorageContext.from_defaults(vector_store=vector_store)
         index = VectorStoreIndex.from_documents(documents, storage_context=storage_context)
-
         index.storage_context.persist(persist_dir='./Config/kb/')   # to add sequence for rag
         query_engine = index.as_query_engine(similarity_top_k=20) # streaming=True)
-
     
         def test_query_engine():
             global query_engine
@@ -88,8 +82,6 @@ def load_documents(file_objs):
         test_query_engine()
 
         # Update app.context (This is the important line)
-        loaded_documents = documents
-        documents_loaded = True
         rails.documents_loaded = True
         
         return f"Successfully loaded {len(documents)} documents from {len(file_paths)} files.", gr.update(interactive=True) #add interactive
