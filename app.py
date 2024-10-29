@@ -86,7 +86,7 @@ def load_documents(file_objs):
 
         init(rails)
         
-        return f"Successfully loaded {len(documents)} documents from {len(file_paths)} files.") # gr.update(interactive=True) #add interactive
+        return f"Successfully loaded {len(documents)} documents from {len(file_paths)} files." # gr.update(interactive=True) #add interactive
     except Exception as e:
         return f"Error loading documents: {str(e)}") # gr.update(interactive=False)
 
