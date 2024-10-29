@@ -22,7 +22,6 @@ def rag(context: dict, llm, kb: KnowledgeBase) -> ActionResult:
     try:
         #context_updates = {}
         message = context.get('last_user_message')
-        
         global loaded_documents
         docs = [Document(page_content=doc['content']) for doc in loaded_documents]
         chunks = kb.search_relevant_chunks(message, docs=docs)
