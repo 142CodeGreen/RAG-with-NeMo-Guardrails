@@ -32,7 +32,7 @@ rails = LLMRails(config)
 
 # Import the init function from actions.py
 from Config.actions import init
-init(rails)
+#init(rails)
 
 index = None
 query_engine = None
