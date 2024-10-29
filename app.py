@@ -30,6 +30,8 @@ from nemoguardrails import LLMRails, RailsConfig
 config = RailsConfig.from_path("./Config")
 rails = LLMRails(config)
 
+from Config.actions import init
+
 index = None
 query_engine = None
 
@@ -95,7 +97,6 @@ init(rails)
 
 def init_guardrails():    #move init to be after load doc
     # Initialize and register the rag action
-    from Config.actions import init
     init(rails)
     return "Guardrails initialized and RAG action registered."
 
