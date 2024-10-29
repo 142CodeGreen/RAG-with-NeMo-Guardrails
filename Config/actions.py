@@ -73,9 +73,11 @@ def rag(context: dict, llm, kb: KnowledgeBase) -> ActionResult:
             # Generate answer using LlamaIndex (LLM is configured globally)
             answer = llm(context_updates["_last_bot_prompt"])
             return ActionResult(return_value=answer, context_updates=context_updates)
-
-        except Exception as e:
-            return ActionResult(return_value=f"Error processing query: {str(e)}", context_updates={})
+        else:
+            return ActionResult(return_value="No relevant information found in the loaded documents.", context_updates={})
+   
+    except Exception as e:
+        return ActionResult(return_value=f"Error processing query: {str(e)}", context_updates={})
 
 def init(app: LLMRails):
     """Initialize the RAG action with the LLMRails instance."""
