@@ -99,7 +99,7 @@ def load_documents(file_objs):
 
         # Update app.context (This is the important line)
         loaded_documents = documents
-        rails.context['documents_loaded'] = True
+        documents_loaded = True
         
         return f"Successfully loaded {len(documents)} documents from {len(file_paths)} files.", gr.update(interactive=True) #add interactive
     except Exception as e:
