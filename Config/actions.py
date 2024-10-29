@@ -3,12 +3,16 @@ from nemoguardrails.actions.actions import ActionResult
 from llama_index.core import StorageContext, load_index_from_storage, PromptTemplate
 from nemoguardrails import LLMRails
 
-def load_kb_from_storage():
-    """Load the knowledge base from storage."""
-    vector_store = MilvusVectorStore(uri="./milvus_demo.db", dim=1024, overwrite=True, output_fields=[])
-    storage_context = StorageContext.from_defaults(persist_dir="./Config/kb")
-    index = load_index_from_storage(storage_context)
-    return index
+import sys
+sys.path.append('../')  # Add the parent directory to the Python path
+import app  # Now you can import app.py
+
+#def load_kb_from_storage():
+#    """Load the knowledge base from storage."""
+#    vector_store = MilvusVectorStore(uri="./milvus_demo.db", dim=1024, overwrite=True, output_fields=[])
+#    storage_context = StorageContext.from_defaults(persist_dir="./Config/kb")
+#    index = load_index_from_storage(storage_context)
+#    return index
 
 def template(question, context):
     return f"""Use the following pieces of context to answer the question at the end.
@@ -28,8 +32,9 @@ def rag(context: dict, llm, kb) -> ActionResult:
         context_updates = {}
         message = context.get('last_user_message')
         
-        kb = load_kb_from_storage()
-        query_engine = kb.as_query_engine(similarity_top_k=20)
+        #kb = load_kb_from_storage()
+        #query_engine = kb.as_query_engine(similarity_top_k=20)
+        query_engine = app.query_engine(similarity_top_k=20)
         response = query_engine.query(message)
         relevant_chunks = response.source_nodes[0].node.text
 
