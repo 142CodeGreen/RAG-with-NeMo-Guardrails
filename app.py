@@ -144,7 +144,7 @@ with gr.Blocks() as demo:
         file_input = gr.File(label="Select files to upload", file_count="multiple")
         load_btn = gr.Button("Load PDF Documents only")
 
-    load_output = gr.Textbox(label="Load Status", interactive=False)  #new interative status
+    load_output = gr.Textbox(label="Load Status") # interactive=False)  #new interative status
     #guardrails_output = gr.Textbox(label="Guardrails Status", interactive=False)  #new
     chatbot = gr.Chatbot()
     msg = gr.Textbox(label="Enter your question", interactive=True)
