@@ -37,8 +37,8 @@ from nemoguardrails import LLMRails, RailsConfig
 #from nemoguardrails import LLMRails, RailsConfig
 #from nemoguardrails.streaming import StreamingHandler
 
-#config = RailsConfig.from_path("./Config")
-#rails = LLMRails(config)
+config = RailsConfig.from_path("./Config")
+rails = LLMRails(config)
 
 #from Config.actions import init
 #init(rails)
@@ -55,7 +55,7 @@ def get_files_from_input(file_objs):
 
 
 def load_documents(file_objs):
-    global index, query_engine
+    global index, query_engine, loaded_documents
     try:
         if not file_objs:
             return "Error: No files selected."
@@ -72,7 +72,7 @@ def load_documents(file_objs):
             documents.extend(SimpleDirectoryReader(input_files=[file_path]).load_data())
 
             # Copy the PDF file to the kb directory
-            shutil.copy2(file_path, kb_dir) 
+            shutil.copy2(file_path, kb_dir)
 
         if not documents:
             return f"No documents found in the selected files.", gr.update(interactive=False)
@@ -85,6 +85,8 @@ def load_documents(file_objs):
         index.storage_context.persist(persist_dir='./Config/kb/')   # to add sequence for rag
         #documents_loaded = True     # to add sequence for rag
         query_engine = index.as_query_engine(similarity_top_k=20) # streaming=True)
+
+        loaded_documents = documents
 
         def test_query_engine():
             global query_engine
@@ -101,7 +103,7 @@ def load_documents(file_objs):
         test_query_engine()
 
         # Update app.context (This is the important line)
-        rails.context['documents_loaded'] = True
+        app.context['documents_loaded'] = True
         
         return f"Successfully loaded {len(documents)} documents from {len(file_paths)} files.", gr.update(interactive=True) #add interactive
     except Exception as e:
