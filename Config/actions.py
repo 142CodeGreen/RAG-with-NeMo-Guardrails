@@ -27,35 +27,36 @@ def rag(context: dict, llm, kb: KnowledgeBase) -> ActionResult:
         if not context.get('documents_loaded', False):
             return ActionResult(return_value="Documents are not yet loaded. Please upload documents first.", context_updates={})
 
-        #storage_context = StorageContext.from_defaults(persist_dir="./Config/kb")
-        #index = load_index_from_storage(storage_context)
-        #query_engine = index.as_query_engine(similarity_top_k=20)
+        chunks = kb.search_relevant_chunks(message)
+        relevant_chunks = "\n".join([chunk["body"] for chunk in chunks])
+        prompt = template(message, relevant_chunks)  # Pass relevant_chunks directly
+        input_variables = {"question": message, "context": relevant_chunks}
 
-        global query_engine
+        #global query_engine
     
-        response = query_engine.query(message)
-        if response:
-            relevant_chunks = response.source_nodes[0].node.text
+        #response = query_engine.query(message)
+        #if response:
+        #    relevant_chunks = response.source_nodes[0].node.text
             # Use the template function here
-            prompt = template(message, relevant_chunks)  # Pass relevant_chunks directly
+        #    prompt = template(message, relevant_chunks)  # Pass relevant_chunks directly
             # Use the template function here
             #context_str = "\n\n".join(chunk.text for chunk in relevant_chunks)
             #prompt = template(message, context_str)
-            prompt_template = PromptTemplate(prompt)
-            input_variables = {"question": message, "context": relevant_chunks}
+        #    prompt_template = PromptTemplate(prompt)
+        #    input_variables = {"question": message, "context": relevant_chunks}
 
             # Store the template for hallucination-checking
-            context_updates["_last_bot_prompt"] = prompt_template.format(
-                **input_variables
-            )
+        context_updates["_last_bot_prompt"] = prompt_template.format(
+            **input_variables
+        )
 
-            print(f" RAG :: prompt_template: {context_updates['_last_bot_prompt']}")
+        print(f" RAG :: prompt_template: {context_updates['_last_bot_prompt']}")
 
             # Generate answer using LlamaIndex (LLM is configured globally)
-            answer = llm(context_updates["_last_bot_prompt"])
-            return ActionResult(return_value=answer, context_updates=context_updates)
-        else:
-            return ActionResult(return_value="No relevant information found in the loaded documents.", context_updates={})
+        answer = llm(context_updates["_last_bot_prompt"])
+        return ActionResult(return_value=answer, context_updates=context_updates)
+        #else:
+        #    return ActionResult(return_value="No relevant information found in the loaded documents.", context_updates={})
    
     except Exception as e:
         return ActionResult(return_value=f"Error processing query: {str(e)}", context_updates={})
