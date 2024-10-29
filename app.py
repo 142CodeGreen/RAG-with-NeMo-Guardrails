@@ -76,10 +76,6 @@ def load_documents(file_objs):
         index = initialize_kb(documents)
         query_engine = index.as_query_engine(similarity_top_k=20) # streaming=True)
 
-        # Import the init function from actions.py
-        from Config.actions import init
-        init(rails)
-
         return f"Successfully loaded {len(documents)} documents from {len(file_paths)} files."
     except Exception as e:
         return f"Error loading documents: {str(e)}"
@@ -123,4 +119,8 @@ with gr.Blocks() as demo:
 
 # Launch the Gradio interface
 if __name__ == "__main__":
+    # Import the init function from actions.py
+    from Config.actions import init
+    init(rails)
+    
     demo.queue().launch(share=True,debug=True)
