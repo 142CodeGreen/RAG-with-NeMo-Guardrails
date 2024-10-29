@@ -34,7 +34,7 @@ def rag(context: dict, llm, kb) -> ActionResult:
 
         load_documents(file_objs)  
         import app  # This import needs to be here to avoid circular imports
-        query_engine = app.query_engine(similarity_top_k=20)
+        query_engine = app.query_engine #(similarity_top_k=20)
         response = query_engine.query(message)
         relevant_chunks = response.source_nodes[0].node.text
 
