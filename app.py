@@ -57,25 +57,22 @@ def load_documents(file_objs):
         file_paths = get_files_from_input(file_objs)
         documents = []
         for file_path in file_paths:
-            directory = os.path.dirname(file_path)
+            #directory = os.path.dirname(file_path)
             documents.extend(SimpleDirectoryReader(input_files=[file_path]).load_data())
 
             # Copy the PDF file to the kb directory
             shutil.copy2(file_path, kb_dir) 
 
         if not documents:
-            return f"No documents found in the selected files."
+            return f"No documents found in the selected files.", gr.update(interactive=False)
 
         vector_store = MilvusVectorStore(uri="./milvus_demo.db", dim=1024, overwrite=True, output_fields=[])
         storage_context = StorageContext.from_defaults(vector_store=vector_store)
         index = VectorStoreIndex.from_documents(documents, storage_context=storage_context)
 
-        # Save the index to the 'kb' subfolder
-        #storage_context.persist(persist_dir="./Config/kb")
-
 
         index.storage_context.persist(persist_dir='./Config/kb/')   # to add sequence for rag
-        documents_loaded = True     # to add sequence for rag
+        #documents_loaded = True     # to add sequence for rag
         query_engine = index.as_query_engine(similarity_top_k=20) # streaming=True)
 
         def test_query_engine():
@@ -92,24 +89,27 @@ def load_documents(file_objs):
         # Call this function after initialization for testing
         test_query_engine()
 
-        return f"Successfully loaded {len(documents)} documents from {len(file_paths)} files."
+        return f"Successfully loaded {len(documents)} documents from {len(file_paths)} files.", gr.update(interactive=True) #add interactive
     except Exception as e:
-        return f"Error loading documents: {str(e)}"
+        return f"Error loading documents: {str(e)}", gr.update(interactive=False)
 
-def stream_response(message, history):
-    """Handle chat interactions."""
-    global query_engine
+def init_guardrails():    #move init to be after load doc
+    # Initialize and register the rag action
+    init(rails)
+    return "Guardrails initialized and RAG action registered."
+
+def stream_response(message, history):   
     if query_engine is None:
         return history + [("Please upload a file first.", None)]
         
     try:
-        response = query_engine.query(message)
-        response_text = response.response
+        #response = query_engine.query(message)  delete
+        #response_text = response.response  delete
         
         # Using Nemo Guardrails to process the response
         user_message = {"role": "user", "content": message}
-        bot_message = {"role": "bot", "content": response.response}
-        rails_response = rails.generate(messages=[user_message, bot_message])
+        #bot_message = {"role": "bot", "content": response.response}   delete
+        rails_response = rails.generate(messages=[user_message]) # bot_message])
 
         return history + [(message, rails_response['content'])]
     except Exception as e:
@@ -123,12 +123,17 @@ with gr.Blocks() as demo:
         file_input = gr.File(label="Select files to upload", file_count="multiple")
         load_btn = gr.Button("Load PDF Documents only")
 
-    load_output = gr.Textbox(label="Load Status")
+    load_output = gr.Textbox(label="Load Status", interactive=False)  #new interative status
+    guardrails_output = gr.Textbox(label="Guardrails Status", interactive=False)  #new
     chatbot = gr.Chatbot()
     msg = gr.Textbox(label="Enter your question", interactive=True)
     clear = gr.Button("Clear")
 
+    with gr.Row():        #new
+        guardrails_btn = gr.Button("Initialize Guardrails", interactive=False) #new
+
     load_btn.click(load_documents, inputs=[file_input], outputs=[load_output])
+    guardrails_btn.click(init_guardrails, outputs=[guardrails_output])   #new
     msg.submit(stream_response, inputs=[msg, chatbot], outputs=[chatbot])
     clear.click(lambda: None, None, chatbot, queue=False)
 
