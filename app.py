@@ -27,7 +27,7 @@ Settings.text_splitter = SentenceSplitter(chunk_size=400)
 from nemoguardrails import LLMRails, RailsConfig
 from Config.actions import init, rag  # Import init() and rag()
 config = RailsConfig.from_path("./Config")
-config.run_local()
+#config.run_local()
 app = LLMRails(config)
 
 
