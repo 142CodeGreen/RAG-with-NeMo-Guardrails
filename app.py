@@ -69,11 +69,11 @@ def load_documents(file_objs):
         #storage_context.persist(persist_dir="./Config/kb")
 
         def initialize_kb(documents):
-        """Initialize the knowledge base with the provided documents."""
-        vector_store = MilvusVectorStore(uri="./milvus_demo.db", dim=1024, overwrite=True, output_fields=[])
-        storage_context = StorageContext.from_defaults(vector_store=vector_store)
-        index = VectorStoreIndex.from_documents(documents, storage_context=storage_context)
-        return index
+            """Initialize the knowledge base with the provided documents."""
+            vector_store = MilvusVectorStore(uri="./milvus_demo.db", dim=1024, overwrite=True, output_fields=[])
+            storage_context = StorageContext.from_defaults(vector_store=vector_store)
+            index = VectorStoreIndex.from_documents(documents, storage_context=storage_context)
+            return index
         
         index = initialize_kb(documents)
         query_engine = index.as_query_engine(similarity_top_k=20) # streaming=True)
