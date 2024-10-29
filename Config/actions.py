@@ -1,7 +1,8 @@
 from nemoguardrails.actions import action
 from nemoguardrails.actions.actions import ActionResult
+from nemoguardrails import LLMRails
+from nemoguardrails.kb.kb import KnowledgeBase
 from llama_index.core import StorageContext, load_index_from_storage, PromptTemplate
-from nemoguardrails import LLMRails, KnowledgeBase
 
 #import sys
 #sys.path.append('../')  # Add the parent directory to the Python path
