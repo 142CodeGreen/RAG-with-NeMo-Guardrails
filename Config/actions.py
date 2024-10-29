@@ -6,9 +6,9 @@ from llama_index.core import StorageContext, load_index_from_storage, PromptTemp
 
 
 def template(question, context):
-    return f"""Use the following pieces of context to answer the question at the end.
+    return f"""Answer user questions based on the loaded documents. 
     
-    {context}
+    {context = load_documents}
     
     1. You do not make up a story. 
     2. Keep your answer as concise as possible.
