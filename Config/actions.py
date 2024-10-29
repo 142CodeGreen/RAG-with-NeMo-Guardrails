@@ -19,21 +19,24 @@ def template(question, context):
 
 @action(is_system_action=True)
 def rag(context: dict, llm, kb: KnowledgeBase) -> ActionResult:
-    global loaded_documents
+    global query_engine
     try:
-        #context_updates = {}
         message = context.get('last_user_message')
-        docs = [Document(page_content=doc['content']) for doc in loaded_documents]
-        chunks = kb.search_relevant_chunks(message, docs=docs)
-        # chunks = kb.search_relevant_chunks(message)
-        relevant_chunks = "\n".join([chunk["body"] for chunk in chunks])
-        prompt = template(message, relevant_chunks)  # Pass relevant_chunks directly
+
+        # Use query_engine to get the relevant information
+        response = query_engine.query(message) 
+        relevant_chunks = response.response # Or format as needed
+
+        # Generate the prompt and get the answer
+        prompt = template(message, relevant_chunks)
         answer = llm(prompt)
         return ActionResult(return_value=answer, context_updates=context_updates)
     except Exception as e:
         return ActionResult(return_value=f"Error processing query: {str(e)}", context_updates={})
 
-#def init(app: LLMRails):
+def init(app: LLMRails):
+    app.register_action(rag, "rag")
+
 #    app.register_action(rag, "rag")
 #    if not app.context.get('documents_loaded', False):  #new
 #        print("Warning: Documents not loaded. Guardrails initialization delayed.")  #new
