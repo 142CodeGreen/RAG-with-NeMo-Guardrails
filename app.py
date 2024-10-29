@@ -23,7 +23,7 @@ Settings.text_splitter = SentenceSplitter(chunk_size=400)
 from nemoguardrails import LLMRails, RailsConfig
 #from nemoguardrails.streaming import StreamingHandler
 
-config = RailsConfig.from_path("./Congig")
+config = RailsConfig.from_path("./Config")
 rails = LLMRails(config)
 
 index = None
