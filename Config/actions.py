@@ -43,7 +43,6 @@ def rag(context: dict, llm, kb: KnowledgeBase) -> ActionResult:
         index = VectorStoreIndex.from_documents(documents, storage_context=storage_context)
         query_engine = index.as_query_engine(similarity_top_k=20)
            
-
         response = query_engine.query(message)
         relevant_chunks = response.source_nodes[0].node.text
 
