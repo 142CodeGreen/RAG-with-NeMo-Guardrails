@@ -81,7 +81,7 @@ def load_documents(file_objs):
             return index
         
         index = initialize_kb(documents)
-        index.save_to_disk('./Config/kb/index.json')  # to add sequence for rag
+        index.storage_context.persist(persist_dir='./Config/kb/')   # to add sequence for rag
         documents_loaded = True     # to add sequence for rag
         query_engine = index.as_query_engine(similarity_top_k=20) # streaming=True)
 
