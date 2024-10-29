@@ -91,12 +91,9 @@ def load_documents(file_objs):
     except Exception as e:
         return f"Error loading documents: {str(e)}", gr.update(interactive=False)
 
-# Import the init function from actions.py
-from Config.actions import init
-init(rails)
-
 def init_guardrails():    #move init to be after load doc
     # Initialize and register the rag action
+    from Config.actions import init
     init(rails)
     return "Guardrails initialized and RAG action registered."
 
