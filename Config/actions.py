@@ -4,16 +4,6 @@ from nemoguardrails import LLMRails
 from nemoguardrails.kb.kb import KnowledgeBase
 from llama_index.core import StorageContext, load_index_from_storage, PromptTemplate
 
-#import sys
-#sys.path.append('../')  # Add the parent directory to the Python path
-#from app import load_documents
-
-#def load_kb_from_storage():
-#    """Load the knowledge base from storage."""
-#    vector_store = MilvusVectorStore(uri="./milvus_demo.db", dim=1024, overwrite=True, output_fields=[])
-#    storage_context = StorageContext.from_defaults(persist_dir="./Config/kb")
-#    index = load_index_from_storage(storage_context)
-#    return index
 
 def template(question, context):
     return f"""Use the following pieces of context to answer the question at the end.
@@ -37,21 +27,12 @@ def rag(context: dict, llm, kb: KnowledgeBase) -> ActionResult:
         if not context.get('documents_loaded', False):
             return ActionResult(return_value="Documents are not yet loaded. Please upload documents first.", context_updates={})
 
-        # Access the kb directory using kb.kb_dir
-        #kb_dir = kb.kb_dir
-
-        #documents = SimpleDirectoryReader(kb_dir).load_data()
-
-        # Create index and query_engine (adapt if needed)
-        #vector_store = MilvusVectorStore(uri="./milvus_demo.db", dim=1024, overwrite=True, output_fields=[])
-        #storage_context = StorageContext.from_defaults(vector_store=vector_store)
-        #index = VectorStoreIndex.from_documents(documents, storage_context=storage_context)
+        #storage_context = StorageContext.from_defaults(persist_dir="./Config/kb")
+        #index = load_index_from_storage(storage_context)
         #query_engine = index.as_query_engine(similarity_top_k=20)
 
-        storage_context = StorageContext.from_defaults(persist_dir="./Config/kb")
-        index = load_index_from_storage(storage_context)
-        query_engine = index.as_query_engine(similarity_top_k=20)
-           
+        global query_engine
+    
         response = query_engine.query(message)
         if response:
             relevant_chunks = response.source_nodes[0].node.text
