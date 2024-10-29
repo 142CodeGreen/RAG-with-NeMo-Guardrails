@@ -26,6 +26,10 @@ from nemoguardrails import LLMRails, RailsConfig
 config = RailsConfig.from_path("./Config")
 rails = LLMRails(config)
 
+# Import the init function from actions.py
+from Config.actions import init
+init(rails)
+
 index = None
 query_engine = None
 
@@ -116,9 +120,5 @@ with gr.Blocks() as demo:
 
 
 # Launch the Gradio interface
-if __name__ == "__main__":
-    # Import the init function from actions.py
-    from Config.actions import init
-    init(rails)
-    
+if __name__ == "__main__"
     demo.queue().launch(share=True,debug=True)
