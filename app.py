@@ -29,7 +29,7 @@ from Config.actions import rag  #,init Import init() and rag()
 config = RailsConfig.from_path("./Config")
 
 rails = LLMRails(config)
-rails.documents_loaded = False
+#rails.documents_loaded = False
 
 index = None
 query_engine = None
@@ -82,7 +82,7 @@ def load_documents(file_objs):
         test_query_engine()
 
         # Update app.context (This is the important line)
-        rails.documents_loaded = True
+        #rails.documents_loaded = True
         
         return f"Successfully loaded {len(documents)} documents from {len(file_paths)} files.", gr.update(interactive=True) #add interactive
     except Exception as e:
@@ -91,47 +91,50 @@ def load_documents(file_objs):
 #config = RailsConfig.from_path("./Config")
 #rails = LLMRails(config)
 
-def init_guardrails():    #move init to be after load doc
+#def init_guardrails():    #move init to be after load doc
     # Initialize and register the rag action
-    print("Initializing guardrails...")
-    init(rails)
-    return "Guardrails initialized and RAG action registered."
-
-def stream_response(message, history):
-    try:
-        user_message = {"role": "user", "content": message}
-        rails_response = rails.generate(messages=[user_message])
-
-        rag_result = rag(query_engine, message)
-
-        # Check if RAG is needed based on guardrails output
-        if "RAG_needed" in rails_response['content']:
-            # Call rag() with necessary arguments (e.g., query_engine, message)
-            rag_result = rag(query_engine, message)  
-            rails_response['content'] += f"\n\nRAG Results:\n{rag_result}"
-
-        return history + [(message, rails_response['content'])]
-
-    except Exception as e:
-        return history + [(message, f"Error processing query: {str(e)}")]
-
+ #   print("Initializing guardrails...")
+ #   init(rails)
+ #   return "Guardrails initialized and RAG action registered."
 
 #def stream_response(message, history):
-#    if query_engine is None:
-#        return history + [("Please upload a file first.", None)]
-        
 #    try:
-        #response = query_engine.query(message)  delete
-        #response_text = response.response  delete
-        
-        # Using Nemo Guardrails to process the response
 #        user_message = {"role": "user", "content": message}
-        #bot_message = {"role": "bot", "content": response.response}   delete
- #       rails_response = rails.generate(messages=[user_message]) # bot_message])
+#        rails_response = rails.generate(messages=[user_message])
+
+        # Get relevant chunks from loaded documents using rag()
+ #       relevant_chunks = rag(query_engine, message)  
+
+  #      final_response = f"{rails_response['content']}\n\nRelevant Context:\n{relevant_chunks}"
+        
+   #     user_message = {"role": "user", "content": message}
+   #     rails_response = rails.generate(messages=[user_message])
+
+    #    rag_result = rag(query_engine, message)
+
+        # Check if RAG is needed based on guardrails output
+ #       if "RAG_needed" in rails_response['content']:
+            # Call rag() with necessary arguments (e.g., query_engine, message)
+#            rag_result = rag(query_engine, message)  
+#            rails_response['content'] += f"\n\nRAG Results:\n{rag_result}"
 
  #       return history + [(message, rails_response['content'])]
- #   except Exception as e:
- #       return history + [(message, f"Error processing query: {str(e)}")]
+
+  #  except Exception as e:
+  #      return history + [(message, f"Error processing query: {str(e)}")]
+
+
+def stream_response(message, history):
+    if query_engine is None:
+        return history + [("Please upload a file first.", None)]
+        
+    try:
+        user_message = {"role": "user", "content": message}
+        rails_response = rails.generate(messages=[user_message]) # bot_message])
+
+        return history + [(message, rails_response['content'])]
+    except Exception as e:
+        return history + [(message, f"Error processing query: {str(e)}")]
 
 # Create the Gradio interface
 with gr.Blocks() as demo:
