@@ -35,6 +35,8 @@ from Config.actions import init
 index = None
 query_engine = None
 
+from Config.actions import init
+
 def get_files_from_input(file_objs):
     if not file_objs:
         return []
@@ -93,7 +95,7 @@ def load_documents(file_objs):
 
 def init_guardrails():    #move init to be after load doc
     # Initialize and register the rag action
-    from Config.actions import init
+    print("Initializing guardrails...")
     init(rails)
     return "Guardrails initialized and RAG action registered."
 
@@ -132,7 +134,8 @@ with gr.Blocks() as demo:
         guardrails_btn = gr.Button("Initialize Guardrails", interactive=False) #new
 
     load_btn.click(load_documents, inputs=[file_input], outputs=[load_output])
-    guardrails_btn.click(init_guardrails, outputs=[guardrails_output])   #new
+    #guardrails_btn.click(init_guardrails, outputs=[guardrails_output])   #new
+    guardrails_btn.click(init_guardrails, outputs=[gr.update(value="Guardrails initialized and RAG action registered.", interactive=True)])
     msg.submit(stream_response, inputs=[msg, chatbot], outputs=[chatbot])
     clear.click(lambda: None, None, chatbot, queue=False)
 
