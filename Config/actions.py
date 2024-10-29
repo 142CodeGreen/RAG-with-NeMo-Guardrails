@@ -34,8 +34,8 @@ def rag(context: dict, llm, kb: KnowledgeBase) -> ActionResult:
     except Exception as e:
         return ActionResult(return_value=f"Error processing query: {str(e)}", context_updates={})
 
-def init(app: LLMRails):
-    app.register_action(rag, "rag")
+#def init(app: LLMRails):
+#    app.register_action(rag, "rag")
 
 #    app.register_action(rag, "rag")
 #    if not app.context.get('documents_loaded', False):  #new
