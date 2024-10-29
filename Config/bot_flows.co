@@ -23,5 +23,10 @@ define flow user query
 #  $check_hallucination = True
 #  bot $answer
 
+knowledge_bases:
+  - name: my_knowledge_base 
+    type: llamaindex  
+    path: ./Config/kb
+
 define bot refuse to respond
   "I'm sorry, I can't respond to that."
