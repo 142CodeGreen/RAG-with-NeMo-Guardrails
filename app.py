@@ -25,10 +25,10 @@ from llama_index.core.node_parser import SentenceSplitter
 Settings.text_splitter = SentenceSplitter(chunk_size=400)
 
 from nemoguardrails import LLMRails, RailsConfig
-from Config.actions import rag  #,init Import init() and rag()
+from Config.actions import init  #,init Import init() and rag()
 config = RailsConfig.from_path("./Config")
-
 rails = LLMRails(config)
+
 #rails.documents_loaded = False
 
 index = None
@@ -43,7 +43,7 @@ def get_files_from_input(file_objs):
 
 
 def load_documents(file_objs):
-    global index, query_engine, loaded_documents
+    global index, query_engine
     try:
         if not file_objs:
             return "Error: No files selected."
@@ -83,10 +83,12 @@ def load_documents(file_objs):
 
         # Update app.context (This is the important line)
         #rails.documents_loaded = True
+
+        init(rails)
         
-        return f"Successfully loaded {len(documents)} documents from {len(file_paths)} files.", gr.update(interactive=True) #add interactive
+        return f"Successfully loaded {len(documents)} documents from {len(file_paths)} files.") # gr.update(interactive=True) #add interactive
     except Exception as e:
-        return f"Error loading documents: {str(e)}", gr.update(interactive=False)
+        return f"Error loading documents: {str(e)}") # gr.update(interactive=False)
 
 #config = RailsConfig.from_path("./Config")
 #rails = LLMRails(config)
