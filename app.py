@@ -143,7 +143,7 @@ with gr.Blocks() as demo:
     
     #msg.submit(stream_response, inputs=[msg, chatbot], outputs=[chatbot])   
     msg.submit(
-        lambda message, history: asyncio.run(stream_response(message, history)),
+        lambda message, history: asyncio.to_thread(run_stream_response, message, history),
         inputs=[msg, chatbot], 
         outputs=[chatbot]
     )    
