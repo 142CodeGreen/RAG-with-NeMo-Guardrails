@@ -4,6 +4,7 @@ from nemoguardrails import LLMRails
 from nemoguardrails.kb.kb import KnowledgeBase
 from llama_index.core import StorageContext, load_index_from_storage, PromptTemplate
 
+llm = NVIDIA(model="meta/llama-3.1-8b-instruct")
 
 def template(question, context):
     return f"""Answer user questions based on loaded documents. 
