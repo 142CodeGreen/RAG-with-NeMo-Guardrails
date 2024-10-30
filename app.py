@@ -167,7 +167,6 @@ def stream_response(message, history, query_engine):
 
 # Create the Gradio interface
 with gr.Blocks() as demo:
-    query_engine_state = gr.State(query_engine)  #new
     gr.Markdown("# RAG Chatbot for PDF Files")
 
     with gr.Row():
@@ -182,7 +181,7 @@ with gr.Blocks() as demo:
     load_btn.click(load_documents, inputs=[file_input], outputs=[load_output])
     
     # Pass the query_engine_state to stream_response
-    msg.submit(stream_response, inputs=[msg, chatbot,query_engine], outputs=[chatbot])   
+    msg.submit(stream_response, inputs=[msg, chatbot], outputs=[chatbot])   
     #msg.submit(
     #    lambda message, history: asyncio.run(stream_response(message, history)),
     #    inputs=[msg, chatbot], 
