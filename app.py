@@ -14,6 +14,8 @@ import gradio as gr
 import shutil  # For copying files
 import logging
 import asyncio
+import nest_asyncio
+nest_asyncio.apply()
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
