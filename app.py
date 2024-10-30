@@ -101,7 +101,6 @@ def load_documents(file_objs):
         # Update app.context (This is the important line)
         #rails.documents_loaded = True
 
-        #init(rails)
         
         return f"Successfully loaded {len(documents)} documents from {len(file_paths)} files." # gr.update(interactive=True) #add interactive
     except Exception as e:
@@ -118,19 +117,19 @@ def stream_response(message, history):
         user_message = {"role": "user", "content": message}
         result = rails.generate(messages=[user_message]) 
         
-        full_response = ""  # Accumulate response chunks
         for chunk in result:
-            full_response += chunk  # Append chunk to response
-            # Optionally display partial responses during streaming
-            history.append((message, chunk)) 
-        
-        history.append((message, full_response))  # Add complete response
-        chatbot.update(history)
-        return history
+            if chunk:  # Check if the chunk has content
+                history.append((message, chunk)) 
+                yield history
+
+        # If you want to mark the end of the response
+        history.append((None, "End of response.")) 
+        yield history
 
     except Exception as e:
         history.append((message, f"Error processing query: {str(e)}"))
-        return history
+        yield history
+
 
 # Create the Gradio interface
 with gr.Blocks() as demo:
@@ -146,9 +145,8 @@ with gr.Blocks() as demo:
     clear = gr.Button("Clear")
 
     load_btn.click(load_documents, inputs=[file_input], outputs=[load_output])
-    
-    msg.submit(stream_response, inputs=[msg, chatbot], outputs=[chatbot])
-    
+    msg.submit(stream_response, inputs=[msg, chatbot], outputs=[chatbot], _js="async (x) => { return await x; }")
+    #msg.submit(stream_response, inputs=[msg, chatbot], outputs=[chatbot])
     clear.click(lambda: None, None, chatbot, queue=False)
 
 
