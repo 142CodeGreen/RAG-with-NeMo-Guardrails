@@ -150,12 +150,7 @@ with gr.Blocks() as demo:
 
     load_btn.click(load_documents, inputs=[file_input], outputs=[load_output])
     
-    msg.submit(stream_response, inputs=[msg, chatbot], outputs=[chatbot])   
-    #msg.submit(
-    #    process_stream_response,  # Updated to use process_stream_response
-    #    inputs=[msg, chatbot],
-    #    outputs=[chatbot]
-    #)
+    msg.submit(stream_response, inputs=[msg, chatbot], outputs=[chatbot])
     
     clear.click(lambda: None, None, chatbot, queue=False)
 
@@ -164,6 +159,11 @@ with gr.Blocks() as demo:
 if __name__ == "__main__":
     demo.queue().launch(share=True,debug=True)
 
+#msg.submit(
+    #    process_stream_response,  # Updated to use process_stream_response
+    #    inputs=[msg, chatbot],
+    #    outputs=[chatbot]
+    #)
 
 
 # use async stream_response
