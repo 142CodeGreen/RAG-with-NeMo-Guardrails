@@ -24,8 +24,8 @@ from llama_index.vector_stores.milvus import MilvusVectorStore
 from llama_index.core.node_parser import SentenceSplitter
 Settings.text_splitter = SentenceSplitter(chunk_size=400)
 
-#from nemoguardrails import LLMRails, RailsConfig
-#from Config.actions import init  #,init Import init() and rag()
+from nemoguardrails import LLMRails, RailsConfig
+from Config.actions import init  #,init Import init() and rag()
 #config = RailsConfig.from_path("./Config")
 #rails = LLMRails(config)
 
@@ -67,6 +67,10 @@ def load_documents(file_objs):
         #index.storage_context.persist(persist_dir='./Config/kb/')   # to add sequence for rag
         
         query_engine = index.as_query_engine(similarity_top_k=20) # streaming=True)
+
+        config = RailsConfig.from_path("./Config")
+        rails = LLMRails(config)
+        init(rails)
     
         #def test_query_engine():
         #    global query_engine
@@ -85,21 +89,20 @@ def load_documents(file_objs):
         # Update app.context (This is the important line)
         #rails.documents_loaded = True
 
-        init(rails)
+        #init(rails)
         
         return f"Successfully loaded {len(documents)} documents from {len(file_paths)} files." # gr.update(interactive=True) #add interactive
     except Exception as e:
         return f"Error loading documents: {str(e)}" # gr.update(interactive=False)
 
 
-from nemoguardrails import LLMRails, RailsConfig
-from Config.actions import init  #,init Import init() and rag()
-config = RailsConfig.from_path("./Config")
-rails = LLMRails(config)
-init(rails)
-
+#from nemoguardrails import LLMRails, RailsConfig
+#from Config.actions import init  #,init Import init() and rag()
 #config = RailsConfig.from_path("./Config")
 #rails = LLMRails(config)
+#init(rails)
+
+
 
 #def init_guardrails():    #move init to be after load doc
     # Initialize and register the rag action
