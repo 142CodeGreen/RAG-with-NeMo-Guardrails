@@ -4,8 +4,6 @@ from nemoguardrails import LLMRails
 from nemoguardrails.kb.kb import KnowledgeBase
 from llama_index.core import StorageContext, load_index_from_storage, PromptTemplate
 
-llm = NVIDIA(model="meta/llama-3.1-8b-instruct")
-
 def template(question, context):
     return f"""Answer user questions based on loaded documents. 
     
@@ -36,10 +34,8 @@ def rag(context: dict, llm, kb: KnowledgeBase) -> ActionResult:
         return ActionResult(return_value=f"Error processing query: {str(e)}", context_updates={})
 
 def init(app: LLMRails):
-    #if not app.context.get('documents_loaded', False):  #new
-     #   print("Warning: Documents not loaded. Guardrails initialization delayed.")  #new
-     #   return  #new
-    app.register_action(rag, "rag")
+    llm = NVIDIA(model="meta/llama-3.1-8b-instruct")
+    app.register_action(rag, "rag", llm=llm)
 
 #def init(app: LLMRails):
 #    app.register_action(rag, "rag")
