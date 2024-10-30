@@ -82,7 +82,7 @@ def load_documents(file_objs):
         index = VectorStoreIndex.from_documents(documents, storage_context=storage_context)
         #index.storage_context.persist(persist_dir='./Config/kb/')   # to add sequence for rag
         
-        query_engine = index.as_query_engine(similarity_top_k=20) # streaming=True)
+        query_engine = index.as_query_engine(similarity_top_k=20, streaming=True)
 
         def test_query_engine():
             global query_engine
