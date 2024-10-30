@@ -13,7 +13,7 @@ import os
 import gradio as gr
 import shutil  # For copying files
 import logging
-#import asyncio
+import asyncio
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -111,13 +111,13 @@ def load_documents(file_objs):
 from Config.actions import init
 init(rails)
 
-def stream_response(message, history):
+async def stream_response(message, history):
     if query_engine is None:
         return history + [("Please upload a file first.", None)]
         
     try:
         user_message = {"role": "user", "content": message}
-        rails_response = rails.generate(messages=[user_message]) # bot_message])
+        rails_response = await rails.generate(messages=[user_message]) # bot_message])
         response = history + [(message, rails_response['content'])]  # to collect gc
         return history + [(message, rails_response['content'])]
     except Exception as e:
@@ -138,14 +138,13 @@ with gr.Blocks() as demo:
 
     load_btn.click(load_documents, inputs=[file_input], outputs=[load_output])
     
-    # Pass the query_engine_state to stream_response
-    msg.submit(stream_response, inputs=[msg, chatbot], outputs=[chatbot])   
-    #msg.submit(
-    #    lambda message, history: asyncio.run(stream_response(message, history)),
-    #    inputs=[msg, chatbot], 
-    #    outputs=[chatbot],
-    #    _js="async (x) => {for await (let chunk of x) {await new Promise(r => setTimeout(r, 50)); yield chunk;}}"
-    #)
+    #msg.submit(stream_response, inputs=[msg, chatbot], outputs=[chatbot])   
+    msg.submit(
+        lambda message, history: asyncio.run(stream_response(message, history)),
+        inputs=[msg, chatbot], 
+        outputs=[chatbot],
+        _js="async (x) => {for await (let chunk of x) {await new Promise(r => setTimeout(r, 50)); yield chunk;}}"
+    )
     clear.click(lambda: None, None, chatbot, queue=False)
 
 
