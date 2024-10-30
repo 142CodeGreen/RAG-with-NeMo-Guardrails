@@ -4,6 +4,8 @@
 
 #warnings.filterwarnings("ignore", category=LangChainDeprecationWarning, module="llama_index")
 
+from langchain_community.chat_message_histories import ChatMessageHistory
+
 import os
 import gradio as gr
 import shutil  # For copying files
