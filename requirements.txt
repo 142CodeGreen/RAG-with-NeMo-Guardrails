@@ -6,7 +6,7 @@ llama-index-embeddings-nvidia==0.1.4
 #llama-index-postprocessor-nvidia-rerank
 llama-index-vector-stores-Milvus==0.1.20
 ipywidgets
-gradio
+gradio==4.44.1
 nemoguardrails
 OpenAI
 langchain-nvidia-ai-endpoints
