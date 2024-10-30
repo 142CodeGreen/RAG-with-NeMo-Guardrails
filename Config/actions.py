@@ -2,10 +2,7 @@ from nemoguardrails.actions import action
 from nemoguardrails.actions.actions import ActionResult
 from nemoguardrails import LLMRails
 from nemoguardrails.kb.kb import KnowledgeBase
-from llama_index.core import Settings, StorageContext, load_index_from_storage, PromptTemplate
-
-from llama_index.llms.nvidia import NVIDIA
-Settings.llm = NVIDIA(model="meta/llama-3.1-8b-instruct")
+from llama_index.core import StorageContext, load_index_from_storage, PromptTemplate
 
 def template(question, context):
     return f"""Answer user questions based on loaded documents. 
