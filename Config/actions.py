@@ -4,7 +4,7 @@ from nemoguardrails import LLMRails
 from nemoguardrails.kb.kb import KnowledgeBase
 from llama_index.core import StorageContext, load_index_from_storage, PromptTemplate
 
-async def template(question, context):
+def template(question, context):
     return f"""Answer user questions based on loaded documents. 
     
     {context}
@@ -17,18 +17,18 @@ async def template(question, context):
     Answer in markdown:"""
 
 @action(is_system_action=True)
-async def rag(context: dict, llm, kb: KnowledgeBase) -> ActionResult:
+def rag(context: dict, llm, kb: KnowledgeBase) -> ActionResult:
     global query_engine  # Assuming query_engine is defined globally in app.py
     try:
         message = context.get('last_user_message', '')
         if not message:
             return ActionResult(return_value="No user query provided.", context_updates={})
 
-        response = await query_engine.aquery(message)
+        response = query_engine.query(message)
         relevant_chunks = response.response
 
-        prompt = await template(message, relevant_chunks)
-        answer = await llm(prompt)
+        prompt = template(message, relevant_chunks)
+        answer = llm(prompt)
         
         context_updates = {
             'last_bot_message': answer,
