@@ -18,23 +18,56 @@ def template(question, context):
 
 @action(is_system_action=True)
 def rag(context: dict, llm, kb: KnowledgeBase) -> ActionResult:
-    global query_engine
     try:
-        message = context.get('last_user_message')
+        message = context.get('last_user_message', '')
+        if not message:
+            return ActionResult(return_value="No user query provided.", context_updates={})
 
-        # Use query_engine to get the relevant information
-        response = query_engine.query(message) 
-        relevant_chunks = response.response # Or format as needed
+        global query_engine  # Assuming query_engine is defined globally in app.py
+        response = query_engine.query(message)
+        relevant_chunks = response.response
 
-        # Generate the prompt and get the answer
         prompt = template(message, relevant_chunks)
         answer = llm(prompt)
+        
+        context_updates = {
+            'last_bot_message': answer,
+            '_last_bot_prompt': prompt
+        }
+        
         return ActionResult(return_value=answer, context_updates=context_updates)
     except Exception as e:
         return ActionResult(return_value=f"Error processing query: {str(e)}", context_updates={})
 
 def init(app: LLMRails):
     app.register_action(rag, "rag")
+
+
+#async def template(question, context):
+
+
+#async def rag(context: dict, llm, kb: KnowledgeBase) -> ActionResult:
+#    try:
+#        message = context.get('last_user_message')
+#        if not message:
+#            return ActionResult(return_value="No user query provided.", context_updates={})
+
+        # Use query_engine to get the relevant information asynchronously
+ #       global query_engine
+ #       response = await query_engine.aquery(message)  # Assuming there's an asynchronous method 'aquery'
+ #       relevant_chunks = response.response # Or format as needed
+
+        # Generate the prompt and get the answer asynchronously
+  #      prompt = await template(message, relevant_chunks)
+  #      answer = await llm.apredict(prompt)  # Assuming 'llm' supports an async method like 'apredict'
+
+  #      context_updates = {
+  #          'last_bot_message': answer,
+  #          '_last_bot_prompt': prompt
+  #      }
+  #      return ActionResult(return_value=answer, context_updates=context_updates)
+  #  except Exception as e:
+  #      return ActionResult(return_value=f"Error processing query: {str(e)}", context_updates={})
     
 #def init(app: LLMRails):
 #    app.register_action(rag, "rag")
