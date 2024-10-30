@@ -113,27 +113,25 @@ init(rails)
 
 def stream_response(message, history):
     if query_engine is None:
-        return history + [("Please upload a file first.", None)]
+        return history + [("Please upload a file first.", None)]  
     
     try:
         user_message = {"role": "user", "content": message}
-        result = rails.generate(messages=[user_message])  # Await the result
+        result = rails.generate(messages=[user_message]) 
         
-        # Assuming the result is iterable. If it's not, you'll need to adjust how you handle 'result'.
-        for chunk in result:  
-            response = (message, chunk)
-            print(response)
-            #await asyncio.sleep(0.05)
-            #yield response
-        
-    except Exception as e:
-        return (message, f"Error processing query: {str(e)}")
+        full_response = ""  # Accumulate response chunks
+        for chunk in result:
+            full_response += chunk  # Append chunk to response
+            # Optionally display partial responses during streaming
+            history.append((message, chunk)) 
+            chatbot.update(history)
 
-#async def process_stream_response(message, history):
-#    results = history  # Start with the existing history
-#    async for chunk in stream_response(message, history):  # Use stream_response here
-#        results.append(chunk)  # Append each chunk as it comes
-#    return results  # Return the final accumulated list
+        history.append((message, full_response))  # Add complete response
+        return history
+
+    except Exception as e:
+        history.append((message, f"Error processing query: {str(e)}"))
+        return history
 
 # Create the Gradio interface
 with gr.Blocks() as demo:
