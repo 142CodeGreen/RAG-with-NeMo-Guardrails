@@ -115,32 +115,21 @@ def load_documents(file_objs):
  #   init(rails)
  #   return "Guardrails initialized and RAG action registered."
 
-#def stream_response(message, history):
+#import asyncio
+
+# use async stream_response
+#async def stream_response(message, history):
+#    if query_engine is None:
+#        return history + [("Please upload a file first.", None)]
+        
 #    try:
 #        user_message = {"role": "user", "content": message}
-#        rails_response = rails.generate(messages=[user_message])
+        # Assuming rails.generate() can be awaited if it's now asynchronous
+#        rails_response = await rails.generate(messages=[user_message])
 
-        # Get relevant chunks from loaded documents using rag()
- #       relevant_chunks = rag(query_engine, message)  
-
-  #      final_response = f"{rails_response['content']}\n\nRelevant Context:\n{relevant_chunks}"
-        
-   #     user_message = {"role": "user", "content": message}
-   #     rails_response = rails.generate(messages=[user_message])
-
-    #    rag_result = rag(query_engine, message)
-
-        # Check if RAG is needed based on guardrails output
- #       if "RAG_needed" in rails_response['content']:
-            # Call rag() with necessary arguments (e.g., query_engine, message)
-#            rag_result = rag(query_engine, message)  
-#            rails_response['content'] += f"\n\nRAG Results:\n{rag_result}"
-
- #       return history + [(message, rails_response['content'])]
-
-  #  except Exception as e:
-  #      return history + [(message, f"Error processing query: {str(e)}")]
-
+#        return history + [(message, rails_response['content'])]
+#    except Exception as e:
+#        return history + [(message, f"Error processing query: {str(e)}")]
 
 def stream_response(message, history):
     if query_engine is None:
