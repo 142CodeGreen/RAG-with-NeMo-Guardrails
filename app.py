@@ -13,9 +13,9 @@ import os
 import gradio as gr
 import shutil  # For copying files
 import logging
-import asyncio
-import nest_asyncio
-nest_asyncio.apply()
+#import asyncio
+#import nest_asyncio
+#nest_asyncio.apply()
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -35,8 +35,6 @@ from nemoguardrails import LLMRails, RailsConfig
 
 config = RailsConfig.from_path("./Config")
 rails = LLMRails(config)
-
-#rails.documents_loaded = False
 
 index = None
 query_engine = None
@@ -113,29 +111,29 @@ def load_documents(file_objs):
 from Config.actions import init
 init(rails)
 
-async def stream_response(message, history):
+def stream_response(message, history):
     if query_engine is None:
         yield history + [("Please upload a file first.", None)]
     
     try:
         user_message = {"role": "user", "content": message}
-        result = await rails.generate_async(messages=[user_message])  # Await the result
+        result = rails.generate(messages=[user_message])  # Await the result
         
         # Assuming the result is iterable. If it's not, you'll need to adjust how you handle 'result'.
         for chunk in result:  
             response = (message, chunk)
             print(response)
-            await asyncio.sleep(0.05)
-            yield response
+            #await asyncio.sleep(0.05)
+            #yield response
         
     except Exception as e:
         yield (message, f"Error processing query: {str(e)}")
 
-async def process_stream_response(message, history):
-    results = history  # Start with the existing history
-    async for chunk in stream_response(message, history):  # Use stream_response here
-        results.append(chunk)  # Append each chunk as it comes
-    return results  # Return the final accumulated list
+#async def process_stream_response(message, history):
+#    results = history  # Start with the existing history
+#    async for chunk in stream_response(message, history):  # Use stream_response here
+#        results.append(chunk)  # Append each chunk as it comes
+#    return results  # Return the final accumulated list
 
 # Create the Gradio interface
 with gr.Blocks() as demo:
@@ -152,12 +150,12 @@ with gr.Blocks() as demo:
 
     load_btn.click(load_documents, inputs=[file_input], outputs=[load_output])
     
-    #msg.submit(stream_response, inputs=[msg, chatbot], outputs=[chatbot])   
-    msg.submit(
-        process_stream_response,  # Updated to use process_stream_response
-        inputs=[msg, chatbot],
-        outputs=[chatbot]
-    )
+    msg.submit(stream_response, inputs=[msg, chatbot], outputs=[chatbot])   
+    #msg.submit(
+    #    process_stream_response,  # Updated to use process_stream_response
+    #    inputs=[msg, chatbot],
+    #    outputs=[chatbot]
+    #)
     
     clear.click(lambda: None, None, chatbot, queue=False)
 
