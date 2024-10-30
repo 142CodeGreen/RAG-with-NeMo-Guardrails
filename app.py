@@ -24,10 +24,10 @@ from llama_index.vector_stores.milvus import MilvusVectorStore
 from llama_index.core.node_parser import SentenceSplitter
 Settings.text_splitter = SentenceSplitter(chunk_size=400)
 
-from nemoguardrails import LLMRails, RailsConfig
-from Config.actions import init  #,init Import init() and rag()
-config = RailsConfig.from_path("./Config")
-rails = LLMRails(config)
+#from nemoguardrails import LLMRails, RailsConfig
+#from Config.actions import init  #,init Import init() and rag()
+#config = RailsConfig.from_path("./Config")
+#rails = LLMRails(config)
 
 #rails.documents_loaded = False
 
@@ -64,7 +64,8 @@ def load_documents(file_objs):
         vector_store = MilvusVectorStore(uri="./milvus_demo.db", dim=1024, overwrite=True, output_fields=[])
         storage_context = StorageContext.from_defaults(vector_store=vector_store)
         index = VectorStoreIndex.from_documents(documents, storage_context=storage_context)
-        index.storage_context.persist(persist_dir='./Config/kb/')   # to add sequence for rag
+        #index.storage_context.persist(persist_dir='./Config/kb/')   # to add sequence for rag
+        
         query_engine = index.as_query_engine(similarity_top_k=20) # streaming=True)
     
         #def test_query_engine():
@@ -89,6 +90,13 @@ def load_documents(file_objs):
         return f"Successfully loaded {len(documents)} documents from {len(file_paths)} files." # gr.update(interactive=True) #add interactive
     except Exception as e:
         return f"Error loading documents: {str(e)}" # gr.update(interactive=False)
+
+
+from nemoguardrails import LLMRails, RailsConfig
+from Config.actions import init  #,init Import init() and rag()
+config = RailsConfig.from_path("./Config")
+rails = LLMRails(config)
+init(rails)
 
 #config = RailsConfig.from_path("./Config")
 #rails = LLMRails(config)
@@ -146,7 +154,7 @@ with gr.Blocks() as demo:
         file_input = gr.File(label="Select files to upload", file_count="multiple")
         load_btn = gr.Button("Load PDF Documents only")
 
-    load_output = gr.Textbox(label="Load Status") # interactive=False)  #new interative status
+    load_output = gr.Textbox(label="Load Status") # interactive=False) 
     #guardrails_output = gr.Textbox(label="Guardrails Status", interactive=False)  #new
     chatbot = gr.Chatbot()
     msg = gr.Textbox(label="Enter your question", interactive=True)
