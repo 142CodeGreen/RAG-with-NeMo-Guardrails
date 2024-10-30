@@ -92,7 +92,7 @@ def load_documents(file_objs):
                 logger.error("Query engine is not initialized")
 
         # Call this function after initialization for testing
-        #test_query_engine()
+        test_query_engine()
 
         # Update app.context (This is the important line)
         #rails.documents_loaded = True
