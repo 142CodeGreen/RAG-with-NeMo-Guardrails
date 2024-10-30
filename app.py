@@ -84,7 +84,6 @@ def load_documents(file_objs):
         
         query_engine = index.as_query_engine(similarity_top_k=20) # streaming=True)
 
-
         def test_query_engine():
             global query_engine
             if query_engine:
