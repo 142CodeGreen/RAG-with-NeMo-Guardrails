@@ -35,6 +35,7 @@ def rag(context: dict, llm, kb: KnowledgeBase) -> ActionResult:
 
 def init(app: LLMRails):
     app.register_action(rag, "rag")
+    
 #def init(app: LLMRails):
 #    app.register_action(rag, "rag")
 
