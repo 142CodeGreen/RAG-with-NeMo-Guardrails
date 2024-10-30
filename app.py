@@ -147,7 +147,7 @@ with gr.Blocks() as demo:
 
     load_btn.click(load_documents, inputs=[file_input], outputs=[load_output])
     
-    msg.submit(stream_response, inputs=[msg, chatbot, chatbot], outputs=[chatbot])
+    msg.submit(stream_response, inputs=[msg, chatbot], outputs=[chatbot])
     
     clear.click(lambda: None, None, chatbot, queue=False)
 
