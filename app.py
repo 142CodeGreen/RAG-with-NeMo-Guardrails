@@ -134,7 +134,7 @@ def load_documents(file_objs):
 #    except Exception as e:
 #        return history + [(message, f"Error processing query: {str(e)}")]
 
-def stream_response(message, history, query_engine):
+def stream_response(message, history):
     if query_engine is None:
         return history + [("Please upload a file first.", None)]
         
