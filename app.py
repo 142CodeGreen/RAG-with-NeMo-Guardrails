@@ -124,9 +124,9 @@ def stream_response(message, history):
             full_response += chunk  # Append chunk to response
             # Optionally display partial responses during streaming
             history.append((message, chunk)) 
-            chatbot.update(history)
-
+        
         history.append((message, full_response))  # Add complete response
+        chatbot.update(history)
         return history
 
     except Exception as e:
@@ -148,7 +148,7 @@ with gr.Blocks() as demo:
 
     load_btn.click(load_documents, inputs=[file_input], outputs=[load_output])
     
-    msg.submit(stream_response, inputs=[msg, chatbot], outputs=[chatbot])
+    msg.submit(stream_response, inputs=[msg, chatbot, chatbot], outputs=[chatbot])
     
     clear.click(lambda: None, None, chatbot, queue=False)
 
