@@ -30,7 +30,7 @@ from llama_index.core.node_parser import SentenceSplitter
 Settings.text_splitter = SentenceSplitter(chunk_size=400)
 
 from nemoguardrails import LLMRails, RailsConfig
-from Config.actions import rag  #,init Import init() and rag()
+
 config = RailsConfig.from_path("./Config")
 rails = LLMRails(config)
 
@@ -108,7 +108,7 @@ def load_documents(file_objs):
     except Exception as e:
         return f"Error loading documents: {str(e)}" # gr.update(interactive=False)
 
-
+from Config.actions import init
 init(rails)
 
 def stream_response(message, history):
