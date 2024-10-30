@@ -63,16 +63,16 @@ def load_documents(file_objs):
 
         # use GPU for Milvus workload
         vector_store = MilvusVectorStore(
-        host="127.0.0.1",
-        port=19530,
-        dim=1024,
-        collection_name="your_collection_name",
-        gpu_id=0,  # Specify the GPU ID to use
-        output_fields=["field1","field2"]
+            host="127.0.0.1",
+            port=19530,
+            dim=1024,
+            collection_name="your_collection_name",
+            gpu_id=0,  # Specify the GPU ID to use
+            output_fields=["field1","field2"]
         )
         
         
-        vector_store = MilvusVectorStore(uri="./milvus_demo.db", dim=1024, overwrite=True, output_fields=[])
+        #vector_store = MilvusVectorStore(uri="./milvus_demo.db", dim=1024, overwrite=True, output_fields=[])
         storage_context = StorageContext.from_defaults(vector_store=vector_store)
         index = VectorStoreIndex.from_documents(documents, storage_context=storage_context)
         #index.storage_context.persist(persist_dir='./Config/kb/')   # to add sequence for rag
