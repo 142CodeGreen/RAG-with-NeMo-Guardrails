@@ -113,7 +113,7 @@ init(rails)
 
 def stream_response(message, history):
     if query_engine is None:
-        yield history + [("Please upload a file first.", None)]
+        return history + [("Please upload a file first.", None)]
     
     try:
         user_message = {"role": "user", "content": message}
@@ -127,7 +127,7 @@ def stream_response(message, history):
             #yield response
         
     except Exception as e:
-        yield (message, f"Error processing query: {str(e)}")
+        return (message, f"Error processing query: {str(e)}")
 
 #async def process_stream_response(message, history):
 #    results = history  # Start with the existing history
