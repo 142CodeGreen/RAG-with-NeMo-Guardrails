@@ -18,12 +18,12 @@ def template(question, context):
 
 @action(is_system_action=True)
 def rag(context: dict, llm, kb: KnowledgeBase) -> ActionResult:
+    global query_engine  # Assuming query_engine is defined globally in app.py
     try:
         message = context.get('last_user_message', '')
         if not message:
             return ActionResult(return_value="No user query provided.", context_updates={})
 
-        global query_engine  # Assuming query_engine is defined globally in app.py
         response = query_engine.query(message)
         relevant_chunks = response.response
 
@@ -47,13 +47,13 @@ def init(app: LLMRails):
 
 
 #async def rag(context: dict, llm, kb: KnowledgeBase) -> ActionResult:
+#    global query_engine
 #    try:
 #        message = context.get('last_user_message')
 #        if not message:
 #            return ActionResult(return_value="No user query provided.", context_updates={})
 
         # Use query_engine to get the relevant information asynchronously
- #       global query_engine
  #       response = await query_engine.aquery(message)  # Assuming there's an asynchronous method 'aquery'
  #       relevant_chunks = response.response # Or format as needed
 
