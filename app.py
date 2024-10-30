@@ -25,9 +25,9 @@ from llama_index.core.node_parser import SentenceSplitter
 Settings.text_splitter = SentenceSplitter(chunk_size=400)
 
 from nemoguardrails import LLMRails, RailsConfig
-from Config.actions import init  #,init Import init() and rag()
-#config = RailsConfig.from_path("./Config")
-#rails = LLMRails(config)
+from Config.actions import rag  #,init Import init() and rag()
+config = RailsConfig.from_path("./Config")
+rails = LLMRails(config)
 
 #rails.documents_loaded = False
 
@@ -93,15 +93,7 @@ def load_documents(file_objs):
         return f"Error loading documents: {str(e)}" # gr.update(interactive=False)
 
 
-#from nemoguardrails import LLMRails, RailsConfig
-#from Config.actions import init  #,init Import init() and rag()
-#config = RailsConfig.from_path("./Config")
-#rails = LLMRails(config)
-
-config = RailsConfig.from_path("./Config")
-rails = LLMRails(config)
-init(rails)
-
+#init(rails)
 
 
 #def init_guardrails():    #move init to be after load doc
