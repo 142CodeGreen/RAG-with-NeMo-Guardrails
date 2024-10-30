@@ -6,8 +6,8 @@ warnings.filterwarnings("ignore", category=LangChainDeprecationWarning, module="
 
 #from langchain_community.chat_message_histories import ChatMessageHistory
 
-import gc
-import torch
+#import gc
+#import torch
 
 import os
 import gradio as gr
@@ -117,28 +117,9 @@ def stream_response(message, history):
         
     try:
         user_message = {"role": "user", "content": message}
-        # Create a CUDA event
-        start_event = torch.cuda.Event(enable_timing=True)
-        end_event = torch.cuda.Event(enable_timing=True)
-        start_event.record()
-        
         rails_response = rails.generate(messages=[user_message]) # bot_message])
-
-        # Record the event after the transfer is complete (assuming rails.generate handles this)
-        end_event.record()
-        torch.cuda.synchronize()  # Wait for all operations in the current stream to complete
-
-        # Wait for the event before accessing data on the GPU
-        start_event.wait(end_event)
-
         response = history + [(message, rails_response['content'])]  # to collect gc
-
-        # Trigger garbage collection
-        gc.collect()
-
-        return response
-        
-        #return history + [(message, rails_response['content'])]
+        return history + [(message, rails_response['content'])]
     except Exception as e:
         return history + [(message, f"Error processing query: {str(e)}")]
 
@@ -183,6 +164,18 @@ if __name__ == "__main__":
 #        user_message = {"role": "user", "content": message}
         # Assuming rails.generate() can be awaited if it's now asynchronous
 #        rails_response = await rails.generate(messages=[user_message])
+        
+        # Create a CUDA event
+ #       start_event = torch.cuda.Event(enable_timing=True)
+ #       end_event = torch.cuda.Event(enable_timing=True)
+ #       start_event.record()
+
+        # Record the event after the transfer is complete (assuming rails.generate handles this)
+  #      end_event.record()
+  #      torch.cuda.synchronize()  # Wait for all operations in the current stream to complete
+
+        # Wait for the event before accessing data on the GPU
+  #      start_event.wait(end_event)
 
 #        return history + [(message, rails_response['content'])]
 #    except Exception as e:
