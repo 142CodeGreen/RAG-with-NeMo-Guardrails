@@ -1,8 +1,8 @@
 # Import necessary libraries
-#import warnings
-#from langchain_core._api.deprecation import LangChainDeprecationWarning
+import warnings
+from langchain_core._api.deprecation import LangChainDeprecationWarning
 
-#warnings.filterwarnings("ignore", category=LangChainDeprecationWarning, module="llama_index")
+warnings.filterwarnings("ignore", category=LangChainDeprecationWarning, module="llama_index")
 
 from langchain_community.chat_message_histories import ChatMessageHistory
 
