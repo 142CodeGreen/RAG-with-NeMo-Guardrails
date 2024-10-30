@@ -114,7 +114,6 @@ init(rails)
 async def stream_response(message, history):
     if query_engine is None:
         yield history + [("Please upload a file first.", None)]
-        return
         
     try:
         user_message = {"role": "user", "content": message}
@@ -125,7 +124,6 @@ async def stream_response(message, history):
        
     except Exception as e:
         yield history + [(message, f"Error processing query: {str(e)}")]
-        return
 
 # Create the Gradio interface
 with gr.Blocks() as demo:
