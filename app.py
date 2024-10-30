@@ -109,30 +109,7 @@ def load_documents(file_objs):
         return f"Error loading documents: {str(e)}" # gr.update(interactive=False)
 
 
-#init(rails)
-
-
-#def init_guardrails():    #move init to be after load doc
-    # Initialize and register the rag action
- #   print("Initializing guardrails...")
- #   init(rails)
- #   return "Guardrails initialized and RAG action registered."
-
-#import asyncio
-
-# use async stream_response
-#async def stream_response(message, history):
-#    if query_engine is None:
-#        return history + [("Please upload a file first.", None)]
-        
-#    try:
-#        user_message = {"role": "user", "content": message}
-        # Assuming rails.generate() can be awaited if it's now asynchronous
-#        rails_response = await rails.generate(messages=[user_message])
-
-#        return history + [(message, rails_response['content'])]
-#    except Exception as e:
-#        return history + [(message, f"Error processing query: {str(e)}")]
+init(rails)
 
 def stream_response(message, history):
     if query_engine is None:
@@ -194,3 +171,19 @@ with gr.Blocks() as demo:
 # Launch the Gradio interface
 if __name__ == "__main__":
     demo.queue().launch(share=True,debug=True)
+
+
+
+# use async stream_response
+#async def stream_response(message, history):
+#    if query_engine is None:
+#        return history + [("Please upload a file first.", None)]
+        
+#    try:
+#        user_message = {"role": "user", "content": message}
+        # Assuming rails.generate() can be awaited if it's now asynchronous
+#        rails_response = await rails.generate(messages=[user_message])
+
+#        return history + [(message, rails_response['content'])]
+#    except Exception as e:
+#        return history + [(message, f"Error processing query: {str(e)}")]
