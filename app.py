@@ -119,7 +119,7 @@ async def stream_response(message, history):
         user_message = {"role": "user", "content": message}
         async for chunk in rails.generate(messages=[user_message]):  # Assuming rails.generate is async generator
             response = history + [(message, chunk)] 
-            print response
+            print(response)
             #yield response
             await asyncio.sleep(0.05)  # Adjust delay if needed
 
