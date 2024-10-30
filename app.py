@@ -26,8 +26,8 @@ Settings.text_splitter = SentenceSplitter(chunk_size=400)
 
 from nemoguardrails import LLMRails, RailsConfig
 from Config.actions import init  #,init Import init() and rag()
-config = RailsConfig.from_path("./Config")
-rails = LLMRails(config)
+#config = RailsConfig.from_path("./Config")
+#rails = LLMRails(config)
 
 #rails.documents_loaded = False
 
@@ -98,6 +98,8 @@ def load_documents(file_objs):
 #config = RailsConfig.from_path("./Config")
 #rails = LLMRails(config)
 
+config = RailsConfig.from_path("./Config")
+rails = LLMRails(config)
 init(rails)
 
 
