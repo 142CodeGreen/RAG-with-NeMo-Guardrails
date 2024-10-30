@@ -184,7 +184,7 @@ with gr.Blocks() as demo:
 
     load_btn.click(load_documents, inputs=[file_input], outputs=[load_output])
     #guardrails_btn.click(init_guardrails, outputs=[guardrails_output])   #new
-    msg.submit(stream_response, inputs=[msg, chatbot], outputs=[chatbot])   
+    msg.submit(stream_response, inputs=[msg, chatbot,query_engine], outputs=[chatbot])   
     #msg.submit(
     #    lambda message, history: asyncio.run(stream_response(message, history)),
     #    inputs=[msg, chatbot], 
