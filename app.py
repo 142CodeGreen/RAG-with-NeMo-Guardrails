@@ -126,6 +126,10 @@ async def stream_response(message, history):
     except Exception as e:
         yield history + [(message, f"Error processing query: {str(e)}")]
 
+async def run_stream_response(message, history):
+    async for chunk in stream_response(message, history):
+        yield chunk  # Return each chunk
+
 # Create the Gradio interface
 with gr.Blocks() as demo:
     gr.Markdown("# RAG Chatbot for PDF Files")
