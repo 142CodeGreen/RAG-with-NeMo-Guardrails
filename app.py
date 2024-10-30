@@ -122,13 +122,15 @@ async def stream_response(message, history):
             print(response)
             #yield response
             await asyncio.sleep(0.05)  # Adjust delay if needed
-
+            yield response
     except Exception as e:
         yield history + [(message, f"Error processing query: {str(e)}")]
 
-async def run_stream_response(message, history):
-    async for chunk in stream_response(message, history):
-        yield chunk  # Return each chunk
+async def process_stream_response(message, history):
+    results = []
+    async for chunk in stream_response(message, history):  # Use stream_response here
+        results.append(chunk)  # Append each chunk as it comes
+    return results 
 
 # Create the Gradio interface
 with gr.Blocks() as demo:
@@ -147,11 +149,10 @@ with gr.Blocks() as demo:
     
     #msg.submit(stream_response, inputs=[msg, chatbot], outputs=[chatbot])   
     msg.submit(
-        lambda message, history: asyncio.to_thread(run_stream_response, message, history),
-        inputs=[msg, chatbot], 
+        process_stream_response,  # Updated to use process_stream_response
+        inputs=[msg, chatbot],
         outputs=[chatbot]
-    )    
-       #_js="async (x) => {for await (let chunk of x) {await new Promise(r => setTimeout(r, 50)); yield chunk;}}"
+    )
     
     clear.click(lambda: None, None, chatbot, queue=False)
 
