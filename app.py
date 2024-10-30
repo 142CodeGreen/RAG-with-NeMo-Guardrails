@@ -113,24 +113,24 @@ init(rails)
 
 async def stream_response(message, history):
     if query_engine is None:
-        yield history + [("Please upload a file first.", None)]
-        
+        yield history + [("Please upload a file first.", None)]  # This is already correct
+    
     try:
         user_message = {"role": "user", "content": message}
-        async for chunk in rails.generate(messages=[user_message]):  # Assuming rails.generate is async generator
-            response = history + [(message, chunk)] 
+        async for chunk in rails.generate(messages=[user_message]):
+            response = (message, chunk)  # Changed to a tuple or list of length 2
             print(response)
-            #yield response
-            await asyncio.sleep(0.05)  # Adjust delay if needed
-            yield response
+            await asyncio.sleep(0.05)
+            yield response  # Yielding only the new message pair
+        
     except Exception as e:
-        yield history + [(message, f"Error processing query: {str(e)}")]
+        yield (message, f"Error processing query: {str(e)}")  # Again, ensure it's a tuple or list of length 2
 
 async def process_stream_response(message, history):
-    results = []
+    results = history  # Start with the existing history
     async for chunk in stream_response(message, history):  # Use stream_response here
         results.append(chunk)  # Append each chunk as it comes
-    return results 
+    return results  # Return the final accumulated list
 
 # Create the Gradio interface
 with gr.Blocks() as demo:
