@@ -124,7 +124,8 @@ async def stream_response(message, history):
             await asyncio.sleep(0.05)  # Adjust delay if needed
        
     except Exception as e:
-        return history + [(message, f"Error processing query: {str(e)}")]
+        yield history + [(message, f"Error processing query: {str(e)}")]
+        return
 
 # Create the Gradio interface
 with gr.Blocks() as demo:
