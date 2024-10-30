@@ -6,6 +6,9 @@
 
 from langchain_community.chat_message_histories import ChatMessageHistory
 
+import gc
+import torch
+
 import os
 import gradio as gr
 import shutil  # For copying files
@@ -131,15 +134,34 @@ def load_documents(file_objs):
 #    except Exception as e:
 #        return history + [(message, f"Error processing query: {str(e)}")]
 
-def stream_response(message, history):
+def stream_response(message, history, query_engine):
     if query_engine is None:
         return history + [("Please upload a file first.", None)]
         
     try:
         user_message = {"role": "user", "content": message}
+        # Create a CUDA event
+        start_event = torch.cuda.Event(enable_timing=True)
+        end_event = torch.cuda.Event(enable_timing=True)
+        start_event.record()
+        
         rails_response = rails.generate(messages=[user_message]) # bot_message])
 
-        return history + [(message, rails_response['content'])]
+        # Record the event after the transfer is complete (assuming rails.generate handles this)
+        end_event.record()
+        torch.cuda.synchronize()  # Wait for all operations in the current stream to complete
+
+        # Wait for the event before accessing data on the GPU
+        start_event.wait(end_event)
+
+        response = history + [(message, rails_response['content'])]  # to collect gc
+
+        # Trigger garbage collection
+        gc.collect()
+
+        return response
+        
+        #return history + [(message, rails_response['content'])]
     except Exception as e:
         return history + [(message, f"Error processing query: {str(e)}")]
 
