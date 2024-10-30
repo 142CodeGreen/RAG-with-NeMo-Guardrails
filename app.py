@@ -115,18 +115,21 @@ init(rails)
 
 async def stream_response(message, history):
     if query_engine is None:
-        yield history + [("Please upload a file first.", None)]  # This is already correct
+        yield history + [("Please upload a file first.", None)]
     
     try:
         user_message = {"role": "user", "content": message}
-        async for chunk in rails.generate_async(messages=[user_message]):
-            response = (message, chunk)  # Changed to a tuple or list of length 2
+        result = await rails.generate_async(messages=[user_message])  # Await the result
+        
+        # Assuming the result is iterable. If it's not, you'll need to adjust how you handle 'result'.
+        for chunk in result:  
+            response = (message, chunk)
             print(response)
             await asyncio.sleep(0.05)
-            yield response  # Yielding only the new message pair
+            yield response
         
     except Exception as e:
-        yield (message, f"Error processing query: {str(e)}")  # Again, ensure it's a tuple or list of length 2
+        yield (message, f"Error processing query: {str(e)}")
 
 async def process_stream_response(message, history):
     results = history  # Start with the existing history
