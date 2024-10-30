@@ -163,7 +163,10 @@ with gr.Blocks() as demo:
     load_btn.click(load_documents, inputs=[file_input], outputs=[load_output])
     #guardrails_btn.click(init_guardrails, outputs=[guardrails_output])   #new
     msg.submit(stream_response, inputs=[msg, chatbot], outputs=[chatbot])   
-    ## If Gradio supports streaming in this manner
+    #msg.submit(
+    #    lambda message, history: asyncio.run(stream_response(message, history)),
+    #    inputs=[msg, chatbot], 
+    #    outputs=[chatbot],
     #    _js="async (x) => {for await (let chunk of x) {await new Promise(r => setTimeout(r, 50)); yield chunk;}}"
     #)
     clear.click(lambda: None, None, chatbot, queue=False)
