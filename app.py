@@ -114,19 +114,15 @@ init(rails)
 async def stream_response(message, history):
     if query_engine is None:
         return history + [("Please upload a file first.", None)]
+        return
         
     try:
         user_message = {"role": "user", "content": message}
-        rails_response = await rails.generate(messages=[user_message]) # bot_message])
-        response = history + [(message, rails_response['content'])]  # to collect gc
-
-        # Simulate streaming by yielding intermediate steps (if possible)
-        for chunk in generate_chunks_from_response(rails_response['content']):
-            response[-1] = (message, chunk) 
+        async for chunk in rails.generate(messages=[user_message]):  # Assuming rails.generate is async generator
+            response = history + [(message, chunk)] 
             yield response
-            await asyncio.sleep(0.05)  # Adjust delay as needed
-        
-        return history + [(message, rails_response['content'])]
+            await asyncio.sleep(0.05)  # Adjust delay if needed
+       
     except Exception as e:
         return history + [(message, f"Error processing query: {str(e)}")]
 
@@ -149,8 +145,9 @@ with gr.Blocks() as demo:
     msg.submit(
         lambda message, history: asyncio.run(stream_response(message, history)),
         inputs=[msg, chatbot], 
-        outputs=[chatbot])
-        #_js="async (x) => {for await (let chunk of x) {await new Promise(r => setTimeout(r, 50)); yield chunk;}}"
+        outputs=[chatbot]
+    )    
+       #_js="async (x) => {for await (let chunk of x) {await new Promise(r => setTimeout(r, 50)); yield chunk;}}"
     
     clear.click(lambda: None, None, chatbot, queue=False)
 
