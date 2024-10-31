@@ -74,9 +74,10 @@ def load_documents(file_objs):
             port=19530,
             dim=1024,
             collection_name="your_collection_name",
-            gpu_id=0,  # Specify the GPU ID to use
-            output_fields=["field1","field2"]
-        )
+            gpu_id=0
+        )  # Specify the GPU ID to use
+            #output_fields=["field1","field2"]
+
         
         #vector_store = MilvusVectorStore(uri="./milvus_demo.db", dim=1024, overwrite=True, output_fields=[])
         storage_context = StorageContext.from_defaults(vector_store=vector_store)
