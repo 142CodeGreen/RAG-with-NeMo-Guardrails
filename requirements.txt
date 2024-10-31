@@ -1,4 +1,3 @@
-#llama-index==0.6.12
 llama-index-core==0.10.58
 llama-index-readers-file==0.1.30
 llama-index-llms-nvidia==0.1.4
@@ -9,6 +8,7 @@ ipywidgets
 gradio
 nemoguardrails
 OpenAI
+langchain==0.0.205
 langchain-nvidia-ai-endpoints
 transformers>=4.10
 torch  # Assuming you're using PyTorch for GPU acceleration
