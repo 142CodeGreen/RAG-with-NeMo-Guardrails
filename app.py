@@ -100,7 +100,7 @@ def load_documents(file_objs):
         return f"Error loading documents: {str(e)}" # gr.update(interactive=False)
 
 from Config.actions import init
-init(rails, query_engine)
+init(rails)
 
 async def stream_response(message, history):
     if query_engine is None:
