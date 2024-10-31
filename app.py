@@ -78,7 +78,6 @@ def load_documents(file_objs):
             output_fields=["field1","field2"]
         )
         
-        
         #vector_store = MilvusVectorStore(uri="./milvus_demo.db", dim=1024, overwrite=True, output_fields=[])
         storage_context = StorageContext.from_defaults(vector_store=vector_store)
         index = VectorStoreIndex.from_documents(documents, storage_context=storage_context)
