@@ -8,7 +8,7 @@ ipywidgets
 gradio
 nemoguardrails
 OpenAI
-langchain==0.0.205
+langchain
 langchain-nvidia-ai-endpoints
 transformers>=4.10
 torch  # Assuming you're using PyTorch for GPU acceleration
