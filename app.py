@@ -13,7 +13,7 @@ import os
 import gradio as gr
 import shutil  # For copying files
 import logging
-#import asyncio
+import asyncio
 #import nest_asyncio
 #nest_asyncio.apply()
 
@@ -103,14 +103,14 @@ def load_documents(file_objs):
 from Config.actions import init
 init(rails)
 
-def stream_response(message, history):
+async def stream_response(message, history):
     if query_engine is None:
         yield history + [("Please upload a file first.", None)]
         return
     
     try:
         user_message = {"role": "user", "content": message}
-        result = rails.generate(messages=[user_message]) 
+        result = await rails.generate_async(messages=[user_message]) 
         
         for chunk in result:
             if chunk:  # Check if the chunk has content
