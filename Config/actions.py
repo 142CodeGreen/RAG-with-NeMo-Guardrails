@@ -18,7 +18,6 @@ def template(question, context):
 
 @action(is_system_action=True)
 async def rag(context: dict, llm, kb: KnowledgeBase, query_engine) -> ActionResult:
-    global query_engine  # Assuming query_engine is defined globally in app.py
     try:
         message = context.get('last_user_message', '')
         if not message:
