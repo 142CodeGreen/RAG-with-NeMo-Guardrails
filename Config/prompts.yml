@@ -22,7 +22,7 @@ prompts:
 
       Question: Should the user message be blocked (Yes or No)?
       Answer:
-    output_parser: "boolean_parser"
+    #output_parser: "boolean_parser"
 
       
   - task: self_check_output
@@ -44,7 +44,7 @@ prompts:
 
       Question: Should the message be blocked (Yes or No)?
       Answer:
-    output_parser: "moderation_check_parser"
+    #output_parser: "moderation_check_parser"
       
 
  # - task: self_check_hallucinations
