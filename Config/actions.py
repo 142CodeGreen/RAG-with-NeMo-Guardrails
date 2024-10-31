@@ -26,7 +26,7 @@ async def rag(context: dict, llm, kb: KnowledgeBase, query_engine) -> ActionResu
         response = await query_engine.query(message)
         relevant_chunks = response.response
 
-        prompt = await template(message, relevant_chunks)
+        prompt = template(message, relevant_chunks)
         answer = await llm(prompt)
         
         context_updates = {
@@ -39,9 +39,12 @@ async def rag(context: dict, llm, kb: KnowledgeBase, query_engine) -> ActionResu
         return ActionResult(return_value=f"Error processing query: {str(e)}", context_updates={})
 
 def init(app: LLMRails):
-    app.register_action(rag, "rag")
-
-
+    # Define a partial function that includes query_engine
+    from functools import partial
+    rag_with_engine = partial(rag, query_engine=query_engine)
+    app.register_action(rag_with_engine, "rag")
+    
+#app.register_action(rag, "rag")
 #async def template(question, context):
 
 
