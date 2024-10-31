@@ -3,6 +3,7 @@ from nemoguardrails.actions.actions import ActionResult
 from nemoguardrails import LLMRails
 from nemoguardrails.kb.kb import KnowledgeBase
 from llama_index.core import StorageContext, load_index_from_storage, PromptTemplate
+from functools import partial
 
 def template(question, context):
     return f"""Answer user questions based on loaded documents. 
@@ -40,7 +41,6 @@ async def rag(context: dict, llm, kb: KnowledgeBase, query_engine) -> ActionResu
 
 def init(app: LLMRails):
     # Define a partial function that includes query_engine
-    from functools import partial
     rag_with_engine = partial(rag, query_engine=query_engine)
     app.register_action(rag_with_engine, "rag")
     
