@@ -6,14 +6,12 @@ warnings.filterwarnings("ignore", category=LangChainDeprecationWarning, module="
 
 #from langchain_community.chat_message_histories import ChatMessageHistory
 
-#import gc
-#import torch
-
 import os
 import gradio as gr
 import shutil  # For copying files
 import logging
 import asyncio
+import torch
 #import nest_asyncio
 #nest_asyncio.apply()
 
@@ -35,6 +33,13 @@ from nemoguardrails import LLMRails, RailsConfig
 
 config = RailsConfig.from_path("./Config")
 rails = LLMRails(config)
+
+# Ensure GPU usage
+if torch.cuda.is_available():
+    logger.info("GPU is available and will be used.")
+    os.environ['CUDA_VISIBLE_DEVICES'] = '0'  # Assuming you want to use GPU 0
+else:
+    logger.warning("GPU not detected or not configured correctly. Falling back to CPU.")
 
 index = None
 query_engine = None
@@ -147,36 +152,3 @@ with gr.Blocks() as demo:
 # Launch the Gradio interface
 if __name__ == "__main__":
     demo.queue().launch(share=True,debug=True)
-
-#msg.submit(
-    #    process_stream_response,  # Updated to use process_stream_response
-    #    inputs=[msg, chatbot],
-    #    outputs=[chatbot]
-    #)
-
-
-# use async stream_response
-#async def stream_response(message, history):
-#    if query_engine is None:
-#        return history + [("Please upload a file first.", None)]
-        
-#    try:
-#        user_message = {"role": "user", "content": message}
-        # Assuming rails.generate() can be awaited if it's now asynchronous
-#        rails_response = await rails.generate(messages=[user_message])
-        
-        # Create a CUDA event
- #       start_event = torch.cuda.Event(enable_timing=True)
- #       end_event = torch.cuda.Event(enable_timing=True)
- #       start_event.record()
-
-        # Record the event after the transfer is complete (assuming rails.generate handles this)
-  #      end_event.record()
-  #      torch.cuda.synchronize()  # Wait for all operations in the current stream to complete
-
-        # Wait for the event before accessing data on the GPU
-  #      start_event.wait(end_event)
-
-#        return history + [(message, rails_response['content'])]
-#    except Exception as e:
-#        return history + [(message, f"Error processing query: {str(e)}")]
