@@ -12,5 +12,5 @@ OpenAI
 langchain-nvidia-ai-endpoints
 transformers>=4.10
 torch  # Assuming you're using PyTorch for GPU acceleration
-nvidia-ml-py3  # For NVIDIA GPU utilities, if needed for monitoring or other purposes
+#nvidia-ml-py3  # For NVIDIA GPU utilities, if needed for monitoring or other purposes
 
