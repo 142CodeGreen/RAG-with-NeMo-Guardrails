@@ -44,7 +44,6 @@ def get_files_from_input(file_objs):
         return []
     return [file_obj.name for file_obj in file_objs]
 
-
 def load_documents(file_objs):
     global index, query_engine
     try:
@@ -82,8 +81,8 @@ def load_documents(file_objs):
         
         query_engine = index.as_query_engine(similarity_top_k=20, streaming=True)
 
+        # Test query_engine synchronously to avoid mixing async with sync
         def test_query_engine():
-            global query_engine
             if query_engine:
                 try:
                     response = query_engine.query("Test Query")
@@ -92,10 +91,10 @@ def load_documents(file_objs):
                     logger.error(f"Query engine failed with error: {str(e)}")
             else:
                 logger.error("Query engine is not initialized")
-
-        # Call this function after initialization for testing
-        test_query_engine()
         
+        # Run the test in the same synchronous context
+        test_query_engine()
+
         return f"Successfully loaded {len(documents)} documents from {len(file_paths)} files." # gr.update(interactive=True) #add interactive
     except Exception as e:
         return f"Error loading documents: {str(e)}" # gr.update(interactive=False)
