@@ -105,7 +105,8 @@ init(rails)
 
 def stream_response(message, history):
     if query_engine is None:
-        return history + [("Please upload a file first.", None)]  
+        yield history + [("Please upload a file first.", None)]
+        return
     
     try:
         user_message = {"role": "user", "content": message}
