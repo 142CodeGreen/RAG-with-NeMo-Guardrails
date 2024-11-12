@@ -49,7 +49,7 @@ def load_documents(file_objs):
         # Sample query after indexing for verification
         query_engine = index.as_query_engine(similarity_top_k=20, streaming=True)
         sample_query = "What is the document about?"
-        sample_response = await query_engine.aquery(sample_query)
+        sample_response = query_engine.aquery(sample_query)
         logger.info(f"Sample query result: {sample_query}\n{sample_response.get_formatted_sources()}")
 
         # Save the index 
