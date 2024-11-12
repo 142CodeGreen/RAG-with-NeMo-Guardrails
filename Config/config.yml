@@ -30,13 +30,12 @@ rails:
   input:
     flows:
       - self check input
-      - user query
 
   # Output rails are triggered after a bot message has been generated.
   output:
     flows:
       - self check output
-      #- self check hallucinations
+      - self check hallucinations
 
   # Whether to try to use a single LLM call for generating the user intent, next step and bot message.
   dialog:
