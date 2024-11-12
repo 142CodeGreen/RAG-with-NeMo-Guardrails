@@ -17,10 +17,10 @@ logger = logging.getLogger(__name__)
 
 async def initialize_guardrails(config_path):
     try:
-        config = RailsConfig.from_path(config_path)
-        _, status = load_documents(file_objs)  # Assuming file_objs is available
+        config = RailsConfig.from_path("./Config")
+        index, status = load_documents(file_objs)
         if status != "Documents loaded & indexed successfully":
-            return None, f"Failed to load documents: {status}"
+            return f"Failed to initialize guardrails: {status}", None
         rails = LLMRails(config, verbose=True)
         init(rails)  # Make sure init() is called after index creation
         
@@ -39,26 +39,37 @@ async def stream_response(rails, query, history):
         user_message = {"role": "user", "content": query}
         result = await rails.generate_async(messages=[user_message])
 
+        # Depending on how the guardrails return the response, process it accordingly
         if isinstance(result, dict):
             if "content" in result:
                 history.append((query, result["content"]))
             else:
                 history.append((query, str(result)))
+        elif isinstance(result, str):
+            history.append((query, result))
+        elif hasattr(result, '__iter__'):  # For streaming or chunked responses
+            full_response = ""
+            for chunk in result:
+                if isinstance(chunk, dict) and "content" in chunk:
+                    full_response += chunk["content"]
+                    history.append((query, full_response))
+                    yield history
+                else:
+                    # Assuming chunk is directly the part of the response
+                    full_response += chunk
+                    history.append((query, full_response))
+                    yield history
         else:
-            if isinstance(result, str):
-                history.append((query, result))
-            elif hasattr(result, '__iter__'):
-                for chunk in result:
-                    if isinstance(chunk, dict) and "content" in chunk:
-                        history.append((query, chunk["content"]))
-                        yield history
-                    else:
-                        history.append((query, chunk))
-                        yield history
-            else:
-                logger.error(f"Unexpected result type: {type(result)}")
-                history.append((query, "Unexpected response format."))
+            logger.error(f"Unexpected result type: {type(result)}")
+            history.append((query, "Unexpected response format."))
 
+        # Final yield in case the response wasn't streamed
+        yield history
+
+    except Exception as e:
+        logger.error(f"Error in stream_response: {e}")
+        error_message = "An error occurred while processing your query."
+        history.append((query, error_message))
         yield history
 
 # Create the Gradio interface
