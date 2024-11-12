@@ -8,12 +8,9 @@ import gradio as gr
 import logging
 import asyncio
 import torch
-import logging
 from nemoguardrails import LLMRails, RailsConfig
 from doc_loader import load_documents, get_index
 from Config.actions import init
-
-logger = logging.getLogger(__name__)
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
