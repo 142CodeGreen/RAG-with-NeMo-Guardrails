@@ -64,8 +64,8 @@ async def rag(context: Dict):
         )
 
 async def init(app: LLMRails):
-    app.index = get_index()
-    app.register_action(rag, name="rag")
+    #app.index = get_index()
+    app.register_action(rag, "rag")
     logger.info("rag action registered successfully.")
 
     # Sample query to test the query engine
