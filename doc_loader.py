@@ -1,6 +1,6 @@
 import os
 import shutil
-import logging
+#import logging
 from llama_index.core import Settings, SimpleDirectoryReader, VectorStoreIndex, StorageContext, Document
 from llama_index.vector_stores.milvus import MilvusVectorStore
 from llama_index.core.node_parser import SentenceSplitter
