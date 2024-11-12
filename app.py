@@ -18,7 +18,8 @@ logger = logging.getLogger(__name__)
 async def initialize_guardrails(config_path):
     try:
         config = RailsConfig.from_path("./Config")
-        index, status = load_documents(file_objs)
+        file_paths = ["path/to/file1.txt", "path/to/file2.pdf"]
+        index, status = load_documents(file_paths)
         if status != "Documents loaded & indexed successfully":
             return f"Failed to initialize guardrails: {status}", None
         rails = LLMRails(config, verbose=True)
