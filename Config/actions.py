@@ -1,6 +1,7 @@
 from typing import Optional, Dict
 #import logging
 from nemoguardrails.actions import action
+from nemoguardrails.actions.actions import ActionResult
 from nemoguardrails import LLMRails
 from llama_index.core import SimpleDirectoryReader, Settings
 from llama_index.embeddings.nvidia import NVIDIAEmbedding
