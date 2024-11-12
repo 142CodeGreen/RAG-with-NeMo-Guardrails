@@ -14,6 +14,7 @@ import torch
 from llama_index.llms.nvidia import NVIDIA
 from llama_index.embeddings.nvidia import NVIDIAEmbedding
 from nemoguardrails import LLMRails, RailsConfig
+from doc_loader import load_documents,index
 
 
 logging.basicConfig(level=logging.INFO)
