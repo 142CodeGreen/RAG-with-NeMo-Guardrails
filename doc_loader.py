@@ -1,40 +1,35 @@
-from llama_index.core import Settings, SimpleDirectoryReader, VectorStoreIndex, StorageContext
+import os
+import shutil
+import logging
+from llama_index.core import Settings, SimpleDirectoryReader, VectorStoreIndex, StorageContext, Document
 from llama_index.vector_stores.milvus import MilvusVectorStore
 from llama_index.core.node_parser import SentenceSplitter
-from llama_index.core import Document
-
-import shutil  # For copying files
-import os
-import logging
 
 logger = logging.getLogger(__name__)
 
 index = None
 
-def get_files_from_input(file_objs):
-    return[file_obj.name for file_obj in file_objs]
-
-def load_documents(file_objs):
+def load_documents(file_paths):
     global index
     try:
-        if not file_objs:
+        if not file_paths:
             return "Error: No files selected."
 
         kb_dir = "./Config/kb"
         if not os.path.exists(kb_dir):
             os.makedirs(kb_dir)
 
-        file_paths = get_files_from_input(file_objs)
         all_documents = []
-
-        # Load all documents initially without splitting
+        
+        # Load all documents by path
         for file_path in file_paths:
-            documents = SimpleDirectoryReader(input_files=[file_path]).load_data()
-            all_documents.extend(documents)
-            shutil.copy2(file_path, kb_dir)
+            if os.path.isfile(file_path):  # Ensure the path points to a file
+                documents = SimpleDirectoryReader(input_files=[file_path]).load_data()
+                all_documents.extend(documents)
+                shutil.copy2(file_path, kb_dir)
 
         if not all_documents:
-            return f"No documents found in the selected files."
+            return "No documents found in the selected paths."
 
         # Apply SentenceSplitter to split documents into sentences
         sentence_splitter = SentenceSplitter(
