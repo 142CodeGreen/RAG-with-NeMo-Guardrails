@@ -1,5 +1,5 @@
 from typing import Optional, Dict
-#import logging
+import logging
 from nemoguardrails.actions import action
 from nemoguardrails.actions.actions import ActionResult
 from nemoguardrails import LLMRails
