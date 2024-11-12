@@ -12,15 +12,12 @@ define flow self check output
     bot refuse to respond
     stop
 
-define flow user query
-  $answer = execute rag()
-  bot $answer
 
-#define flow self check hallucinations
-#  user ...
-#  $answer = execute rag()
-#  $check_hallucination = True
-#  bot $answer
+define flow self check hallucinations
+  #user ...
+  $answer = execute rag()
+  $check_hallucination = True
+  bot $answer
 
 define bot refuse to respond
   "I'm sorry, I can't respond to that."
