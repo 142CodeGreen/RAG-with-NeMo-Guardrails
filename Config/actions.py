@@ -2,22 +2,21 @@ import logging
 import asyncio
 from llama_index.llms.nvidia import NVIDIA
 from llama_index.embeddings.nvidia import NVIDIAEmbedding
-from nemoguardrails import LLMRails #, RailsConfig
+from llama_index.core import Settings, VectorStoreIndex
+from nemoguardrails import LLMRails
 from nemoguardrails.actions import action
 from nemoguardrails.actions.actions import ActionResult
 from doc_loader import load_documents, get_index
 
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
-
+# Set up global settings
 Settings.llm = NVIDIA(model="meta/llama-3.1-8b-instruct")
 Settings.embed_model = NVIDIAEmbedding(model="NV-Embed-QA", truncate="END")
 
 @action(is_system_action=True)
 async def rag(context: Dict):
-    logger.info("retrieve_relevant_chunks() function called!")
+    logger.info("rag() function called!")
     
-    index = get_index
+    index = get_index()
     if index is None:
         logger.error("Index not available.")
         return ActionResult(
@@ -30,10 +29,10 @@ async def rag(context: Dict):
     logger.info(f"User question: {question}")
 
     try:
-        # Create query engine from index
+        # Create query engine directly from the index with global settings
         query_engine = index.as_query_engine()
 
-        # Directly query the index for an answer without constructing a prompt
+        # Query the index for an answer
         logger.info(f"Querying index with: {question}")
         response = await query_engine.aquery(question)
 
@@ -49,33 +48,31 @@ async def rag(context: Dict):
             "history": context.get('history', []) + [(question, answer)]
         }
 
-        logger.info("Returning result from retrieve_relevant_chunks()")
+        logger.info("Returning result from rag()")
         return ActionResult(
             return_value=answer,
             context_updates=context_updates
         )
     except Exception as e:
-        logger.error(f"Error in retrieve_relevant_chunks(): {str(e)}")
+        logger.error(f"Error in rag(): {str(e)}")
         return ActionResult(
             return_value="An error occurred while processing your query.",
             context_updates={}
         )
-        
+
 def init(app: LLMRails):
-    # Store the index somewhere accessible, like setting it as an attribute of the app
-    app.index = index
+    app.index = get_index()
     app.register_action(rag, name="rag")
-    logger.info("retrieve_relevant_chunks action registered successfully.")
+    logger.info("rag action registered successfully.")
 
     # Sample query to test the query engine
-    if index:
+    if app.index:
         try:
-            query_engine = index.as_query_engine()
+            query_engine = app.index.as_query_engine()
             sample_query = "What are the documents about?"
-            response = query_engine.query(sample_query)
+            response = await query_engine.aquery(sample_query)
             logger.info(f"Sample query result: {response.response}")
         except Exception as e:
             logger.error(f"Error during sample query in init: {str(e)}")
     else:
         logger.warning("No index provided to init function for sample query testing.")
-
