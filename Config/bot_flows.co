@@ -15,7 +15,7 @@ define flow self check output
 
 define flow self check hallucinations
   #user ...
-  $answer = execute rag
+  $answer = execute rag()
   $check_hallucination = True
   bot $answer
 
