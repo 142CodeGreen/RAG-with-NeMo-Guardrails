@@ -22,7 +22,7 @@ prompts:
 
       Question: Should the user message be blocked (Yes or No)?
       Answer:
-    #output_parser: "boolean_parser"
+    output_parser: boolean   
 
       
   - task: self_check_output
@@ -44,11 +44,12 @@ prompts:
 
       Question: Should the message be blocked (Yes or No)?
       Answer:
-    #output_parser: "moderation_check_parser"
-      
+    output_parser: boolean      
 
- # - task: self_check_hallucinations
- #   content: |
- #     You are given a task to identify if the hypothesis is in agreement with the context below.
- #     You will only use the contents of the context and not rely on external knowledge.
- #     Answer with yes/no. "context": {{ paragraph }} "hypothesis": {{ statement }} "agreement":
+  - task: self_check_hallucinations
+    content: |
+      You are given a task to identify if the hypothesis is in agreement with the context below.
+      You will only use the contents of the context and not rely on external knowledge.
+      Answer with yes/no. "context": {{ paragraph }} "hypothesis": {{ statement }} "agreement":
+    output_parser: boolean 
+    
