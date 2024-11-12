@@ -18,10 +18,17 @@ logger = logging.getLogger(__name__)
 async def initialize_guardrails(config_path):
     try:
         config = RailsConfig.from_path("./Config")
+        
+        # Ensure index exists or has been created
+        index = get_index()
+        if index is None:
+            logger.error("Index is not available during guardrails initialization.")
+            return "Guardrails not initialized: No index available.", None
+        
         #file_paths = ["path/to/file1.txt", "path/to/file2.pdf"]
-        index, status = load_documents(file_paths)
-        if status != "Documents loaded & indexed successfully":
-            return f"Failed to initialize guardrails: {status}", None
+        #index, status = load_documents(file_paths)
+        #if status != "Documents loaded & indexed successfully":
+        #    return f"Failed to initialize guardrails: {status}", None
         rails = LLMRails(config, verbose=True)
         await init(rails)  # Make sure init() is called after index creation
         
