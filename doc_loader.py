@@ -1,16 +1,18 @@
 from llama_index.core import Settings, SimpleDirectoryReader, VectorStoreIndex, StorageContext
 from llama_index.vector_stores.milvus import MilvusVectorStore
 from llama_index.core.node_parser import SentenceSplitter
+from llama_index.core import Document
 
 import shutil  # For copying files
+import os
 import logging
+
+logger = logging.getLogger(__name__)
 
 index = None
 
 def get_files_from_input(file_objs):
-    if not file_objs:
-        return []
-    return [file_obj.name for file_obj in file_objs]
+    return[file_obj.name for file_obj in file_objs]
 
 def load_documents(file_objs):
     global index
@@ -18,42 +20,50 @@ def load_documents(file_objs):
         if not file_objs:
             return "Error: No files selected."
 
-        kb_dir = "./Config/kb"  # Create the 'kb' directory if it doesn't exist
+        kb_dir = "./Config/kb"
         if not os.path.exists(kb_dir):
             os.makedirs(kb_dir)
 
         file_paths = get_files_from_input(file_objs)
-        documents = []
+        all_documents = []
+
+        # Load all documents initially without splitting
         for file_path in file_paths:
-            documents.extend(SimpleDirectoryReader(input_files=[file_path]).load_data())
+            documents = SimpleDirectoryReader(input_files=[file_path]).load_data()
+            all_documents.extend(documents)
             shutil.copy2(file_path, kb_dir)
 
-        if not documents:
-            return f"No documents found in the selected files.", gr.update(interactive=False)
+        if not all_documents:
+            return f"No documents found in the selected files."
 
-        # use GPU for Milvus workload
-        #vector_store = MilvusVectorStore(
-        #    host="127.0.0.1",
-        #    port=19530,
-        #    dim=1024,
-        #    collection_name="your_collection_name",
-        #    gpu_id=0
-        #)  # Specify the GPU ID to use
-            #output_fields=["field1","field2"]
+        # Apply SentenceSplitter to split documents into sentences
+        sentence_splitter = SentenceSplitter(
+            chunk_size=1024,  # Adjust chunk_size based on your needs
+            chunk_overlap=20,  # Adjust overlap for context preservation
+        )
+        split_documents = []
+        for doc in all_documents:
+            split_documents.extend(sentence_splitter.get_nodes_from_documents([doc]))
 
-        
+        # Convert split nodes back to Document objects if necessary
+        documents_for_index =[Document(text=node.text) for node in split_documents]
+
+        # Use local SQLite for Milvus
         vector_store = MilvusVectorStore(uri="./milvus_demo.db", dim=1024, overwrite=True, output_fields=[])
         storage_context = StorageContext.from_defaults(vector_store=vector_store)
-        index = VectorStoreIndex.from_documents(documents, storage_context=storage_context)
+        index = VectorStoreIndex.from_documents(documents_for_index, storage_context=storage_context)
 
-        # Sample query after indexing for verification
+        # Sample query after indexing for verification (note: this should be done in an async context)
         query_engine = index.as_query_engine(similarity_top_k=20, streaming=True)
         sample_query = "What is the document about?"
-        sample_response = query_engine.aquery(sample_query)
-        logger.info(f"Sample query result: {sample_query}\n{sample_response.get_formatted_sources()}")
+        try:
+            sample_response = query_engine.query(sample_query)
+            logger.info(f"Sample query result: {sample_query}\n{sample_response.get_formatted_sources()}")
+        except Exception as e:
+            logger.warning(f"Failed to perform sample query: {e}")
 
         # Save the index 
-        storage_context.persist(persist_dir="./storage")  # Choose a directory to save to
+        storage_context.persist(persist_dir="./storage")
         logger.info("Storage context saved to disk.")
 
         # Return the index
