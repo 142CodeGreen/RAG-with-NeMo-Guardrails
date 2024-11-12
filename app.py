@@ -15,14 +15,9 @@ from actions import init
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-rails = None
-
-async def initialize_guardrails():
+async def initialize_guardrails(config_path):
     try:
-        config = RailsConfig.from_path("./Config")
-        global rails
-        
-        # Ensure index exists or has been created
+        config = RailsConfig.from_path(config_path)
         index = get_index()
         if index is None:
             logger.error("Index is not available during guardrails initialization.")
@@ -31,16 +26,15 @@ async def initialize_guardrails():
         rails = LLMRails(config, verbose=True)
         init(rails)  # Make sure init() is called after index creation
         
-        return "Guardrails initialized successfully.", None
+        return rails, "Guardrails initialized successfully."
     except Exception as e:
         logger.error(f"Error initializing guardrails: {e}")
-        return f"Guardrails not initialized due to error: {str(e)}", None
+        return None, f"Guardrails not initialized due to error: {str(e)}"
         
-async def stream_response(query, history):
-    global rails  # Use global to access the rails variable
+async def stream_response(rails, query, history):
     if not rails:
         logger.error("Guardrails not initialized.")
-        yield [("System", "Guardrails not initialized. Please load documents first.")]
+        yield[("System", "Guardrails not initialized. Please load documents first.")]
         return
 
     try:
@@ -77,16 +71,31 @@ with gr.Blocks() as demo:
         file_input = gr.File(label="Select files to upload", file_count="multiple")
         load_btn = gr.Button("Click to load documents")
 
-    load_output = gr.Textbox(label="Load Status") # interactive=False) 
+    load_output = gr.Textbox(label="Load Status") 
     chatbot = gr.Chatbot()
     msg = gr.Textbox(label="Enter your question", interactive=True)
     clear = gr.Button("Clear")
+    
+    # Using a State to manage shared data across callbacks
+    state = gr.State(None)  # Initially None
 
-    load_btn.click(load_documents, inputs=[file_input], outputs=[load_output])
-    msg.submit(stream_response, inputs=[msg, chatbot], outputs=[chatbot])
-    #msg.submit(stream_response, inputs=[msg, chatbot], outputs=[chatbot])
+    load_btn.click(
+        load_documents, 
+        inputs=[file_input], 
+        outputs=[load_output]
+    ).then(
+        initialize_guardrails, 
+        inputs=[gr.Textbox(value="./Config", interactive=False)], 
+        outputs=[state, load_output]
+    )
+    
+    msg.submit(
+        stream_response, 
+        inputs=[state, msg, chatbot], 
+        outputs=[chatbot]
+    )
+    
     clear.click(lambda: None, None, chatbot, queue=False)
-
 
 # Launch the Gradio interface
 if __name__ == "__main__":
