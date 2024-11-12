@@ -14,7 +14,7 @@ import torch
 from llama_index.llms.nvidia import NVIDIA
 from llama_index.embeddings.nvidia import NVIDIAEmbedding
 from nemoguardrails import LLMRails, RailsConfig
-from doc_loader import load_documents,index
+from doc_loader import get_index
 
 
 logging.basicConfig(level=logging.INFO)
@@ -29,11 +29,13 @@ from nemoguardrails import LLMRails, RailsConfig
 config = RailsConfig.from_path("./Config")
 rails = LLMRails(config)
 
-
 async def rag(message, history):
-    if query_engine is None:
-        yield history + [("Please upload a file first.", None)]
-        return
+    index = get_index()
+        if index is None:
+            logger.error("Index is not available during guardrails initialization.")
+            return "Index not available, pls upload documents.", None
+        
+    query_engine = index.as_query_engine()
     
     try:
         user_message = {"role": "user", "content": message}
