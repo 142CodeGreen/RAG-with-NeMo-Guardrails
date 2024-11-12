@@ -1,4 +1,5 @@
 from typing import Optional, Dict
+import logging
 from nemoguardrails.actions import action
 from nemoguardrails import LLMRails
 from llama_index.core import SimpleDirectoryReader, Settings
@@ -6,6 +7,8 @@ from llama_index.embeddings.nvidia import NVIDIAEmbedding
 from llama_index.llms.nvidia import NVIDIA
 from llama_index.vector_stores.milvus import MilvusVectorStore
 from doc_loader import get_index
+
+logger = logging.getLogger(__name__)
 
 # Set up global settings
 Settings.llm = NVIDIA(model="meta/llama-3.1-8b-instruct")
