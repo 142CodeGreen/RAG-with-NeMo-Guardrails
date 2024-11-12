@@ -14,7 +14,7 @@ import torch
 from llama_index.llms.nvidia import NVIDIA
 from llama_index.embeddings.nvidia import NVIDIAEmbedding
 from nemoguardrails import LLMRails, RailsConfig
-from doc_loader import get_index
+from doc_loader import load_documents, get_index
 
 
 logging.basicConfig(level=logging.INFO)
@@ -39,9 +39,9 @@ async def rag(message, history):
     
     try:
         user_message = {"role": "user", "content": message}
-        result = await rails.generate_async(messages=[user_message]) 
+        response = await rails.generate.query_engine.aquery(messages=[user_message])
         
-        for chunk in result:
+        for chunk in response:
             if chunk:  # Check if the chunk has content
                 history.append((message, chunk)) 
                 yield history
@@ -57,11 +57,11 @@ async def rag(message, history):
 
 # Create the Gradio interface
 with gr.Blocks() as demo:
-    gr.Markdown("# RAG Chatbot for PDF Files")
+    gr.Markdown("# RAG Chatbot with Guardrails")
 
     with gr.Row():
         file_input = gr.File(label="Select files to upload", file_count="multiple")
-        load_btn = gr.Button("Load PDF Documents only")
+        load_btn = gr.Button("Click to load documents")
 
     load_output = gr.Textbox(label="Load Status") # interactive=False) 
     chatbot = gr.Chatbot()
@@ -69,8 +69,8 @@ with gr.Blocks() as demo:
     clear = gr.Button("Clear")
 
     load_btn.click(load_documents, inputs=[file_input], outputs=[load_output])
-    msg.submit(stream_response, inputs=[msg, chatbot], outputs=[chatbot])
-    #msg.submit(stream_response, inputs=[msg, chatbot], outputs=[chatbot])
+    msg.submit(rag, inputs=[msg, chatbot], outputs=[chatbot])
+    #msg.submit(rag, inputs=[msg, chatbot], outputs=[chatbot])
     clear.click(lambda: None, None, chatbot, queue=False)
 
 
