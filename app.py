@@ -10,7 +10,7 @@ import asyncio
 import torch
 from nemoguardrails import LLMRails, RailsConfig
 from doc_loader import load_documents, get_index
-from actions import init
+from Config.actions import init
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
