@@ -22,7 +22,7 @@ async def initialize_guardrails(config_path):
         if status != "Documents loaded & indexed successfully":
             return f"Failed to initialize guardrails: {status}", None
         rails = LLMRails(config, verbose=True)
-        init(rails)  # Make sure init() is called after index creation
+        await init(rails)  # Make sure init() is called after index creation
         
         return rails, "Guardrails initialized successfully."
     except Exception as e:
