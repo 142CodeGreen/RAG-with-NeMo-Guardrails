@@ -11,12 +11,13 @@ from llama_index.core import Settings
 
 Settings.llm = NVIDIA(model="meta/llama-3.1-8b-instruct")
 Settings.embed_model = NVIDIAEmbedding(model="NV-Embed-QA", truncate="END")
+Settings.text_splitter = SentenceSplitter(chunk_size=400)
 
 logger = logging.getLogger(__name__)
 
 index = None
 
-def load_documents(file_paths):
+asybc def load_documents(file_paths):
     global index
     try:
         if not file_paths:
@@ -38,31 +39,15 @@ def load_documents(file_paths):
         if not all_documents:
             return "No documents found in the selected paths."
 
-        # Apply SentenceSplitter to split documents into sentences
-        sentence_splitter = SentenceSplitter(
-            chunk_size=1024,  # Adjust chunk_size based on your needs
-            chunk_overlap=20,  # Adjust overlap for context preservation
-        )
-        split_documents = []
-        for doc in all_documents:
-            split_documents.extend(sentence_splitter.get_nodes_from_documents([doc]))
-
-        # Convert split nodes back to Document objects if necessary
-        documents_for_index =[Document(text=node.text) for node in split_documents]
-
-        # Use local SQLite for Milvus
-        vector_store = MilvusVectorStore(uri="./milvus_demo.db", dim=1024, overwrite=True, output_fields=[])
+        vector_store = MilvusVectorStore(uri="./milvus_demo.db", dim=1024, overwrite=True)
         storage_context = StorageContext.from_defaults(vector_store=vector_store)
-        index = VectorStoreIndex.from_documents(documents_for_index, storage_context=storage_context)
+        index = VectorStoreIndex.from_documents(all_documents, storage_context=storage_context)
 
-        # Sample query after indexing for verification (note: this should be done in an async context)
+        # Sample query after indexing for verification
         query_engine = index.as_query_engine(similarity_top_k=20, streaming=True)
         sample_query = "What is the document about?"
-        try:
-            sample_response = query_engine.query(sample_query)
-            logger.info(f"Sample query result: {sample_query}\n{sample_response.get_formatted_sources()}")
-        except Exception as e:
-            logger.warning(f"Failed to perform sample query: {e}")
+        sample_response = await query_engine.aquery(sample_query)
+        logger.info(f"Sample query result: {sample_query}\n{sample_response.get_formatted_sources()}")
 
         # Save the index 
         storage_context.persist(persist_dir="./storage")
