@@ -64,7 +64,7 @@ async def rag(context: Dict):
         )
 
 async def init(app: LLMRails):
-    #app.index = get_index()
+    app.index = get_index()
     app.register_action(rag, "rag")
     logger.info("rag action registered successfully.")
 
