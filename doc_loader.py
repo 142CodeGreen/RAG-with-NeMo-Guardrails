@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 
 index = None
 
-asybc def load_documents(file_paths):
+async def load_documents(file_paths):
     global index
     try:
         if not file_paths:
