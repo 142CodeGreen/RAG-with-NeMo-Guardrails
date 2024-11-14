@@ -25,11 +25,8 @@ async def initialize_guardrails():
             logger.error("Index is not available during guardrails initialization.")
             return "Guardrails not initialized: No index available.", None
         
-        #file_paths = ["path/to/file1.txt", "path/to/file2.pdf"]
-        #index, status = load_documents(file_paths)
-        #if status != "Documents loaded & indexed successfully":
-        #    return f"Failed to initialize guardrails: {status}", None
         rails = LLMRails(config, verbose=True)
+        rails.index = index
         await init(rails)  # Make sure init() is called after index creation
         
         return rails, "Guardrails initialized successfully."
