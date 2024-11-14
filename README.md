@@ -27,7 +27,7 @@ git clone https://github.com/142CodeGreen/RAG-with-NeMo-Guardrails.git
 cd RAG-with-NeMo-Guardrails
 ```
 
-2. Create the Virtual Environment:
+2. Optional - Create the Virtual Environment:
 ```
 apt-get install -y python3.10-venv
 python3.10 -m venv venv
