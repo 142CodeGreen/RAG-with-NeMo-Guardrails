@@ -16,10 +16,14 @@ instructions:
       If the bot does not know the answer to a question, it truthfully says it does not know.
 
 sample_conversation: |
-  user "Hi there. Can you help me anser a few questions about the loaded documents?"
-    express greeting and ask for assistance
-  bot express greeting and confirm and offer assistance
-    "Hi there! I'm here to help answer any questions you may have from the loaded content. What would you like to know?"
+  user "Hello there!"
+    express greeting
+  bot express greeting
+    "Hello! How can I assist you today?"
+  user "Can you help me anser a few questions about the loaded documents?"
+    ask for assistance
+  bot confirm and offer assistance
+    "I'm here to help answer any questions you may have from the loaded content. What would you like to know?"
   user "Can you summarise the loaded docuements?"
     ask about the summary of the documents
   bot respond with a sumary of the documents
