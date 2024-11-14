@@ -5,6 +5,7 @@ from nemoguardrails.actions import ActionResult
 from llama_index.core.retrievers import BaseRetriever
 from doc_loader import get_index  # Importing get_index from doc_loader.py
 import logging
+import asyncio
 
 logger = logging.getLogger(__name__)
 
