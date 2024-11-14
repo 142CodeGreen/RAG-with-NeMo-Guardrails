@@ -10,7 +10,7 @@ import asyncio
 import torch
 from nemoguardrails import LLMRails, RailsConfig
 from doc_loader import load_documents, get_index
-from Config.actions import init
+#from Config.actions import init
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -27,76 +27,76 @@ async def initialize_guardrails():
         
         rails = LLMRails(config, verbose=True)
         #rails.index = index
-        await init(rails)  # Make sure init() is called after index creation
+        #await init(rails)  # Make sure init() is called after index creation
         
         return rails, "Guardrails initialized successfully."
     except Exception as e:
         logger.error(f"Error initializing guardrails: {e}")
         return None, f"Guardrails not initialized due to error: {str(e)}"
 
-#async def stream_response(rails, query, history):
-#    try:
-#        user_message = {"role": "user", "content": query}
-#        response = await rails.generate_async(messages=[user_message])
-        
-#        if 'content' in response:  # Check if response is a direct dictionary
-#            # Non-streaming response
-#            yield history + [(query, response['content'])]
-#        elif hasattr(response, 'response_gen'):
-            # Streaming response
-#            partial_response = ""
-#            for text in response.response_gen:
-#                partial_response += text
-#                yield history + [(query, partial_response)]
-#        else:
-            # Handle cases where response might not have 'content' or 'response_gen'
-#            full_response = response if isinstance(response, str) else str(response)
-#            yield history + [(query, full_response)]
-#    except Exception as e:
-        yield history + [(query, f"Error processing query: {str(e)}")]
-        
 async def stream_response(rails, query, history):
-    if not rails:
-        logger.error("Guardrails not initialized.")
-        yield[("System", "Guardrails not initialized. Please load documents first.")]
-        return
-
     try:
         user_message = {"role": "user", "content": query}
-        result = await rails.generate_async(messages=[user_message])
+        response = await rails.generate_async(messages=[user_message])
+        
+        if 'content' in response:  # Check if response is a direct dictionary
+            # Non-streaming response
+            yield history + [(query, response['content'])]
+        elif hasattr(response, 'response_gen'):
+            # Streaming response
+            partial_response = ""
+            for text in response.response_gen:
+                partial_response += text
+                yield history + [(query, partial_response)]
+        else:
+            # Handle cases where response might not have 'content' or 'response_gen'
+            full_response = response if isinstance(response, str) else str(response)
+            yield history + [(query, full_response)]
+    except Exception as e:
+        yield history + [(query, f"Error processing query: {str(e)}")]
+        
+#async def stream_response(rails, query, history):
+#    if not rails:
+#        logger.error("Guardrails not initialized.")
+#        yield[("System", "Guardrails not initialized. Please load documents first.")]
+#        return
+
+#    try:
+#        user_message = {"role": "user", "content": query}
+#        result = await rails.generate_async(messages=[user_message])
 
         # Depending on how the guardrails return the response, process it accordingly
-        if isinstance(result, dict):
-            if "content" in result:
-                history.append((query, result["content"]))
-            else:
-                history.append((query, str(result)))
-        elif isinstance(result, str):
-            history.append((query, result))
-        elif hasattr(result, '__iter__'):  # For streaming or chunked responses
-            full_response = ""
-            for chunk in result:
-                if isinstance(chunk, dict) and "content" in chunk:
-                    full_response += chunk["content"]
-                    history.append((query, full_response))
-                    yield history
-                else:
+#        if isinstance(result, dict):
+#            if "content" in result:
+#                history.append((query, result["content"]))
+#            else:
+#                history.append((query, str(result)))
+#        elif isinstance(result, str):
+#            history.append((query, result))
+#        elif hasattr(result, '__iter__'):  # For streaming or chunked responses
+#            full_response = ""
+#            for chunk in result:
+#                if isinstance(chunk, dict) and "content" in chunk:
+#                    full_response += chunk["content"]
+#                    history.append((query, full_response))
+#                    yield history
+#                else:
                     # Assuming chunk is directly the part of the response
-                    full_response += chunk
-                    history.append((query, full_response))
-                    yield history
-        else:
-            logger.error(f"Unexpected result type: {type(result)}")
-            history.append((query, "Unexpected response format."))
+#                    full_response += chunk
+#                    history.append((query, full_response))
+#                    yield history
+#        else:
+#            logger.error(f"Unexpected result type: {type(result)}")
+#            history.append((query, "Unexpected response format."))
 
         # Final yield in case the response wasn't streamed
-        yield history
+#        yield history
 
-    except Exception as e:
-        logger.error(f"Error in stream_response: {e}")
-        error_message = "An error occurred while processing your query."
-        history.append((query, error_message))
-        yield history
+#    except Exception as e:
+#        logger.error(f"Error in stream_response: {e}")
+#        error_message = "An error occurred while processing your query."
+#        history.append((query, error_message))
+#        yield history
 
 # Create the Gradio interface
 with gr.Blocks() as demo:
