@@ -13,7 +13,7 @@ define flow self check input
 #    stop
 
 
-define flow self check hallucinations
+define flow answer user question
   user ...
   $answer = execute rag()
   $check_hallucination = True
