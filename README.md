@@ -31,7 +31,7 @@ cd RAG-with-NeMo-Guardrails
 ```
 apt-get install -y python3.10-venv
 python3.10 -m venv venv
-source venv/bin/activate
+source .venv/bin/activate
 ```
 
 3. Install the required packages:
