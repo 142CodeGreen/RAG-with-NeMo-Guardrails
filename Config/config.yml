@@ -38,14 +38,14 @@ rails:
   input:
     flows:
       - self check input
-      # self check hallucinations
+      #- self check hallucinations
       
 
   # Output rails are triggered after a bot message has been generated.
   output:
     flows:
       - self check hallucinations
-      #- self check output
+      - self check output
 
 #actions:
 #  type: custom
