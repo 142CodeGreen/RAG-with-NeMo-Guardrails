@@ -29,7 +29,7 @@ cd RAG-with-NeMo-Guardrails
 
 2. Create the Virtual Environment:
 ```
-python -m venv venv
+python3.10 -m venv venv
 source venv/bin/activate
 ```
 
