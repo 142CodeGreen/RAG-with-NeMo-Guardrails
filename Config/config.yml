@@ -53,11 +53,11 @@ rails:
 #  return_type: ActionResult
 
   # Whether to try to use a single LLM call for generating the user intent, next step and bot message.
-  dialog:
-    single_call:
-      enabled: True
-      # If a single call fails, whether to fall back to multiple LLM calls.
-      fallback_to_multiple_calls: True
+dialog:
+  single_call:
+    enabled: True
+    # If a single call fails, whether to fall back to multiple LLM calls.
+    fallback_to_multiple_calls: True
 
 #streaming: True
   
