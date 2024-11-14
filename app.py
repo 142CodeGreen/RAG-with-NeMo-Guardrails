@@ -15,7 +15,7 @@ from Config.actions import init
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-async def initialize_guardrails(config_path):
+async def initialize_guardrails():
     try:
         config = RailsConfig.from_path("./Config")
         
@@ -101,8 +101,8 @@ with gr.Blocks() as demo:
         inputs=[file_input], 
         outputs=[load_output]
     ).then(
-        initialize_guardrails, 
-        inputs=[gr.Textbox(value="./Config", interactive=False)], 
+        initialize_guardrails,  # This is now async
+        None,  # No direct inputs, but it uses the global index
         outputs=[state, load_output]
     )
     
