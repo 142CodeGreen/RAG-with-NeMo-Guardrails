@@ -5,7 +5,7 @@ define flow self check input
     bot refuse to respond
     stop
 
-define flow self check hallucination
+define flow self check hallucinations
   user ...
   $answer = execute rag()
   $check_hallucination = True
