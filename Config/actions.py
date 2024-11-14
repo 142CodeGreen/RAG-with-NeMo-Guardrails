@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 #Settings.embed_model = NVIDIAEmbedding(model="NV-Embed-QA", truncate="END")
 
 @action(is_system_action=True)
-async def rag(context: Dict) -> ActionResult:
+async def rag(context: Dict):
     logger.info("rag() function called!")
     
     index = get_index()
