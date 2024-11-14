@@ -17,15 +17,14 @@ logger = logging.getLogger(__name__)
 
 index = None
 
-async def load_documents(file_paths):
+def load_documents(file_paths: List[str]) -> Tuple[VectorStoreIndex, str]:
     global index
     try:
         if not file_paths:
-            return "Error: No files selected."
+            return None, "Error: No files selected."
 
         kb_dir = "./Config/kb"
-        if not os.path.exists(kb_dir):
-            os.makedirs(kb_dir)
+        os.makedirs(kb_dir, exist_ok=True)
 
         all_documents = []
         
@@ -37,17 +36,17 @@ async def load_documents(file_paths):
                 shutil.copy2(file_path, kb_dir)
 
         if not all_documents:
-            return "No documents found in the selected paths."
+            return None, "No documents found in the selected paths."
 
         vector_store = MilvusVectorStore(uri="./milvus_demo.db", dim=1024, overwrite=True)
         storage_context = StorageContext.from_defaults(vector_store=vector_store)
         index = VectorStoreIndex.from_documents(all_documents, storage_context=storage_context)
 
         # Sample query after indexing for verification
-        query_engine = index.as_query_engine(similarity_top_k=20, streaming=True)
+        query_engine = index.as_query_engine(similarity_top_k=20)
         sample_query = "What kind of wine do you have?"
         try:
-            response = await query_engine.aquery(sample_query)
+            response = query_engine.query(sample_query)
             if response and hasattr(response, 'response'):
                 logger.info(f"Sample query result: {sample_query}\n{response.response}")
             else:
@@ -66,6 +65,7 @@ async def load_documents(file_paths):
     except Exception as e:
         logger.error(f"Error during indexing: {e}")
         return None, f"Failed to index documents: {str(e)}"
+
 
 def get_index():
     global index
