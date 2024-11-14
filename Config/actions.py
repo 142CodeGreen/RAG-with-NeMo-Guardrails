@@ -1,29 +1,22 @@
-from typing import Optional, Dict
-import logging
+from typing import Dict, Optional
 from nemoguardrails.actions import action
-from nemoguardrails.actions.actions import ActionResult
 from nemoguardrails import LLMRails
-from llama_index.core import SimpleDirectoryReader, Settings
-from llama_index.embeddings.nvidia import NVIDIAEmbedding
-from llama_index.llms.nvidia import NVIDIA
-#from llama_index.vector_stores.milvus import MilvusVectorStore
-from doc_loader import get_index
+from nemoguardrails.actions import ActionResult
+from llama_index.core.retrievers import BaseRetriever
+from doc_loader import get_index  # Importing get_index from doc_loader.py
+import logging
 
 logger = logging.getLogger(__name__)
 
-# Set up global settings
-#Settings.llm = NVIDIA(model="meta/llama-3.1-8b-instruct")
-#Settings.embed_model = NVIDIAEmbedding(model="NV-Embed-QA", truncate="END")
-
 @action(is_system_action=True)
-async def rag(context: Dict):
+async def rag(context: Dict, llm: LLMRails):
     logger.info("rag() function called!")
     
     index = get_index()
     if index is None:
         logger.error("Index not available.")
         return ActionResult(
-            return_value="Index not available.",
+            return_value="Index not available. Please ensure documents are loaded.",
             context_updates={}
         )
 
@@ -32,23 +25,34 @@ async def rag(context: Dict):
     logger.info(f"User question: {question}")
 
     try:
-        # Create query engine directly from the index with global settings
-        query_engine = index.as_query_engine()
+        # Use the index to get relevant documents or chunks
+        retriever = index.as_retriever(similarity_top_k=3)
+        
+        # Retrieve relevant chunks directly
+        nodes = retriever.retrieve(question)
+        relevant_chunks = "\n".join([node.text for node in nodes])
 
-        # Query the index for an answer
-        logger.info(f"Querying index with: {question}")
-        response = await query_engine.aquery(question)
+        # Define the custom prompt template for RAG
+        TEMPLATE = """Use the following pieces of context to answer the question at the end.
+        If you don't know the answer, just say that you don't know, don't try to make up an answer.
+        Use three sentences maximum and keep the answer as concise as possible.
 
-        # Log the response metadata
-        logger.info(f"Number of source nodes for the response: {len(response.source_nodes)}")
+        {context}
 
-        # Extract the answer from the response
-        answer = response.response
+        Question: {question}
+
+        Helpful Answer:"""
+
+        # Format the prompt
+        formatted_prompt = TEMPLATE.format(context=relevant_chunks, question=question)
+
+        # Use LLMRails with NVIDIA LLM to generate the answer
+        answer = await llm.generate_async(formatted_prompt)
 
         # Update context with new information
         context_updates = {
-            "relevant_chunks": "\n".join([node.text for node in response.source_nodes]),
-            "history": context.get('history', []) + [(question, answer)]
+            "relevant_chunks": relevant_chunks,
+            "_last_bot_prompt": formatted_prompt
         }
 
         logger.info("Returning result from rag()")
@@ -74,8 +78,8 @@ async def init(app: LLMRails):
             query_engine = app.index.as_query_engine()
             sample_query = "What are the documents about?"
             response = await query_engine.aquery(sample_query)
-            logger.info(f"Sample query result: {response.response}")
+            logger.info(f"Sample query sources: {response.get_formatted_sources()}")
         except Exception as e:
-            logger.error(f"Error during sample query in init: {str(e)}")
+            logger.error("Error during sample query in init:", exc_info=True)
     else:
         logger.warning("No index provided to init function for sample query testing.")
