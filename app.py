@@ -10,7 +10,7 @@ import asyncio
 import torch
 from nemoguardrails import LLMRails, RailsConfig
 from doc_loader import load_documents, get_index
-#from Config.actions import init
+from Config.actions import init
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -27,7 +27,7 @@ async def initialize_guardrails():
         
         rails = LLMRails(config, verbose=True)
         #rails.index = index
-        #await init(rails)  # Make sure init() is called after index creation
+        await init(rails)  # Make sure init() is called after index creation
         
         return rails, "Guardrails initialized successfully."
     except Exception as e:
