@@ -5,7 +5,7 @@ models:
   
   - type: embeddings
     engine: nvidia_ai_endpoints
-    model: nv-embed-v1
+    model: NV-Embed-QA
 
 instructions:
   - type: general
