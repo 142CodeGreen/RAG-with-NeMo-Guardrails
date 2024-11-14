@@ -2,6 +2,10 @@ models:
   - type: main
     engine: nvidia_ai_endpoints
     model: meta/llama-3.1-8b-instruct  #NVIDIA NIM selection
+  
+  - type: embeddings
+    engine: nvidia_ai_endpoints
+    model: nv-embed-v1
 
 instructions:
   - type: general
