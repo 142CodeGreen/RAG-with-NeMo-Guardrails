@@ -36,6 +36,27 @@ async def initialize_guardrails():
     except Exception as e:
         logger.error(f"Error initializing guardrails: {e}")
         return None, f"Guardrails not initialized due to error: {str(e)}"
+
+#async def stream_response(rails, query, history):
+#    try:
+#        user_message = {"role": "user", "content": query}
+#        response = await rails.generate_async(messages=[user_message])
+        
+#        if 'content' in response:  # Check if response is a direct dictionary
+#            # Non-streaming response
+#            yield history + [(query, response['content'])]
+#        elif hasattr(response, 'response_gen'):
+            # Streaming response
+#            partial_response = ""
+#            for text in response.response_gen:
+#                partial_response += text
+#                yield history + [(query, partial_response)]
+#        else:
+            # Handle cases where response might not have 'content' or 'response_gen'
+#            full_response = response if isinstance(response, str) else str(response)
+#            yield history + [(query, full_response)]
+#    except Exception as e:
+        yield history + [(query, f"Error processing query: {str(e)}")]
         
 async def stream_response(rails, query, history):
     if not rails:
