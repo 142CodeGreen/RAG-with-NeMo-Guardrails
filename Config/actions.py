@@ -12,8 +12,8 @@ from doc_loader import get_index
 logger = logging.getLogger(__name__)
 
 # Set up global settings
-#Settings.llm = NVIDIA(model="meta/llama-3.1-8b-instruct")
-#Settings.embed_model = NVIDIAEmbedding(model="NV-Embed-QA", truncate="END")
+Settings.llm = NVIDIA(model="meta/llama-3.1-8b-instruct")
+Settings.embed_model = NVIDIAEmbedding(model="NV-Embed-QA", truncate="END")
 
 @action(is_system_action=True)
 async def rag(context: Dict) -> ActionResult:
