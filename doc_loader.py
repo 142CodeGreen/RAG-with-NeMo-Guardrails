@@ -45,7 +45,7 @@ async def load_documents(file_paths):
 
         # Sample query after indexing for verification
         query_engine = index.as_query_engine(similarity_top_k=20, streaming=True)
-        sample_query = "What is the document about?"
+        sample_query = "What kind of wine do you have?"
         sample_response = await query_engine.aquery(sample_query)
         logger.info(f"Sample query result: {sample_query}\n{sample_response.get_formatted_sources()}")
 
