@@ -26,7 +26,7 @@ async def initialize_guardrails():
             return "Guardrails not initialized: No index available.", None
         
         rails = LLMRails(config, verbose=True)
-        rails.index = index
+        #rails.index = index
         await init(rails)  # Make sure init() is called after index creation
         
         return rails, "Guardrails initialized successfully."
