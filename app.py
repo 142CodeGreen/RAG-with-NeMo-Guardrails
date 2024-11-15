@@ -15,6 +15,8 @@ from Config.actions import init
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+index = load_documents([]) 
+
 async def initialize_guardrails():
     try:
         config = RailsConfig.from_path("./Config")
@@ -26,8 +28,7 @@ async def initialize_guardrails():
             return "Guardrails not initialized: No index available.", None
         
         rails = LLMRails(config, verbose=True)
-        #rails.index = index
-        await init(rails)  # Make sure init() is called after index creation
+        await init(rails, index)
         
         return rails, "Guardrails initialized successfully."
     except Exception as e:
@@ -115,14 +116,24 @@ with gr.Blocks() as demo:
     state = gr.State(None)  # Initially None
 
     load_btn.click(
-        load_documents, 
-        inputs=[file_input], 
+        load_documents,
+        inputs=[file_input],
         outputs=[load_output]
     ).then(
-        initialize_guardrails,  # This is now async
-        None,  # No direct inputs, but it uses the global index
+        lambda index_result: initialize_guardrails(index_result[0]),  # Pass the index
+        inputs=[load_output],  # Input is the output of load_documents
         outputs=[state, load_output]
     )
+    
+    #load_btn.click(
+    #    load_documents, 
+    #    inputs=[file_input], 
+    #    outputs=[load_output]
+    #).then(
+    #    initialize_guardrails,  # This is now async
+    #    None,  # No direct inputs, but it uses the global index
+    #    outputs=[state, load_output]
+    #)
     
     msg.submit(
         stream_response, 
