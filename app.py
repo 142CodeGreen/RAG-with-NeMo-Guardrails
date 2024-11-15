@@ -130,10 +130,25 @@ with gr.Blocks() as demo:
         inputs=[file_input],
         outputs=[load_output]
     ).then(
-        lambda index_result: initialize_guardrails(index_result[0]),  # Pass the index
-        inputs=[load_output],  # Input is the output of load_documents
+        get_index,
+        inputs=None,
+        outputs=None
+    ).then(
+        lambda idx: initialize_guardrails(idx),
+        inputs=[state],
         outputs=[state, load_output]
     )
+    
+    
+    #load_btn.click(
+    #    load_documents,
+    #    inputs=[file_input],
+    #    outputs=[load_output]
+    #).then(
+    #    lambda index_result: initialize_guardrails(index_result[0]),  # Pass the index
+    #    inputs=[load_output],  # Input is the output of load_documents
+    #    outputs=[state, load_output]
+    #)
     
     #load_btn.click(
     #    load_documents, 
