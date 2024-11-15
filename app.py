@@ -125,30 +125,21 @@ with gr.Blocks() as demo:
     # Using a State to manage shared data across callbacks
     state = gr.State(None)  # Initially None
 
+    def init_guardrails_wrapper(index_result):
+        if index_result:
+            return asyncio.run(initialize_guardrails(index_result[0]))
+        else:
+            return None, "Index not available"
+
     load_btn.click(
         load_documents,
         inputs=[file_input],
         outputs=[load_output]
     ).then(
-        get_index,
-        inputs=None,
-        outputs=None
-    ).then(
-        lambda idx: initialize_guardrails(idx),
-        inputs=[state],
+        init_guardrails_wrapper,
+        inputs=[load_output],
         outputs=[state, load_output]
     )
-    
-    
-    #load_btn.click(
-    #    load_documents,
-    #    inputs=[file_input],
-    #    outputs=[load_output]
-    #).then(
-    #    lambda index_result: initialize_guardrails(index_result[0]),  # Pass the index
-    #    inputs=[load_output],  # Input is the output of load_documents
-    #    outputs=[state, load_output]
-    #)
     
     #load_btn.click(
     #    load_documents, 
