@@ -20,6 +20,9 @@ index = None
 
 def load_documents(file_paths: List[str]) -> Tuple[VectorStoreIndex, str]:
     global index
+    if index is not None:  # Check if index already exists
+        logger.info("Index already exists. Skipping loading.")
+        return index, "Index already loaded." 
     try:
         if not file_paths:
             return None, "Error: No files selected."
