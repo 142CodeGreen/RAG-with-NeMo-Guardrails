@@ -31,12 +31,12 @@ define flow answer report question
 #  bot $answer
 
 
-#define flow self check output
-#  $allowed = execute self_check_output
+define flow self check output
+  $allowed = execute self_check_output
 
-#  if not $allowed
-#    bot refuse to respond
-#    stop
+  if not $allowed
+    bot refuse to respond
+    stop
 
 
 
