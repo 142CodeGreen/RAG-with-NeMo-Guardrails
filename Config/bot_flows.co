@@ -5,12 +5,12 @@ define flow self check input
     bot refuse to respond
     stop
 
-define user ask questions
-  "hi"
-  "Hello"
-  "What was the report about?"
-  "Can you summarise the downloaded document?"
-  "What's inside the document?"
+#define user ask questions
+#  "hi"
+#  "Hello"
+#  "What was the report about?"
+#  "Can you summarise the downloaded document?"
+#  "What's inside the document?"
 
 define flow answer questions
   user ...
