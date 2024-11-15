@@ -61,7 +61,7 @@ async def rag(context: Dict) -> ActionResult:
             return_value="An error occurred while processing your query.",
             context_updates={}
         )
-
-async def init(app: LLMRails):
-    app.index = index
+        
+async def init(app: LLMRails, index):  # Add index as argument
+    app.index = index  # Store the index in the app object
     app.register_action(rag, name="rag")
