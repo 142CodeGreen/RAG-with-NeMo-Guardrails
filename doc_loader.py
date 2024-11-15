@@ -2,8 +2,7 @@ import os
 import shutil
 import logging
 from typing import List, Tuple
-from llama_index.core import Settings, SimpleDirectoryReader, VectorStoreIndex, StorageContext, Document
-from llama_index.core import load_index_from_storage
+from llama_index.core import Settings, SimpleDirectoryReader, VectorStoreIndex, StorageContext, Document, load_index_from_storage
 from llama_index.vector_stores.milvus import MilvusVectorStore
 from llama_index.core.node_parser import SentenceSplitter
 
@@ -21,9 +20,10 @@ index = None
 
 def load_documents(file_paths: List[str]) -> Tuple[VectorStoreIndex, str]:
     global index
-    if index is not None:  # Check if index already exists
+    if index is not None:
         logger.info("Index already exists. Skipping loading.")
-        return index, "Index already loaded." 
+        return index, "Index already loaded."
+
     try:
         if not file_paths:
             return None, "Error: No files selected."
@@ -31,48 +31,37 @@ def load_documents(file_paths: List[str]) -> Tuple[VectorStoreIndex, str]:
         kb_dir = "./Config/kb"
         os.makedirs(kb_dir, exist_ok=True)
 
-        all_documents = []
-        
-        # Load all documents by path
-        for file_path in file_paths:
-            if os.path.isfile(file_path):  # Ensure the path points to a file
-                documents = SimpleDirectoryReader(input_files=[file_path]).load_data()
-                all_documents.extend(documents)
-                shutil.copy2(file_path, kb_dir)
-
-        if not all_documents:
+        documents = SimpleDirectoryReader(input_files=file_paths).load_data()
+        if not documents:
             return None, "No documents found in the selected paths."
+
+        # Move files to kb directory
+        for file_path in file_paths:
+            if os.path.isfile(file_path):
+                shutil.copy2(file_path, kb_dir)
 
         vector_store = MilvusVectorStore(uri="./milvus_demo.db", dim=1024, overwrite=True)
         storage_context = StorageContext.from_defaults(vector_store=vector_store)
-        index = VectorStoreIndex.from_documents(all_documents, storage_context=storage_context)
+        index = VectorStoreIndex.from_documents(documents, storage_context=storage_context)
 
-        # Sample query after indexing for verification
+        # Sample query for verification
         query_engine = index.as_query_engine(similarity_top_k=20)
-        sample_query = "What kind of wine do you have?"
         try:
-            response = query_engine.query(sample_query)
-            if response and hasattr(response, 'response'):
-                logger.info(f"Sample query result: {sample_query}\n{response.response}")
-            else:
-                logger.info(f"Sample query didn't produce a response object: {response}")
+            response = query_engine.query("What kind of wine do you have?")
+            logger.info(f"Sample query result: {response.response if hasattr(response, 'response') else response}")
         except Exception as e:
             logger.error(f"Error executing sample query: {e}")
 
-        # Save the index 
         storage_context.persist(persist_dir="./storage")
         logger.info("Storage context saved to disk.")
 
-        # Return the index
-        logger.info(f"Index created: {index}")
         return index, "Documents loaded & indexed successfully"
 
     except Exception as e:
         logger.error(f"Error during indexing: {e}")
         return None, f"Failed to index documents: {str(e)}"
 
-
-def get_index():
+def get_index() -> VectorStoreIndex:
     global index
     if index is None:
         try:
@@ -83,12 +72,3 @@ def get_index():
             logger.error(f"Failed to load index from storage: {e}")
             return None
     return index
-
-
-#def get_index():
-#    global index
-#    if index is None:
-#        logger.info("No index found or it hasn't been created yet.")
-#        return None
-#    logger.info(f"Returning existing index.")
-#    return index
