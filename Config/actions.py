@@ -62,32 +62,5 @@ async def rag(context: Dict) -> ActionResult:
         )
 
 async def init(app: LLMRails):
-    """
-    Initializes the application by setting up any necessary components or testing.
-    
-    Args:
-        app (LLMRails): The LLMRails application instance.
-    """
-    logger.info("Initializing RAG setup")
-    
-    # Check if index is available
-    index = get_index()
-    if index is None:
-        logger.warning("No index found or it hasn't been created yet.")
-    else:
-        # If an index exists, you might want to set it to the app or do other setup
-        app.index = index
-        logger.info("Index set to the application")
-
-    # Optionally, you can perform a test query here to ensure everything is working correctly
-    try:
-        query_engine = index.as_query_engine(similarity_top_k=1)
-        sample_query = "What is this document about?"
-        response = await query_engine.aquery(sample_query)
-        logger.info(f"Sample query response: {response.response}")
-    except Exception as e:
-        logger.error(f"Failed to perform sample query: {str(e)}")
-
-    # Register the rag action
-    app.register_action(rag, "rag")
-    logger.info("RAG action registered successfully.")
+    app.index = index
+    app.register_action(rag, name="rag")
