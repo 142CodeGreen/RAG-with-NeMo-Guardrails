@@ -1,3 +1,11 @@
+define user express greeting
+  "Hi"
+  "Hello!"
+  "Hey there!"
+
+define bot express greeting
+  "Hey there!"
+
 define flow self check input
   $allowed = execute self_check_input
 
@@ -5,14 +13,12 @@ define flow self check input
     bot refuse to respond
     stop
 
-#define user ask questions
-#  "hi"
-#  "Hello"
-#  "What was the report about?"
-#  "Can you summarise the downloaded document?"
-#  "What's inside the document?"
+define user ask about report
+ "What was the report about?"
+  "Can you summarise the downloaded document?"
+  "What's inside the document?"
 
-define flow answer questions
+define flow answer report question
   user ...
   $answer = execute rag()
   $check_hallucination = True
