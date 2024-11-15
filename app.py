@@ -15,14 +15,18 @@ from Config.actions import init
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-#index = load_documents([]) 
+def load_index_on_start():
+    index = get_index()
+    if index is None:
+        logger.warning("Index not found or could not be loaded at startup.")
+    return index
+
+index = load_index_on_start()
 
 async def initialize_guardrails(index):
     try:
         config = RailsConfig.from_path("./Config")
         
-        # Ensure index exists or has been created
-        #index = get_index()
         if index is None:
             logger.error("Index is not available during guardrails initialization.")
             return "Guardrails not initialized: No index available.", None
@@ -35,26 +39,32 @@ async def initialize_guardrails(index):
         logger.error(f"Error initializing guardrails: {e}")
         return None, f"Guardrails not initialized due to error: {str(e)}"
 
+
 async def stream_response(rails, query, history):
+    if not rails:
+        logger.error("Guardrails not initialized.")
+        yield[("System", "Guardrails not initialized. Please load documents first.")]
+        return
+
     try:
         user_message = {"role": "user", "content": query}
-        response = await rails.generate_async(messages=[user_message])
-        
-        if 'content' in response:  # Check if response is a direct dictionary
-            # Non-streaming response
-            yield history + [(query, response['content'])]
-        elif hasattr(response, 'response_gen'):
-            # Streaming response
-            partial_response = ""
-            for text in response.response_gen:
-                partial_response += text
-                yield history + [(query, partial_response)]
+        result = await rails.generate_async(messages=[user_message])
+
+        # Process the result assuming RAG was used to generate the response
+        if 'content' in result:
+            history.append((query, result['content']))
+        elif hasattr(result, 'response'):
+            history.append((query, result.response))
         else:
-            # Handle cases where response might not have 'content' or 'response_gen'
-            full_response = response if isinstance(response, str) else str(response)
-            yield history + [(query, full_response)]
+            history.append((query, "Unexpected response format."))
+        
+        yield history
     except Exception as e:
-        yield history + [(query, f"Error processing query: {str(e)}")]
+        logger.error(f"Error in stream_response: {e}")
+        error_message = "An error occurred while processing your query."
+        history.append((query, error_message))
+        yield history
+
         
 #async def stream_response(rails, query, history):
 #    if not rails:
