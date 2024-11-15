@@ -2,7 +2,7 @@ from typing import Dict
 from nemoguardrails.actions import action
 from nemoguardrails import LLMRails
 from nemoguardrails.actions.actions import ActionResult
-#from doc_loader import get_index
+from doc_loader import get_index
 import logging
 import asyncio
 
@@ -21,8 +21,8 @@ async def rag(context: Dict) -> ActionResult:
     """
     logger.info("rag() function called!")
 
-    index = app.index
-    #index = get_index()
+    #index = app.index
+    index = get_index()
     if index is None:
         logger.error("Index not available.")
         return ActionResult(
