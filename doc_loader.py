@@ -3,6 +3,7 @@ import shutil
 import logging
 from typing import List, Tuple
 from llama_index.core import Settings, SimpleDirectoryReader, VectorStoreIndex, StorageContext, Document
+from llama_index.core import load_index_from_storage
 from llama_index.vector_stores.milvus import MilvusVectorStore
 from llama_index.core.node_parser import SentenceSplitter
 
@@ -74,7 +75,20 @@ def load_documents(file_paths: List[str]) -> Tuple[VectorStoreIndex, str]:
 def get_index():
     global index
     if index is None:
-        logger.info("No index found or it hasn't been created yet.")
-        return None
-    logger.info(f"Returning existing index.")
+        try:
+            storage_context = StorageContext.from_defaults(persist_dir="./storage")
+            index = load_index_from_storage(storage_context)
+            logger.info("Index loaded from storage.")
+        except Exception as e:
+            logger.error(f"Failed to load index from storage: {e}")
+            return None
     return index
+
+
+#def get_index():
+#    global index
+#    if index is None:
+#        logger.info("No index found or it hasn't been created yet.")
+#        return None
+#    logger.info(f"Returning existing index.")
+#    return index
