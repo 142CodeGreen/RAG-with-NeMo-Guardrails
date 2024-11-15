@@ -15,14 +15,14 @@ from Config.actions import init
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-index = load_documents([]) 
+#index = load_documents([]) 
 
-async def initialize_guardrails():
+async def initialize_guardrails(index):
     try:
         config = RailsConfig.from_path("./Config")
         
         # Ensure index exists or has been created
-        index = get_index()
+        #index = get_index()
         if index is None:
             logger.error("Index is not available during guardrails initialization.")
             return "Guardrails not initialized: No index available.", None
