@@ -13,12 +13,12 @@ define flow self check input
     bot refuse to respond
     stop
 
-define user ask about report
+define user ask question
  "What was the report about?"
   "Can you summarise the downloaded document?"
   "What's inside the document?"
 
-define flow self check hallucination
+define flow answer question
   user ...
   $answer = execute rag()
   $check_hallucination = True
