@@ -1,3 +1,16 @@
+define user express greeting
+  "Hi"
+  "Hello!"
+  "Hey there!"
+
+define bot express greeting
+  "Hey there, how can I assist you today?"
+
+define flow
+  user express greeting
+  bot express greeting
+
+
 define flow self check input
   $allowed = execute self_check_input
 
@@ -9,6 +22,7 @@ define user ask about report
  "What was the report about?"
   "Can you summarise the downloaded document?"
   "What's inside the document?"
+  "What's ..."
 
 define flow answer report question
   user ...
