@@ -1,17 +1,17 @@
-define user express greeting
-  "Hi"
-  "Hello!"
-  "Hey there!"
+#define user express greeting
+#  "Hi"
+#  "Hello!"
+#  "Hey there!"
 
-define bot express greeting
-  "Hey there!"
+#define bot express greeting
+#  "Hey there!"
 
-define flow self check input
-  $allowed = execute self_check_input
+#define flow self check input
+#  $allowed = execute self_check_input
 
-  if not $allowed
-    bot refuse to respond
-    stop
+#  if not $allowed
+#    bot refuse to respond
+#    stop
 
 define user ask about report
  "What was the report about?"
@@ -37,7 +37,6 @@ define flow self check output
   if not $allowed
     bot refuse to respond
     stop
-
 
 
 define bot refuse to respond
