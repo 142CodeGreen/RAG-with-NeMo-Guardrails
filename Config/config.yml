@@ -46,7 +46,7 @@ rails:
     flows:
       - self check hallucination
       #- answer report question 
-      - self check output
+      #- self check output
 
 #actions:
 #  type: custom
