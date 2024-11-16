@@ -18,7 +18,7 @@ define user ask about report
   "Can you summarise the downloaded document?"
   "What's inside the document?"
 
-define flow answer report question
+define flow self check hallucination
   user ...
   $answer = execute rag()
   $check_hallucination = True
