@@ -111,11 +111,11 @@ async def stream_response(rails, query, history):
 
 # Create the Gradio interface
 with gr.Blocks() as demo:
-    gr.Markdown("# RAG Chatbot with Guardrails")
+    gr.Markdown("# RAG Chatbot with Nemo Guardrails")
 
     with gr.Row():
         file_input = gr.File(label="Select files to upload", file_count="multiple")
-        load_btn = gr.Button("Click to load documents")
+        load_btn = gr.Button("Click to load PDF documents")
 
     load_output = gr.Textbox(label="Load Status") 
     chatbot = gr.Chatbot()
