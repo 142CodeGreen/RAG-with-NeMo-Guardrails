@@ -10,7 +10,7 @@ pinned: false
 ---
 
 # RAG practice using NVIDIA NIM, NVIDIA NeMo Guardrails, LlamaIndex, Milvus (GPU-accelerated setup) and Gradio UI
-This notebook is to practise building a RAG application with references to the NVIDIA Developer YouTube video: https://www.youtube.com/watch?v=09uDCmLzYHA&t=574s and a NeMo Guardrail practice at https://github.com/wenqiglantz/nemo-guardrails-llamaindex-rag. The RAG allows users to upload PDF documents and carry out Q&A with the chatbot in the context of the loaded documents. The following components have been included in the RAG:
+This notebook is to practise building a RAG application under the NVIDIA Developer Program. The simple RAG allows users to upload PDF documents and carry out Q&A with the chatbot in the context of the loaded documents. The following components have been included in the RAG:
 
 1. Selected NVIDIA NIM as a foundational LLM model- using API key to connect;
 2. NVIDIA NeMo Guardrails, including input, output rails to structure proper bot response and reduce hallucination; 
@@ -110,8 +110,13 @@ python3 -m RAG_with_NeMo_Guardrails.app
 
 ## File Structure
 
-- Config folder to store the yaml, colang files of NeMo Guardrails.
+- Dockerfile & startup.sh files to set up NVIDIA Docker container tool kit & NVIDIA Driver for GPU-accelerated environment for Milvus Vector Database.
+- Config folder to store the yaml, colang files of NeMo Guardrails, as well as a custom rag() to generate question based on loaded context. 
 - `app.py`: Main application ( if you follow the step-by-step script, do not run the app.py)
 - `requirements.txt`: List of application dependencies
 
+## References: 
+- NVIDIA Developer YouTube video: https://www.youtube.com/watch?v=09uDCmLzYHA&t=574s
+- a NeMo Guardrail practice using LlamaIndex at https://github.com/wenqiglantz/nemo-guardrails-llamaindex-rag
+- NVIDIA example of custom rag configuration for Nemo Guardrails https://github.com/NVIDIA/NeMo-Guardrails/tree/develop/examples/configs/rag/custom_rag_output_rails
 
