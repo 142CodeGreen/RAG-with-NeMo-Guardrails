@@ -10,7 +10,7 @@ pinned: false
 ---
 
 # RAG practice using NVIDIA NIM, NVIDIA NeMo Guardrails, LlamaIndex, Milvus (GPU-accelerated setup) and Gradio UI
-This notebook is to practise building a RAG application under the NVIDIA Developer Program. The simple RAG allows users to upload PDF documents and carry out Q&A with the chatbot in the context of the loaded documents. The following components have been included in the RAG:
+This notebook is to practise building a RAG application with NVIDIA Nemo Guardrails under the NVIDIA Developer Program. The simple RAG allows users to upload PDF documents and carry out Q&A with the chatbot in the context of the loaded documents. The following components have been included in the RAG:
 
 1. Selected NVIDIA NIM as a foundational LLM model- using API key to connect;
 2. NVIDIA NeMo Guardrails, including input, output rails to structure proper bot response and reduce hallucination; 
