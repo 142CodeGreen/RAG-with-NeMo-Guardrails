@@ -45,13 +45,8 @@ rails:
   output:
     flows:
       - self check hallucination
-      #- answer report question 
-      - self check output
+      #- self check output
 
-#actions:
-#  type: custom
-#  name: rag
-#  return_type: ActionResult
 
   # Whether to try to use a single LLM call for generating the user intent, next step and bot message.
 dialog:
@@ -60,9 +55,3 @@ dialog:
     # If a single call fails, whether to fall back to multiple LLM calls.
     fallback_to_multiple_calls: True
 
-#streaming: True
-  
-#knowledge_bases:
-#  - name: my_knowledge_base  # Choose a name
-#    type: llama_index  # Or another supported type if you're not using Llama Index
-#    path: ./Config/kb  # Path to your knowledge base directory
