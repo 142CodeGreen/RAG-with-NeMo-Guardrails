@@ -11,5 +11,5 @@ OpenAI
 #langchain
 langchain-nvidia-ai-endpoints
 transformers>=4.10
-torch==2.5.0  # Assuming you're using PyTorch for GPU acceleration
+torch==2.5.1  # Assuming you're using PyTorch for GPU acceleration
 huggingface_hub
