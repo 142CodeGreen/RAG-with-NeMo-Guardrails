@@ -16,7 +16,7 @@ This notebook is to practise building a RAG application with references to the N
 2. NVIDIA NeMo Guardrails, including input, output rails to structure proper bot response and reduce hallucination; 
 3. LlamaIndex as RAG management framework for efficient indexing and retrieval of information;
 4. Use of NVIDIA embeddings;
-5. Milvus vector database for efficient storage and retrieval of embedding vectors.
+5. Milvus vector database for efficient storage and retrieval of embedding vectors. **A GPU-acceleration configuration is currently setup in the app. **
 6. Gradio as chat UI which allows users to upload PDF documents to set the context of Q&A.
 
 ## Setup
