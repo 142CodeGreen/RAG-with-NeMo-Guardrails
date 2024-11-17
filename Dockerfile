@@ -1,17 +1,15 @@
-# Use NVIDIA CUDA base image for GPU support
-FROM nvidia/cuda:12.3.1-devel-ubuntu22.04
+FROM nvidia/cuda:12.1.0-devel-ubuntu20.04
 
-# Update and install basic packages
+# Install system dependencies
 RUN apt-get update && apt-get install -y \
+    software-properties-common \
     docker.io \
     pciutils \
     curl \
-    gpg \
-    nvidia-container-toolkit \
-    && rm -rf /var/lib/apt/lists/*
-
-# NVIDIA Container Toolkit setup
-RUN curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey | gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg \
+    gnupg \
+    python3.10 \
+    python3.10-venv \
+    && curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey | gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg \
     && curl -s -L https://nvidia.github.io/libnvidia-container/stable/deb/nvidia-container-toolkit.list | \
     sed 's#deb https://#deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://#g' | \
     tee /etc/apt/sources.list.d/nvidia-container-toolkit.list \
@@ -19,33 +17,27 @@ RUN curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey | gpg --dearm
     && apt-get install -y nvidia-container-toolkit \
     && rm -rf /var/lib/apt/lists/*
 
-# NVIDIA drivers
+# Install NVIDIA driver if needed
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    nvidia-headless-545 \
-    nvidia-utils-545 \
+    nvidia-driver-510 \
     && rm -rf /var/lib/apt/lists/*
 
-# Set environment variables for GPU usage
-ENV NVIDIA_VISIBLE_DEVICES=all
-ENV NVIDIA_DRIVER_CAPABILITIES=compute,utility
+# Set working directory
+WORKDIR /app
 
-# Copy Milvus configuration if needed
-COPY milvus.yaml /milvus/configs/
+# Create a virtual environment
+RUN python3.10 -m venv venv
+ENV PATH="/app/venv/bin:$PATH"
 
-# Copy requirements.txt and install Python dependencies
+# Install dependencies from requirements.txt
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy app.py
-COPY app.py .
+# Copy application code
+COPY . .
 
-# Copy startup script
-COPY startup.sh /etc/
-RUN chmod +x /etc/startup.sh
+# Expose port for Gradio (assuming default port)
+EXPOSE 7860
 
-# Define volumes for configuration if needed
-VOLUME ["/milvus/configs"]
-
-# Run the container application
-# Here we use the startup script which would include starting Milvus with GPU support
-CMD ["/etc/startup.sh"]
+# Command to run your application
+CMD ["python3", "app.py"]
