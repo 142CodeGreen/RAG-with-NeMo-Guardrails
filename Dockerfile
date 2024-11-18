@@ -45,9 +45,9 @@ COPY . .
 
 # Ensure GPU can access the ./Storage directory
 # Create storage directory
-#RUN mkdir -p /app/storage && \
-RUN chown -R root:root /app/storage && \
-    chmod -R 777 /app/storage
+RUN mkdir -p ./storage && \
+    chown -R root:root ./storage && \
+    chmod -R 777 ./storage
 #RUN chown -R root:root ./Storage && \
 #    chmod -R 777 ./Storage
 
