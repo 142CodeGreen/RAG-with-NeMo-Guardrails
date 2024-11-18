@@ -1,6 +1,6 @@
 FROM nvidia/cuda:12.1.0-devel-ubuntu20.04
 
-# Install system dependencies
+# Update apt package index and install necessary packages
 RUN apt-get update && apt-get install -y \
     software-properties-common \
     docker.io \
@@ -34,9 +34,15 @@ COPY requirements.txt .
 # Update to use upgrade flag
 RUN pip install --upgrade -r requirements.txt
 
-# Copy application code and set permissions for storage directory
+# Copy application code
 COPY . .
-RUN mkdir -p /app/storage && chown -R root:root /app/storage && chmod -R 777 /app/storage
+
+# Create and set permissions for the storage directory
+# This assumes you're running the container as root or with sufficient permissions.
+# If not, consider setting a specific user or group.
+RUN mkdir -p /app/storage && \
+    chown -R root:root /app/storage && \
+    chmod -R 777 /app/storage
 
 # Define volume for persistent storage
 VOLUME ["/app/storage"]
