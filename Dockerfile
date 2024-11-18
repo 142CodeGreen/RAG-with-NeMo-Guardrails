@@ -1,9 +1,10 @@
-FROM nvidia/cuda:12.1.0-devel-ubuntu20.04
+# Start from NVIDIA's CUDA base image with the latest CUDA version available
+# Check NVIDIA's Docker Hub for the most current version
+FROM nvidia/cuda:12.2.0-devel-ubuntu20.04
 
 # Update apt package index and install necessary packages
 RUN apt-get update && apt-get install -y \
     software-properties-common \
-    docker.io \
     pciutils \
     curl \
     gnupg \
@@ -15,11 +16,9 @@ RUN apt-get update && apt-get install -y \
     tee /etc/apt/sources.list.d/nvidia-container-toolkit.list \
     && apt-get update \
     && apt-get install -y nvidia-container-toolkit \
-    && rm -rf /var/lib/apt/lists/*
-
-# Install NVIDIA driver if needed
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    nvidia-driver-510 \
+    # Install the latest NVIDIA driver recommended for L4 and L40 GPUs
+    && apt-get install -y --no-install-recommends \
+    nvidia-driver-535 \
     && rm -rf /var/lib/apt/lists/*
 
 # Set working directory
@@ -31,15 +30,12 @@ ENV PATH="/app/venv/bin:$PATH"
 
 # Install dependencies from requirements.txt
 COPY requirements.txt .
-# Update to use upgrade flag
 RUN pip install --upgrade -r requirements.txt
 
 # Copy application code
 COPY . .
 
 # Create and set permissions for the storage directory
-# This assumes you're running the container as root or with sufficient permissions.
-# If not, consider setting a specific user or group.
 RUN mkdir -p /app/storage && \
     chown -R root:root /app/storage && \
     chmod -R 777 /app/storage
