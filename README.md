@@ -9,14 +9,14 @@ app_file: app.py
 pinned: false
 ---
 
-# RAG practice using NVIDIA NIM, NVIDIA NeMo Guardrails, LlamaIndex, Milvus (GPU-accelerated setup) and Gradio UI
+# RAG practice using NVIDIA NIM, NVIDIA NeMo Guardrails, LlamaIndex, Milvus Database and Gradio UI
 This notebook is to practise building a RAG application with NVIDIA Nemo Guardrails under the NVIDIA Developer Program. The application includes a simple RAG that allows users to upload PDF documents and carry out Q&A with the chatbot in the context of the loaded documents. Main objectives of the app are to practice using the following key compoents that construct a more reliable RAG application with guardrails with improved reliability:
 
 1. Selected NVIDIA NIM as a foundational LLM model- using API key to connect. meta/llama-3.1-8b-instruct is used in this practise. 
 2. NVIDIA NeMo Guardrails, including input, output and dialog rails to structure proper bot response with reduced hallucination; 
 3. LlamaIndex as RAG management framework for efficient indexing and retrieval of information;
 4. Use of NVIDIA embeddings;
-5. Milvus vector database for efficient storage and retrieval of embedding vectors. A GPU-acceleration configuration is currently setup in the app.
+5. Milvus vector database for efficient storage and retrieval of embedding vectors. Optional to use the GPU-acceleration configuration.
 6. Gradio as chat UI which allows users to upload PDF documents to set the context of Q&A.
 
 ## Setup
