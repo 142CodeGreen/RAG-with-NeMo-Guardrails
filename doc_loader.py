@@ -41,15 +41,15 @@ def load_documents(file_paths: List[str]) -> Tuple[VectorStoreIndex, str]:
                 shutil.copy2(file_path, kb_dir)
 
         # Create a Milvus vector store and storage context
-        vector_store = MilvusVectorStore(
-            host="127.0.0.1",
-            port=19530,
-            dim=1024,
-            collection_name="your_collection_name",
-            gpu_id=0  # Specify the GPU ID to use
-        )
+        #vector_store = MilvusVectorStore(
+        #    host="127.0.0.1",
+        #    port=19530,
+        #    dim=1024,
+        #    collection_name="your_collection_name",
+        #    gpu_id=0  # Specify the GPU ID to use
+        #)
         
-        #vector_store = MilvusVectorStore(uri="./milvus_demo.db", dim=1024, overwrite=True)
+        vector_store = MilvusVectorStore(uri="./milvus_demo.db", dim=1024, overwrite=True)
         storage_context = StorageContext.from_defaults(vector_store=vector_store)
         index = VectorStoreIndex.from_documents(documents, storage_context=storage_context)
 
