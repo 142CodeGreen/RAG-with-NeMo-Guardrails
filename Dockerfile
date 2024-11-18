@@ -1,5 +1,3 @@
-# Dockerfile example
-
 FROM nvidia/cuda:12.1.0-devel-ubuntu20.04
 
 # Install system dependencies
@@ -33,10 +31,15 @@ ENV PATH="/app/venv/bin:$PATH"
 
 # Install dependencies from requirements.txt
 COPY requirements.txt .
+# Update to use upgrade flag
 RUN pip install --upgrade -r requirements.txt
 
-# Copy application code
+# Copy application code and set permissions for storage directory
 COPY . .
+RUN mkdir -p /app/storage && chown -R root:root /app/storage && chmod -R 777 /app/storage
+
+# Define volume for persistent storage
+VOLUME ["/app/storage"]
 
 # Expose port for Gradio (assuming default port)
 EXPOSE 7860
