@@ -1,8 +1,6 @@
-# Start from NVIDIA's CUDA base image with the latest CUDA version available
-# Check NVIDIA's Docker Hub for the most current version
 FROM nvidia/cuda:12.2.0-devel-ubuntu20.04
 
-# Update apt package index and install necessary packages
+# Install system dependencies
 RUN apt-get update && apt-get install -y \
     software-properties-common \
     pciutils \
@@ -10,16 +8,26 @@ RUN apt-get update && apt-get install -y \
     gnupg \
     python3.10 \
     python3.10-venv \
-    && curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey | gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg \
+    docker-compose \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install NVIDIA Container Toolkit
+RUN curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey | gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg \
     && curl -s -L https://nvidia.github.io/libnvidia-container/stable/deb/nvidia-container-toolkit.list | \
-    sed 's#deb https://#deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://#g' | \
-    tee /etc/apt/sources.list.d/nvidia-container-toolkit.list \
+       sed 's#deb https://#deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://#g' | \
+       tee /etc/apt/sources.list.d/nvidia-container-toolkit.list \
     && apt-get update \
     && apt-get install -y nvidia-container-toolkit \
-    # Install the latest NVIDIA driver recommended for L4 and L40 GPUs
-    && apt-get install -y --no-install-recommends \
-    nvidia-driver-535 \
     && rm -rf /var/lib/apt/lists/*
+
+# Install NVIDIA driver (assuming 545 is the latest version for your GPUs)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    nvidia-headless-545 \
+    nvidia-utils-545 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Verify NVIDIA driver installation
+RUN nvidia-smi
 
 # Set working directory
 WORKDIR /app
@@ -28,22 +36,26 @@ WORKDIR /app
 RUN python3.10 -m venv venv
 ENV PATH="/app/venv/bin:$PATH"
 
-# Install dependencies from requirements.txt
+# Install Python dependencies from requirements.txt
 COPY requirements.txt .
 RUN pip install --upgrade -r requirements.txt
 
 # Copy application code
 COPY . .
 
-# Create and set permissions for the storage directory
-RUN mkdir -p /app/storage && \
-    chown -R root:root /app/storage && \
-    chmod -R 777 /app/storage
+# Set up directory for document index
+RUN mkdir -p /app/Storage && \
+    chown -R root:root /app/Storage && \
+    chmod -R 777 /app/Storage
 
-# Define volume for persistent storage
-VOLUME ["/app/storage"]
+# Download Docker Compose file for Milvus
+RUN wget -O docker-compose.yml https://github.com/milvus-io/milvus/releases/download/v2.4.11/milvus-standalone-docker-compose-gpu.yml
 
-# Expose port for Gradio (assuming default port)
+# Script to start Milvus
+COPY start_milvus.sh .
+RUN chmod +x start_milvus.sh
+
+# Expose port for your application
 EXPOSE 7860
 
 # Command to run your application
