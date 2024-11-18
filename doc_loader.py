@@ -62,7 +62,8 @@ def load_documents(file_paths: List[str]) -> Tuple[VectorStoreIndex, str]:
         except Exception as e:
             logger.error(f"Error executing sample query: {e}")
 
-        storage_context.persist(persist_dir="./storage")
+        storage_context.persist(persist_dir="/app/storage")
+        #storage_context.persist(persist_dir="./storage")
         logger.info("Storage context saved to disk.")
 
         return index, "Documents loaded & indexed successfully"
@@ -75,7 +76,8 @@ def get_index() -> VectorStoreIndex:
     global index
     if index is None:
         try:
-            storage_context = StorageContext.from_defaults(persist_dir="./storage")
+            storage_context = StorageContext.from_defaults(persist_dir="/app/storage")
+            #storage_context = StorageContext.from_defaults(persist_dir="./storage")
             index = load_index_from_storage(storage_context)
             logger.info("Index loaded from storage.")
         except Exception as e:
