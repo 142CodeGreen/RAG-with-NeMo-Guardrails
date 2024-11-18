@@ -44,8 +44,12 @@ RUN pip install --upgrade -r requirements.txt
 COPY . .
 
 # Ensure GPU can access the ./Storage directory
-RUN chown -R root:root ./Storage && \
-    chmod -R 777 ./Storage
+# Create storage directory
+RUN mkdir -p /app/storage && \
+    chown -R root:root /app/storage && \
+    chmod -R 777 /app/storage
+#RUN chown -R root:root ./Storage && \
+#    chmod -R 777 ./Storage
 
 # Download Docker Compose file for Milvus
 RUN wget -O docker-compose.yml https://github.com/milvus-io/milvus/releases/download/v2.4.11/milvus-standalone-docker-compose-gpu.yml
