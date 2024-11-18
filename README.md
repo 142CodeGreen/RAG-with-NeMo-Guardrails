@@ -26,12 +26,18 @@ This notebook is to practise building a RAG application with NVIDIA Nemo Guardra
 git clone https://github.com/142CodeGreen/RAG-with-NeMo-Guardrails.git
 cd RAG-with-NeMo-Guardrails
 ```
-2. Install the required packages:
+2. Optional - set up a virtual environment:
+```
+apt-get install -y python3.10-venv
+python3.10 -m venv venv
+source venv/bin/activate
+```
+3. Install the required packages:
 ```
 pip install --upgrade -r requirements.txt
 ```
 
-3. Export API keys. NVIDIA_API_KEY is for NVIDIA NIM, while OpenAI API Key is needed for Nemo Guardrails. 
+4. Export API keys. NVIDIA_API_KEY is for NVIDIA NIM, while OpenAI API Key is needed for Nemo Guardrails. 
 ```
 export NVIDIA_API_KEY="your-api-key-here"
 echo $NVIDIA_API_KEY
@@ -40,12 +46,12 @@ export OPENAI_API_KEY="your-openai-key-here"
 echo $OPENAI_API_KEY
 ```
 
-4. Run the app.py:
+5. Run the app.py:
 ```
 python3 app.py
 ```
 
-5. Deactivate virtual environment when finished:
+6. Deactivate virtual environment when finished:
 ```
 deactivate
 ```
