@@ -120,7 +120,8 @@ with gr.Blocks() as demo:
         load_btn = gr.Button("Click to load PDF documents")
 
     load_output = gr.Textbox(label="Load Status") 
-    chatbot = gr.Chatbot()
+    chatbot = gr.Chatbot(type='messages')
+    #chatbot = gr.Chatbot()
     msg = gr.Textbox(label="Enter your question", interactive=True)
     clear = gr.Button("Clear")
     
